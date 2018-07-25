@@ -33,7 +33,7 @@ implements PendengarWebBrowser {
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
-    ui.setURL("file:///home/ini_laptop/NetBeansProjects/finex-filemanager-ui/public_html/index.html");
+    ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
 //    ui.setURL("https://stephanwagner.me/jBox/");
 
     this.getContentPane().add(ui);
