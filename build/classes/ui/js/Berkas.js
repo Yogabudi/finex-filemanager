@@ -5,7 +5,7 @@ class Berkas {
     // member
     this.jenis = jenis;
     this.nama = nama;
-    this.pathAbsolut = "-";
+    this.pathAbsolut = "";
     
     // jangan diakses
     this.lokasiIcon = "assets/Icons/";
@@ -25,11 +25,13 @@ class Berkas {
   }
   
   tandai() {
-    $("#berkas_" + this.nama).addClass("ds-selected");
+    var id = this.nama.split(" ").join("");
+    $("#berkas_" + id).addClass("ds-selected");
   }
   
   hilangkanTanda() {
-    $("#berkas_" + this.nama).removeClass("ds-selected");
+    var id = this.nama.split(" ").join("");
+    $("#berkas_" + id).removeClass("ds-selected");
   }
   
   static dapatkanBerkasTerpilih() {
@@ -46,8 +48,10 @@ class Berkas {
   }
   
   pasangElemen(elemenTempat) {
+    var id = this.nama.split(" ").join("");
+    
     var berkas =
-      "<button id='berkas_"+this.nama+"' "+
+      "<button id='berkas_"+id+"' "+
                 "class='button button-3d button-box button-jumbo berkas' "+
                 "path-absolut='"+this.pathAbsolut+"' jenis='"+this.jenis+"'>" +
         "<span class='row'>" +
@@ -62,4 +66,13 @@ class Berkas {
     
     elemenTempat.append(berkas);
   }
-}
+};
+
+// testing
+$(document).ready(function() {
+  for(var i = 0; i < 10; i++) {
+    var berkas = new Berkas("folder", "Ini Folder " + i);
+    berkas.pathAbsolut = "/home/" + berkas.nama;
+    berkas.pasangElemen($(".tempatBerkas"));
+  }
+});
