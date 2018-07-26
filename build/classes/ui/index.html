@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="../../material-design-icons-2.2.0/iconfont/material-icons.css" />
     <link rel="stylesheet" href="assets/materialize/css/materialize.min.css" />
     <link rel="stylesheet" href="assets/webui_popover/jquery.webui-popover.min.css" />
     <link rel="stylesheet" href="assets/buttons.css" />
@@ -102,9 +101,9 @@
                         <div class="input-field">
                           <input id="search" type="search" placeholder="Cari File/Folder...">
                           <label class="label-icon" for="search">
-                            <i class="material-icons">&#xe8b6;</i>
+                            <img style="position: relative; top: 10px;" 
+                                src="assets/Icons/32/109-search-1.png" />
                           </label>
-                          <i class="material-icons">&#xe5cd;</i>
                         </div>
                       </form>
                     </div>
@@ -243,9 +242,10 @@
         
         <button id="tombolBuatTab"
            class="btn-floating btn-large halfway-fab waves-effect waves-light
-                  red tooltipped"
-           data-position="bottom" data-tooltip="Buat Tab Baru">
-          <i class="material-icons">&#xe145;</i>
+                  red tooltipped tombol-halfway purple"
+           data-position="bottom" data-tooltip="Buat Tab Baru"
+           style="background-image: url(assets/Icons/32/050-paper.png);">
+          
         </button>
       </div>
     </nav>
@@ -259,7 +259,7 @@
               data-position="bottom"
               data-tooltip="Lihat/Edit Path Berkas">
           <div class="yby-breadcrumb-elemen-tombol-lain center-align">
-            <i class="material-icons">&#xe3c9;</i>
+            <img src="assets/Icons/24/edit.png" />
           </div>
         </div>
       </div>
@@ -387,14 +387,14 @@
     
     <!-- tombol navigasi depan belakang -->
     <button id="btnKebelakang"
-        class="btn-floating waves-effect waves-light red
-                tombol-mengapung-nav-kebelakang">
-      <i class="material-icons">&#xe5c4;</i>
+        class="btn-floating waves-effect waves-teal
+                tombol-mengapung-nav-kebelakang white"
+        style="background-image: url(assets/Icons/24/left-arrow.png);">
     </button>
     <button id="btnKedepan"
-        class="btn-floating waves-effect waves-light red
-                  tombol-mengapung-nav-kedepan">
-      <i class="material-icons">&#xe5c8;</i>
+        class="btn-floating waves-effect waves-teal
+                  tombol-mengapung-nav-kedepan white"
+        style="background-image: url(assets/Icons/24/right-arrow.png);">
     </button>
     
     <!-- konten -->
@@ -477,18 +477,17 @@
               </div>
               <div id="bodyBerdasarNama" class="collapsible-body">
                 <div class="row">
-                  <div class="col s8">
+                  <div class="col s11">
                     <div class="input-field">
                       <input id="txCariNama" type="text" class="validate">
                       <label for="txCariNama">Masukkan nama file/folder...</label>
                     </div>
                   </div>
-                  <div class="col s4">
+                  <div class="col s1">
                     <button id="btnCloseBerdasarNama"
                            class="waves-effect waves-light
                                   btn-flat">
-                      <i class="material-icons left">&#xe5cd;</i>
-                      tutup
+                      <img src="assets/Icons/24/delete.png" />
                     </button>
                   </div>
                 </div>
@@ -500,7 +499,7 @@
               </div>
               <div id="bodyBerdasarFormat" class="collapsible-body">
                 <div class="row">
-                  <div class="col s8">
+                  <div class="col s11">
                     <p>Tentukan format file : </p>
                     <div id="listFormat">
                       <form action="#">
@@ -555,12 +554,11 @@
                       </form>
                     </div>
                   </div>
-                  <div class="col s4">
+                  <div class="col s1">
                     <button id="btnCloseBerdasarFormat"
                            class="waves-effect waves-light
                                   btn-flat">
-                      <i class="material-icons left">&#xe5cd;</i>
-                      tutup
+                      <img src="assets/Icons/24/delete.png" />
                     </button>
                   </div>
                 </div>
@@ -573,17 +571,16 @@
               <div id="bodyTanggalDibuat" class="collapsible-body">
 
                 <div class="row">
-                  <div class="col s8">
+                  <div class="col s11">
                     <input id="txtglDibuat" type="text"
                      placeholder="Klik disini untuk membuka kalender..."
                      class="datepicker" />
                   </div>
-                  <div class="col s4">
+                  <div class="col s1">
                     <button id="btnCloseTglDibuat"
                            class="waves-effect waves-light
                                   btn-flat">
-                      <i class="material-icons left">&#xe5cd;</i>
-                      tutup
+                      <img src="assets/Icons/24/delete.png" />
                     </button>
                   </div>
                 </div>
@@ -597,15 +594,14 @@
               <div id="bodyTanggalModif" class="collapsible-body">
 
                 <div class="row">
-                  <div class="col s8">
+                  <div class="col s11">
                     <input type="text" id="txtglModif"
                      placeholder="Klik disini untuk membuka kalender..."
                      class="datepicker" />
                   </div>
-                  <div class="col s4">
+                  <div class="col s1">
                     <button id="btnCloseTglModif" class="waves-effect waves-light btn-flat">
-                      <i class="material-icons left">&#xe5cd;</i>
-                      tutup
+                      <img src="assets/Icons/24/delete.png" />
                     </button>
                   </div>
                 </div>
@@ -619,15 +615,14 @@
               <div id="bodyTanggalAkses" class="collapsible-body">
 
                 <div class="row">
-                  <div class="col s8">
+                  <div class="col s11">
                     <input type="text" id="txtglAkses"
                      placeholder="Klik disini untuk membuka kalender..."
                      class="datepicker" />
                   </div>
-                  <div class="col s4">
+                  <div class="col s1">
                     <button id="btnCloseTglAkses" class="waves-effect waves-light btn-flat">
-                      <i class="material-icons left">&#xe5cd;</i>
-                      tutup
+                      <img src="assets/Icons/24/delete.png" />
                     </button>
                   </div>
                 </div>
@@ -830,17 +825,9 @@
     <!-- pop path -->
     <div id="popPath" class="webui-popover-content">
       <div class="row">
-        <div class="col s9">
+        <div class="col s12">
           <input type="text" name="txPath" id="txPath"
                value="/home/yourname/Documents/" />
-        </div>
-        <div class="col s3">
-          <button class="btn waves-effect waves-light">
-            <i class="material-icons">&#xe5d8;</i>
-          </button>
-          <button class="btn waves-effect waves-light">
-            <i class="material-icons">&#xe14d;</i>
-          </button>
         </div>
       </div>
     </div>
@@ -965,9 +952,9 @@
             <div class="card-action">
               <b>Berkas : </b><span>/home/yourname/inifile.docx</span>
               <button class="btn-floating halfway-fab waves-effect waves-light red
-                              tooltipped"
-                      data-tooltip="Batalkan" data-position="top">
-                <i class="material-icons">&#xe5cd;</i>
+                              tooltipped tombol-halfway btn-large"
+                      data-tooltip="Batalkan" data-position="top"
+                      style="background-image: url(assets/Icons/32/stop2.png);">
               </button>
             </div>
             <div class="card-action">
@@ -995,9 +982,9 @@
             <div class="card-action">
               <b>Berkas : </b><span>/home/yourname/inifile.docx</span>
               <button class="btn-floating halfway-fab waves-effect waves-light red
-                              tooltipped"
-                      data-tooltip="Batalkan" data-position="top">
-                <i class="material-icons">&#xe5cd;</i>
+                              tooltipped tombol-halfway btn-large"
+                      data-tooltip="Batalkan" data-position="top"
+                      style="background-image: url(assets/Icons/32/stop2.png);">
               </button>
             </div>
             <div class="card-action">
@@ -1216,7 +1203,7 @@
     
     <!-- btn panel wajah -->
     <button id="btnPanelWajah" data-target="panelWajah"
-        class="btn-floating btn-large waves-effect waves-light blue
+        class="btn-floating btn-large waves-effect waves-light purple
                 sidenav-trigger tombol-mengapung"
         style="background-image: url(assets/Icons/32/006-happy-1.png);">
     </button>
