@@ -1,24 +1,4 @@
 
-function warnaiBreadcrumb() {
-  $(".yby-breadcrumb").addClass("grey");
-  $(".yby-breadcrumb").addClass("lighten-2");
-}
-
-function jalankanBreadcrumb() {
-  warnaiBreadcrumb();
-  
-  $(".yby-breadcrumb-aktif").removeClass("lighten-2");
-  $(".yby-breadcrumb-aktif").addClass("white");
-  
-  $(".yby-breadcrumb").click(function() {
-    $(".yby-breadcrumb").removeClass("white");
-    $(".yby-breadcrumb").addClass("lighten-2");
-    
-    $(this).removeClass("lighten-2");
-    $(this).addClass("white");
-  });
-}
-
 function warnaiTabYBY() {
   $(".yby-tab").addClass("grey");
   $(".yby-tab").addClass("lighten-2");
