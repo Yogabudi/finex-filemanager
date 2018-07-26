@@ -13,14 +13,14 @@
     position:absolute;
     min-width:160px;
     margin:0;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 .c2c-dropdown a{
     padding:6px 16px;
     display:block;
     text-decoration: none;
     color: #000000;
-    font-size: 14px;
+    font-size: 13px;
 }
 .c2c-dropdown a:hover{
     background-color:#ccc
