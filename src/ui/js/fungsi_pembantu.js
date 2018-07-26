@@ -1,24 +1,4 @@
 
-function warnaiBreadcrumb() {
-  $(".yby-breadcrumb").addClass("grey");
-  $(".yby-breadcrumb").addClass("lighten-2");
-}
-
-function jalankanBreadcrumb() {
-  warnaiBreadcrumb();
-  
-  $(".yby-breadcrumb-aktif").removeClass("lighten-2");
-  $(".yby-breadcrumb-aktif").addClass("white");
-  
-  $(".yby-breadcrumb").click(function() {
-    $(".yby-breadcrumb").removeClass("white");
-    $(".yby-breadcrumb").addClass("lighten-2");
-    
-    $(this).removeClass("lighten-2");
-    $(this).addClass("white");
-  });
-}
-
 function warnaiTabYBY() {
   $(".yby-tab").addClass("grey");
   $(".yby-tab").addClass("lighten-2");
@@ -75,44 +55,6 @@ function resetPanelPencarian() {
   $("#tanggalAkses").show();
   $("#tanggalDibuat").show();
   $("#tanggalModif").show();
-}
-
-function dapatkanNamaBerkas(elemenBerkas) {
-  var containerKontenButton = $(elemenBerkas).children()[0];
-  var containerLabel = $(containerKontenButton).children()[1];
-  var label = $.trim($(containerLabel).text());
-  
-  return label;
-}
-
-function dapatkanBerkasTerpilih() {
-  var elemen = $(".tempatBerkas").find(".ds-selected");
-  
-  return elemen;
-}
-
-function tandaiBerkas(elemenBerkas) {
-  $(elemenBerkas).addClass("ds-selected");
-}
-
-function hilangkanTandaBerkas() {
-  $(".tempatBerkas").children().removeClass("ds-selected");
-}
-
-function buatTombolBerkas(id, namaBerkas, icon, jq_elemenTempatnya) {
-  var htmlButton = "<button id='btnFile_" + id + "' " +
-                    "class='button button-3d button-box button-jumbo berkas'>" +
-                    "<span class='row'>" +
-                    "<span class='center col s12'>" +
-                    "<img src='" + icon + "'/>" +
-                    "</span>" +
-                    "<span class='center col s12'>" +
-                    namaBerkas +
-                    "</span>"
-                    "</span>"
-                    "</button>";
-                    
-  $(jq_elemenTempatnya).append(htmlButton);
 }
 
 // method ini untuk tab file system

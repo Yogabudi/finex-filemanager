@@ -15,7 +15,7 @@ function inisialisasiKomponen() {
   $(".modal").hide();
   
   jalankanTabYBY();
-  jalankanBreadcrumb();
+  BreadcrumbBerkas.jalankanBreadcrumb();
   
   $(".modal").modal({
     onCloseEnd: function() {
@@ -221,7 +221,7 @@ function aturPopover() {
     closeable: true,
     width: "300",
     onShow: function(element) {
-      var namaBerkas = dapatkanNamaBerkas(dapatkanBerkasTerpilih());
+      var namaBerkas = Berkas.dapatkanBerkasTerpilih().nama;
       $("#txNamaBaru").val(namaBerkas);
       $("#txNamaBaru").select();
     }

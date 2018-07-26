@@ -18,7 +18,6 @@
 var target = document.body;
 var mutNum = 0;
 var observer = new MutationObserver(function (mutations) {
-  console.log("class2context.js: mutation of dom, num." + mutNum);
   mutNum++;
 //    ContextMenus();
 });
