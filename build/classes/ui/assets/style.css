@@ -29,6 +29,11 @@ body {
     background-position: left;
 }
 
+.tombol-halfway {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .tombol-mengapung-ribbon {
     background-repeat: no-repeat;
     background-position: center;
@@ -48,6 +53,8 @@ body {
 }
 
 .tombol-mengapung-nav-kebelakang {
+    background-repeat: no-repeat;
+    background-position: center;
     position: fixed !important;
     left: 20px;
     top: 129px;
@@ -55,6 +62,8 @@ body {
 }
 
 .tombol-mengapung-nav-kedepan {
+    background-repeat: no-repeat;
+    background-position: center;
     position: fixed !important;
     left: 70px;
     top: 129px;
@@ -268,4 +277,18 @@ body {
 
 .ds-selected {
     background-color: #b0bec5 !important;
+}
+
+.icon-contextmenu img {
+    margin-right: 10px;
+}
+
+.icon-contextmenu span {
+    position: relative;
+    bottom: 5px;
+}
+
+.tombol-tutup-pencarian {
+    position: relative;
+    left: 200px;
 }
