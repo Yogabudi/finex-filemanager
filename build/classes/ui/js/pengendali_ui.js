@@ -110,30 +110,84 @@ function aturContextMenu() {
   });
   
   var menuFolder = [
-    ["<i class='material-icons left'>&#xe14e;</i> Cut", ""],
-    ["<i class='material-icons left'>&#xe14d;</i> Salin", ""],
-    ["<i class='material-icons left'>&#xe14f;</i> Paste Kedalam Folder", ""],
-    ["<i class='material-icons left'>&#xe14f;</i> Paste Disini", ""],
-    ["<i class='material-icons left'>&#xe88e;</i> Info Berkas", ""],
-    ["<i class='material-icons left'>&#xe3bb;</i> Duplikat", ""],
-    ["<i class='material-icons left'>&#xe872;</i> Hapus Ke Trash", ""],
-    ["<i class='material-icons left'>&#xe872;</i> Hapus", ""]
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/scissors.png' />\n\
+        <span>Cut</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/papers.png' />\n\
+        <span>Salin</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste kedalam folder</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste disini</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/info.png' />\n\
+        <span>Info Berkas</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/duplicate-file.png' />\n\
+        <span>Duplikat</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/garbage.png' />\n\
+        <span>Hapus ke trash</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/delete.png' />\n\
+        <span>Hapus</span>\n\
+      </div>", ""]
   ];
   
   var menuTempatBerkas = [
-    ["<i class='material-icons left'>&#xe2cc;</i> Buat Folder Baru", ""],
-    ["<i class='material-icons left'>&#xe24d;</i> Buat File Baru", ""],
-    ["<i class='material-icons left'>&#xe14f;</i> Paste", ""],
-    ["<i class='material-icons left'>&#xe86f;</i> Buka Terminal Disini", ""],
-    ["<i class='material-icons left'>&#xe872;</i> Kosongkan Trash", ""],
-    ["<i class='material-icons left'>&#xe8b6;</i> Cari Berkas", ""],
-    ["<i class='material-icons left'>&#xe420;</i> Koleksi Wajah", ""],
-    ["<i class='material-icons left'>&#xe8a4;</i> Lihat Operasi Berkas", ""]
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/new-add-folder.png' />\n\
+        <span>Buat Folder Baru</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/new-document.png' />\n\
+        <span>Buat File Baru</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/icon.png' />\n\
+        <span>Buka Terminal Disini</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/garbage.png' />\n\
+        <span>Kosongkan Trash</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/loupe.png' />\n\
+        <span>Cari Berkas</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/smile.png' />\n\
+        <span>Koleksi Wajah</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/operation.png' />\n\
+        <span>Lihat Operasi Berkas</span>\n\
+      </div>", ""]
   ];
   
   var menuBreadcrumb = [
-    ["<i class='material-icons left'>&#xe5c8;</i> Maju", ""],
-    ["<i class='material-icons left'>&#xe5c4;</i> Mundur", ""]
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/right-arrow.png' />\n\
+        <span>Maju</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/left-arrow.png' />\n\
+        <span>Mundur</span>\n\
+      </div>", ""]
   ];
   
   class2context("berkas", "", menuFolder);
@@ -154,10 +208,10 @@ function aturPopover() {
   });
     
   $("#btnEditPath").webuiPopover({
-    title: "Path Berkas",
+    title: "Path Berkas (Tekan Enter untuk menuju path)",
     animation: "pop",
     url: "#popPath",
-    width: "700"
+    width: "500",
   });
   
   $("#btnUbahNama").webuiPopover({
