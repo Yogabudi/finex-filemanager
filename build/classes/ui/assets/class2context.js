@@ -12,9 +12,6 @@
  );
  */
 
-function ContextMenus() {
-}
-
 /* MUTATION OBSERVER
  --detect changes in dom, and re-asign context menus*/
 // select the target node //MUTATION DOM
@@ -76,9 +73,7 @@ function class2context(classgiv, title, options) {
     
     for (var i = 0; i < options.length; i++) {
       aux += "<a onmousedown='" +
-              options[i][1] +
-              "; ContextMenus();' href='javascript:void(0);'>" +
-              options[i][0] +
+              options[i][1] + ";' href='javascript:void(0);'>" + options[i][0] +
               "</a>";
     }
     
@@ -108,12 +103,12 @@ function class2context(classgiv, title, options) {
   document.body.addEventListener("mousedown", function (e) {
     // Avoid the real one
     //e.preventDefault();
-    if (document.getElementById('context' + classgiv))
-    {
+    if (document.getElementById('context' + classgiv)) {
       setTimeout(function () {
         document.getElementById('context' + classgiv).style.display = 'none';
       }, 70);
     }
+    
     return false;
   }, false);
 
