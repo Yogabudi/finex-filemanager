@@ -15,7 +15,7 @@ function inisialisasiKomponen() {
   $(".modal").hide();
   
   jalankanTabYBY();
-  jalankanBreadcrumb();
+  BreadcrumbBerkas.jalankanBreadcrumb();
   
   $(".modal").modal({
     onCloseEnd: function() {
@@ -43,24 +43,6 @@ function inisialisasiKomponen() {
   });
     
   $("input[name='swGunakanApp']").prop("checked", false);
-  
-  for(var i = 0; i < 10; i++) {
-    var berkas = new Berkas("folder", "Ini Folder " + i);
-    berkas.pathAbsolut = "/home/" + berkas.nama;
-    berkas.pasangElemen($(".tempatBerkas"));
-  }
-  
-//  var doc = new Berkas("folder", "My Doc");
-//  doc.pathAbsolut = "/home/" + doc.nama;
-//  doc.pasangElemen($(".tempatBerkas"));
-//  
-//  var music = new Berkas("folder", "music");
-//  music.pathAbsolut = "/home/" + music.nama;
-//  music.pasangElemen($(".tempatBerkas"));
-//  
-//  var vid = new Berkas("folder", "video");
-//  vid.pathAbsolut = "/home/" + vid.nama;
-//  vid.pasangElemen($(".tempatBerkas"));
 }
 
 function aturSeleksiBerkas() {
