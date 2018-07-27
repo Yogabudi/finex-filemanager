@@ -11,6 +11,7 @@ import java.awt.EventQueue;
 import javax.swing.SwingUtilities;
 
 import filemanager.webviewui.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,7 +35,6 @@ implements PendengarWebBrowser {
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
     ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
-//    ui.setURL("https://stephanwagner.me/jBox/");
 
     this.getContentPane().add(ui);
   }
@@ -67,7 +67,18 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatPerintahDiterima(WebBrowserCommandEvent wbce, JWebBrowser browser) {
+    String perintah = wbce.getCommand();
+    Object[] param = wbce.getParameters();
     
+    if(perintah.equals("kirimInfoBerkas")) {
+      String[] infoBerkas = ((String)param[0]).split(",");
+      
+      String info = "NAMA BERKAS : " + infoBerkas[0] + "\n";
+      info += "JENIS : " + infoBerkas[1] + "\n";
+      info += "PATH : " + infoBerkas[2] + "\n";
+      
+      JOptionPane.showMessageDialog(FileManager.this, info);
+    }
   }
 
 }
