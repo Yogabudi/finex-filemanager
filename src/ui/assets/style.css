@@ -267,8 +267,6 @@ body {
 .foto-wajah {
     height: 150px !important;
     width: 150px !important;
-    position: relative !important;
-    left: 65px !important;
 }
 
 .tombol-fluid {
@@ -291,4 +289,9 @@ body {
 .tombol-tutup-pencarian {
     position: relative;
     left: 200px;
+}
+
+#panelWajah {
+    max-width: 100% !important;
+    width: 50% !important;
 }
