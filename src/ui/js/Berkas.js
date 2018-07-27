@@ -54,6 +54,12 @@ class Berkas {
       $("#berkas_" + id).removeClass("ds-selected");
     };
     
+    this.ubahKeFormatParam = function() {
+      var param = nama + "," + jenis + "," + pathAbsolut + "," + icon;
+      
+      return param;
+    }
+    
     this.pasangElemen = function(elemenTempat) {
       var id = nama.split(" ").join("");
     
@@ -93,8 +99,6 @@ class Berkas {
     berkas.setJenis(jenis);
     berkas.setPathAbsolut(pathAbsolut);
     berkas.setIcon(iconBerkas);
-    
-    berkas.tampilkanInfo();
     
     return berkas;
   }
