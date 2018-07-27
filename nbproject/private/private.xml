@@ -5,9 +5,9 @@
         <group>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/Berkas.js</file>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/index.html</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/BreadcrumbBerkas.js</file>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/pengendali_ui.js</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/assets/style.css</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/Jembatan.js</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/FileManager.java</file>
         </group>
     </open-files>
 </project-private>

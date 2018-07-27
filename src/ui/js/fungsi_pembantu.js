@@ -43,10 +43,6 @@ function resetPanelInfo() {
   tutupAccordion("#accordApp");
 }
 
-function resetPanelWajah() {
-  tutupAccordion("#accordWajah");
-}
-
 function resetPanelPencarian() {
   tutupAccordion("#accordBerdasarkan")
   

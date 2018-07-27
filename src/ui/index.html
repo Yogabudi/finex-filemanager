@@ -263,34 +263,7 @@
           </div>
         </div>
       </div>
-<!--      <div class="col breadFolder">
-        <div class="card hoverable yby-breadcrumb">
-          <div class="yby-breadcrumb-elemen center-align">
-            /
-          </div>
-        </div>
-      </div>
-      <div class="col breadFolder">
-        <div class="card hoverable yby-breadcrumb">
-          <div class="yby-breadcrumb-elemen center-align">
-            home /
-          </div>
-        </div>
-      </div>
-      <div class="col breadFolder">
-        <div class="card hoverable yby-breadcrumb">
-          <div class="yby-breadcrumb-elemen center-align">
-            yourname /
-          </div>
-        </div>
-      </div>
-      <div class="col breadFolder">
-        <div class="card hoverable yby-breadcrumb yby-breadcrumb-aktif">
-          <div class="yby-breadcrumb-elemen center-align">
-            Documents /
-          </div>
-        </div>
-      </div>-->
+      <!--TEMPAT BREADCRUMB-->
     </div>
     
     <!-- panel bookmark -->
@@ -400,33 +373,7 @@
     <!-- konten -->
     <div id="konten">
       <div id="berkasDiLokasiIni" class="tempatBerkas">
-<!--        <button class="button button-3d button-box button-jumbo berkas">
-          <span class="row">
-            <span class="center col s12 icon-berkas">
-              <img src="assets/Icons/64/101-folder-5.png"/>
-            </span>
-            <span class="center col s12 nama-berkas">
-              Videos
-            </span>
-          </span>
-        </button>-->
-
-<!--        <script>
-          for(var i = 1; i <= 10; i++) {
-            var berkas = "<button class='button button-3d button-box button-jumbo berkas'>\n\
-                          <span class='row'>\n\
-                            <span class='center col s12'>\n\
-                              <img src='assets/Icons/64/101-folder-5.png'/>\n\
-                            </span>\n\
-                            <span class='center col s12'>\n\
-                              File " + i + "\n\
-                            </span>\n\
-                          </span>\n\
-                        </button>";
-
-            document.write(berkas);
-          }
-        </script>-->
+      <!--TEMPAT BERKAS-->
       </div>
 
       <div id="loadingCircle">
@@ -1105,7 +1052,7 @@
     </div>
     
     <!-- panel wajah -->
-    <ul id="panelWajah" class="sidenav">
+    <ul id="panelWajah" class="sidenav blue-grey lighten-5">
       <li class="user-view">
         <div class="background teal"></div>
         <div class="row">
@@ -1113,80 +1060,16 @@
             <img src="assets/Icons/64/044-face-detection.png" />
           </div>
           <div class="col s8">
-            <a>
-              <span class="white-text" style="font-size: 13pt;">
+              <span class="white-text" style="font-size: 30pt;">
                 Koleksi Wajah
               </span>
-            </a>
           </div>
         </div>
       </li>
       <li>
-        <ul id="accordWajah" class="collapsible popout">
-          <li>
-            <div class="collapsible-header">
-              <img src="assets/Icons/64/183-happy-1.png"
-                   class="circle foto-wajah-kecil" />
-              Josh Smith
-            </div>
-            <div class="collapsible-body">
-              <div class="row">
-                <div class="col s12">
-                  <div class="card">
-                    <div class="card-image">
-                      <img src="assets/Icons/64/183-happy-1.png"/>
-                    </div>
-                    <div class="card-content">
-                      <span class="card-title">Josh Smith</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <img src="assets/Icons/64/184-happy.png"
-                   class="circle foto-wajah-kecil" />
-              Michael Toples
-            </div>
-            <div class="collapsible-body">
-              <div class="row">
-                <div class="col s12">
-                  <div class="card">
-                    <div class="card-image">
-                      <img src="assets/Icons/64/184-happy.png"/>
-                    </div>
-                    <div class="card-content">
-                      <span class="card-title">Michael Toples</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              <img src="assets/Icons/64/187-sad-1.png"
-                   class="circle foto-wajah-kecil" />
-              John Resleting
-            </div>
-            <div class="collapsible-body">
-              <div class="row">
-                <div class="col s12">
-                  <div class="card">
-                    <div class="card-image">
-                      <img src="assets/Icons/64/187-sad-1.png"/>
-                    </div>
-                    <div class="card-content">
-                      <span class="card-title">John Resleting</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
+        <div id="tempatKotakWajah" class="row">
+          <!-- TEMPAT KOTAK WAJAH -->
+        </div>
       </li>
     </ul>
     
@@ -1212,8 +1095,10 @@
     <script src="assets/ds.min.js"></script>
     <script src="assets/class2context.js"></script>
     
+    <script src="js/Jembatan.js"></script>
     <script src="js/Berkas.js"></script>
     <script src="js/BreadcrumbBerkas.js"></script>
+    <script src="js/KotakWajah.js"></script>
     <script src="js/fungsi_pembantu.js"></script>
     <script src="js/pengendali_ui.js"></script>
     
