@@ -72,6 +72,8 @@ function aturSeleksiBerkas() {
           $("#btnUbahNama").show();
           $("#btnDuplikat").show();
           $("#btnInfoBerkas").show();
+          
+          Jembatan.kirimInfoBerkas(Berkas.dapatkanBerkasTerpilih());
         }
       }
     },
