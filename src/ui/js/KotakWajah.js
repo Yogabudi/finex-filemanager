@@ -43,6 +43,12 @@ class KotakWajah {
     
     /////////////////
     
+    this.ubahKeFormatParam = function() {
+      var param = nama + "," + foto;
+      
+      return param;
+    }
+    
     this.pasangElemen = function(elemenTempat) {
       var id = nama.split(" ").join("");
       
