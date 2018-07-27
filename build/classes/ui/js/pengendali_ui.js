@@ -37,7 +37,6 @@ function inisialisasiKomponen() {
     {
       edge: "right",
       onCloseEnd: function() {
-        resetPanelWajah();
         console.log("tertutup");
       }
   });
@@ -221,7 +220,7 @@ function aturPopover() {
     closeable: true,
     width: "300",
     onShow: function(element) {
-      var namaBerkas = Berkas.dapatkanBerkasTerpilih().nama;
+      var namaBerkas = Berkas.dapatkanBerkasTerpilih().getNama();
       $("#txNamaBaru").val(namaBerkas);
       $("#txNamaBaru").select();
     }
