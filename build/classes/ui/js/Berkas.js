@@ -10,6 +10,7 @@ class Berkas {
     var lokasiIcon = "assets/Icons/";
     
     // getter & setter
+    
     this.setIcon = function(iconBerkas) {
       icon = lokasiIcon + iconBerkas;
     };
@@ -58,11 +59,46 @@ class Berkas {
       var param = nama + "," + jenis + "," + pathAbsolut + "," + icon;
       
       return param;
-    }
+    };
     
+    ///////////////////////////////////////////
+    //
+    // event dengan body default
+    
+    this.eventSaatTerpilihSatu = function(elements) {
+      $("#tabEdit").show();
+      $("#ribbon").tabs("select", "edit");
+      $("#ribbon").tabs("updateTabIndicator");
+
+      $("#btnUbahNama").show();
+      $("#btnDuplikat").show();
+      $("#btnInfoBerkas").show();
+      
+//      Jembatan.kirimInfoBerkas(Berkas.dapatkanBerkasTerpilih());
+    };
+    
+    this.eventSaatTerpilihBanyak = function(elements) {
+      $("#tabEdit").show();
+      $("#ribbon").tabs("select", "edit");
+      $("#ribbon").tabs("updateTabIndicator");
+
+      $("#btnUbahNama").hide();
+      $("#btnDuplikat").hide();
+      $("#btnInfoBerkas").hide();
+    };
+    
+    this.eventSaatTidakTerpilih = function() {
+      $("#ribbon").tabs("select", "berkas");
+      $("#ribbon").tabs("updateTabIndicator");
+      $("#tabEdit").hide();
+    };
+    
+    ////////////////////////////////////////////////
+    
+    // panggil method ini setelah property yang diperlukan telah di atur
     this.pasangElemen = function(elemenTempat) {
       var id = nama.split(" ").join("");
-    
+      
       var berkas =
         "<button id='berkas_"+id+"' "+
                   "class='button button-3d button-box button-jumbo berkas' "+
@@ -78,6 +114,10 @@ class Berkas {
         "</button>";
 
       elemenTempat.append(berkas);
+      
+      Berkas.terapkanEventBerkas(this.eventSaatTerpilihBanyak,
+                          this.eventSaatTerpilihSatu,
+                          this.eventSaatTidakTerpilih);
     };
     
     this.tampilkanInfo = function() {
@@ -87,6 +127,32 @@ class Berkas {
       console.log("ICON : " + icon);
     };
   }
+  
+  static terapkanEventBerkas(evtSaatTerpilihBanyak, evtSaatTerpilihSatu, evtSaatTidakTerpilih) {      
+    Berkas.terapkanEventBerkas.ds = new DragSelect({
+      area: document.getElementById("konten"),
+      selectables: document.getElementsByClassName("berkas"),
+      callback: function(elements) {
+        if(elements.length > 1) {
+          // saat terpilih banyak
+          evtSaatTerpilihBanyak(elements);
+        }
+        else {
+          if(!$(document.activeElement).hasClass("berkas")) {
+            // saat tidak terpilih (unselect)
+            evtSaatTidakTerpilih();
+          }
+          else {
+            // saat terpilih satu
+            evtSaatTerpilihSatu(elements);
+          }
+        }
+      },
+      onElementSelect: function(element) {
+        element.focus();
+      }
+    });
+  };
   
   static dapatkanBerkasTerpilih() {
     var namaBerkas = $.trim($(".ds-selected span .nama-berkas").text());
@@ -113,4 +179,10 @@ $(document).ready(function() {
     berkas.setJenis("folder");
     berkas.pasangElemen($(".tempatBerkas"));
   }
+  
+//  var berkas = new Berkas();
+//  berkas.setNama("Ini Folder");
+//  berkas.setPathAbsolut("/home/" + berkas.getNama());
+//  berkas.setJenis("folder");
+//  berkas.pasangElemen($(".tempatBerkas"));
 });
