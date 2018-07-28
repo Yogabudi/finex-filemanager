@@ -1,5 +1,7 @@
 
-function inisialisasiKomponen() {
+$(document).ready(function() {
+  // inisialisasi komponen
+  
   M.updateTextFields();
   $(".tooltipped").tooltip();
   $(".sidenav").sidenav();
@@ -13,6 +15,16 @@ function inisialisasiKomponen() {
   $("#tabEdit").hide();
   $("#loadingCircle").hide();
   $(".modal").hide();
+  
+  //////////////////////////////////////////////////////
+  //
+  // atur seleksi berkas
+  
+  
+  
+  ///////////////////////////////////////////////
+  //
+  // atur modal & sidenav
   
   jalankanTabYBY();
   BreadcrumbBerkas.jalankanBreadcrumb();
@@ -40,163 +52,106 @@ function inisialisasiKomponen() {
         console.log("tertutup");
       }
   });
-    
+  
   $("input[name='swGunakanApp']").prop("checked", false);
-}
-
-function aturSeleksiBerkas() {
-  new DragSelect({
-    area: document.getElementById("konten"),
-    selectables: document.getElementsByClassName("berkas"),
-    callback: function(elements) {
-      if(elements.length > 1) {
-        $("#tabEdit").show();
-        $("#ribbon").tabs("select", "edit");
-        $("#ribbon").tabs("updateTabIndicator");
-
-        $("#btnUbahNama").hide();
-        $("#btnDuplikat").hide();
-        $("#btnInfoBerkas").hide();
-      }
-      else {
-        if(!$(document.activeElement).hasClass("berkas")) {
-          $("#ribbon").tabs("select", "berkas");
-          $("#ribbon").tabs("updateTabIndicator");
-          $("#tabEdit").hide();
-        }
-        else {
-          $("#tabEdit").show();
-          $("#ribbon").tabs("select", "edit");
-          $("#ribbon").tabs("updateTabIndicator");
-
-          $("#btnUbahNama").show();
-          $("#btnDuplikat").show();
-          $("#btnInfoBerkas").show();
-          
-          Jembatan.kirimInfoBerkas(Berkas.dapatkanBerkasTerpilih());
-        }
-      }
-    },
+  
+  $("input[name='swGunakanApp']").click(function() {
+    $("input[name='swGunakanApp']").prop("checked", false);
     
-    onElementSelect: function(element) {
-      element.focus();
-    }
+    $(this).prop("checked", true);
   });
   
-//  $("#konten").click(function() {
-//    hilangkanTandaBerkas();
-//    
-//    if($(document.activeElement).hasClass("berkas")) {
-//      tandaiBerkas(document.activeElement);
-//      
-//      $("#tabEdit").show();
-//      $("#ribbon").tabs("select", "edit");
-//      $("#ribbon").tabs("updateTabIndicator");
-//      
-//      $("#btnUbahNama").show();
-//      $("#btnDuplikat").show();
-//      $("#btnInfoBerkas").show();
-//    }
-//    else {
-//      $("#ribbon").tabs("select", "berkas");
-//      $("#ribbon").tabs("updateTabIndicator");
-//      $("#tabEdit").hide();
-//    }
-//  });
-}
+  /////////////////////////////////////////////////////
+  //
+  // atur tombol ribbon 
+  
+  $(".tooltipped").click(function() {
+    $(".tooltipped").tooltip("destroy").tooltip();
+  });
 
-function aturContextMenu() {
-  $(document).bind("contextmenu", function(e) {
-    return false;
+  $("#btnSalin").click(function () {
+    M.toast({ html: "Berkas Tersalin!" });
   });
   
-  var menuFolder = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/scissors.png' />\n\
-        <span>Cut</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/papers.png' />\n\
-        <span>Salin</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste kedalam folder</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste disini</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/info.png' />\n\
-        <span>Info Berkas</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/duplicate-file.png' />\n\
-        <span>Duplikat</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/garbage.png' />\n\
-        <span>Hapus ke trash</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/delete.png' />\n\
-        <span>Hapus</span>\n\
-      </div>", ""]
-  ];
+  $("#btnCut").click(function () {
+    M.toast({ html: "Cut!" });
+  });
   
-  var menuTempatBerkas = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/new-add-folder.png' />\n\
-        <span>Buat Folder Baru</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/new-document.png' />\n\
-        <span>Buat File Baru</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/icon.png' />\n\
-        <span>Buka Terminal Disini</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/garbage.png' />\n\
-        <span>Kosongkan Trash</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/loupe.png' />\n\
-        <span>Cari Berkas</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/smile.png' />\n\
-        <span>Koleksi Wajah</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/operation.png' />\n\
-        <span>Lihat Operasi Berkas</span>\n\
-      </div>", ""]
-  ];
+  $("#btnRefresh").click(function () {
+    M.toast({ html: "Refreshed!" });
+  });
   
-  var menuBreadcrumb = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/right-arrow.png' />\n\
-        <span>Maju</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/left-arrow.png' />\n\
-        <span>Mundur</span>\n\
-      </div>", ""]
-  ];
+  ///////////////////////////////////////////////////////////
+  //
+  // atur panel pencarian
   
-  class2context("berkas", "", menuFolder);
-  class2context("tempatBerkas", "", menuTempatBerkas);
-  class2context("breadcrumbBerkas", "", menuBreadcrumb);
-}
+  $("#tanggalDibuat").click(function() {
+    $("#tanggalModif").toggle("slow");
+    $("#tanggalAkses").toggle("slow");
+    $("#berdasarNama").toggle("slow");
+    $("#berdasarFormat").toggle("slow");
 
-function aturPopover() {
+    $("#txtglDibuat").val("");
+  });
+
+  $("#tanggalModif").click(function() {
+    $("#tanggalDibuat").toggle("slow");
+    $("#tanggalAkses").toggle("slow");
+    $("#berdasarNama").toggle("slow");
+    $("#berdasarFormat").toggle("slow");
+
+    $("#txtglModif").val("");
+  });
+
+  $("#tanggalAkses").click(function() {
+    $("#tanggalDibuat").toggle("slow");
+    $("#tanggalModif").toggle("slow");
+    $("#berdasarNama").toggle("slow");
+    $("#berdasarFormat").toggle("slow");
+
+    $("#txtglAkses").val("");
+  });
+
+  $("#berdasarNama").click(function() {
+    $("#tanggalDibuat").toggle("slow");
+    $("#tanggalModif").toggle("slow");
+    $("#tanggalAkses").toggle("slow");
+    $("#berdasarFormat").toggle("slow");
+
+    $("#txCariNama").val("");
+  });
+
+  $("#berdasarFormat").click(function() {
+    $("#tanggalDibuat").toggle("slow");
+    $("#tanggalModif").toggle("slow");
+    $("#tanggalAkses").toggle("slow");
+    $("#berdasarNama").toggle("slow");
+  });
+
+  $("#btnCloseTglDibuat").click(function() {
+    $("#tanggalDibuat").click();
+  });
+
+  $("#btnCloseTglAkses").click(function() {
+    $("#tanggalAkses").click();
+  });
+
+  $("#btnCloseTglModif").click(function() {
+    $("#tanggalModif").click();
+  });
+
+  $("#btnCloseBerdasarNama").click(function() {
+    $("#berdasarNama").click();
+  });
+
+  $("#btnCloseBerdasarFormat").click(function() {
+    $("#berdasarFormat").click();
+  });
+  
+  /////////////////////////////////////////////////
+  //
+  // atur popover
+  
   $("#btnOperasiBerkas").webuiPopover({
     title: "Operasi Berkas",
     animation: "pop",
@@ -285,100 +240,100 @@ function aturPopover() {
   $("#pesanTidakAdaFolderLain").hide();
   $("#pesanTidakAdaOp").hide();
   $("#pesanTidakAdaPintasan").hide();
-}
-
-function aturPanelCari() {
-  $("#tanggalDibuat").click(function() {
-    $("#tanggalModif").toggle("slow");
-    $("#tanggalAkses").toggle("slow");
-    $("#berdasarNama").toggle("slow");
-    $("#berdasarFormat").toggle("slow");
-
-    $("#txtglDibuat").val("");
-  });
-
-  $("#tanggalModif").click(function() {
-    $("#tanggalDibuat").toggle("slow");
-    $("#tanggalAkses").toggle("slow");
-    $("#berdasarNama").toggle("slow");
-    $("#berdasarFormat").toggle("slow");
-
-    $("#txtglModif").val("");
-  });
-
-  $("#tanggalAkses").click(function() {
-    $("#tanggalDibuat").toggle("slow");
-    $("#tanggalModif").toggle("slow");
-    $("#berdasarNama").toggle("slow");
-    $("#berdasarFormat").toggle("slow");
-
-    $("#txtglAkses").val("");
-  });
-
-  $("#berdasarNama").click(function() {
-    $("#tanggalDibuat").toggle("slow");
-    $("#tanggalModif").toggle("slow");
-    $("#tanggalAkses").toggle("slow");
-    $("#berdasarFormat").toggle("slow");
-
-    $("#txCariNama").val("");
-  });
-
-  $("#berdasarFormat").click(function() {
-    $("#tanggalDibuat").toggle("slow");
-    $("#tanggalModif").toggle("slow");
-    $("#tanggalAkses").toggle("slow");
-    $("#berdasarNama").toggle("slow");
-  });
-
-  $("#btnCloseTglDibuat").click(function() {
-    $("#tanggalDibuat").click();
-  });
-
-  $("#btnCloseTglAkses").click(function() {
-    $("#tanggalAkses").click();
-  });
-
-  $("#btnCloseTglModif").click(function() {
-    $("#tanggalModif").click();
-  });
-
-  $("#btnCloseBerdasarNama").click(function() {
-    $("#berdasarNama").click();
-  });
-
-  $("#btnCloseBerdasarFormat").click(function() {
-    $("#berdasarFormat").click();
-  });
-}
-
-$(document).ready(function() {
-  inisialisasiKomponen();
   
-  $(".tooltipped").click(function() {
-    $(".tooltipped").tooltip("destroy").tooltip();
-  });
-
-  $("#btnSalin").click(function () {
-    M.toast({ html: "Berkas Tersalin!" });
+  ////////////////////////////////////////////////////////////
+  //
+  // atur contextmenu
+  
+  $(document).bind("contextmenu", function(e) {
+    return false;
   });
   
-  $("#btnCut").click(function () {
-    M.toast({ html: "Cut!" });
-  });
+  var menuFolder = [
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/scissors.png' />\n\
+        <span>Cut</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/papers.png' />\n\
+        <span>Salin</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste kedalam folder</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste disini</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/info.png' />\n\
+        <span>Info Berkas</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/duplicate-file.png' />\n\
+        <span>Duplikat</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/garbage.png' />\n\
+        <span>Hapus ke trash</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/delete.png' />\n\
+        <span>Hapus</span>\n\
+      </div>", ""]
+  ];
   
-  $("#btnRefresh").click(function () {
-    M.toast({ html: "Refreshed!" });
-  });
+  var menuTempatBerkas = [
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/new-add-folder.png' />\n\
+        <span>Buat Folder Baru</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/new-document.png' />\n\
+        <span>Buat File Baru</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
+        <span>Paste</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/icon.png' />\n\
+        <span>Buka Terminal Disini</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/garbage.png' />\n\
+        <span>Kosongkan Trash</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/loupe.png' />\n\
+        <span>Cari Berkas</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/smile.png' />\n\
+        <span>Koleksi Wajah</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/operation.png' />\n\
+        <span>Lihat Operasi Berkas</span>\n\
+      </div>", ""]
+  ];
   
-  $("input[name='swGunakanApp']").click(function() {
-    $("input[name='swGunakanApp']").prop("checked", false);
-    
-    $(this).prop("checked", true);
-  });
+  var menuBreadcrumb = [
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/right-arrow.png' />\n\
+        <span>Maju</span>\n\
+      </div>", ""],
+    ["<div class='icon-contextmenu'>\n\
+        <img src='assets/Icons/24/left-arrow.png' />\n\
+        <span>Mundur</span>\n\
+      </div>", ""]
+  ];
   
-  aturPopover()
-  aturPanelCari();
-  aturSeleksiBerkas();
-  aturContextMenu();
+  class2context("berkas", "", menuFolder);
+  class2context("tempatBerkas", "", menuTempatBerkas);
+  class2context("breadcrumbBerkas", "", menuBreadcrumb);
+  
+  //////////////////////////////////////////////////////////
+  
 });
