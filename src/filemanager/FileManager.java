@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.EventQueue;
-import javax.swing.SwingUtilities;
 
 import filemanager.webviewui.*;
 import javax.swing.JOptionPane;
@@ -35,7 +34,7 @@ implements PendengarWebBrowser {
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
     ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
-
+    
     this.getContentPane().add(ui);
   }
 
@@ -62,7 +61,8 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    
+    Jembatan.buatFolder(ui, "Musik");
+    Jembatan.buatFolder(ui, "Video");
   }
 
   @Override
@@ -78,6 +78,9 @@ implements PendengarWebBrowser {
       info += "PATH : " + infoBerkas[2] + "\n";
       
       JOptionPane.showMessageDialog(FileManager.this, info);
+    }
+    else if(perintah.equals("tampilkanBerkas")) {
+      String folder = (String)param[0];
     }
   }
 
