@@ -4,6 +4,10 @@ class Jembatan {
   constructor() {
   }
   
+  static tampilkanRoot() {
+    sendNSCommand("tampilkanRoot");
+  }
+  
   static tampilkanBerkas(folder) {
     sendNSCommand("tampilkanBerkas", folder);
   }
