@@ -261,23 +261,40 @@ $(document).ready(function() {
   ];
 
   var menuBc = new ContextMenu().tambahkanSemuaMenu(dataMenuBc).pasang("breadcrumbBerkas");
-  var menuTempatBerkas = new ContextMenu().tambahkanSemuaMenu(dataTempatBerkas).pasang("tempatBerkas");
+  var menuTempatBerkas = new ContextMenu().tambahkanSemuaMenu(dataTempatBerkas).pasang("konten");
+  
+  //////////////////////////////////////////////////////////
+  //
+  // atur ukuran konten
+  //
+  
+  var tinggiWindow = $(window).height();
+  var lebarWindow = $(window).width();
+  $("#konten").height(tinggiWindow - 175);
+  $("#konten").width(lebarWindow - 7);
+  
+  $(window).resize(function() {
+    var tinggiWindow = $(window).height();
+    var lebarWindow = $(window).width();
+    $("#konten").height(tinggiWindow - 175);
+    $("#konten").width(lebarWindow - 7);
+  });
     
   //////////////////////////////////////////////////////////
   //
   // kirim pesan ke Java
   
-  Jembatan.tampilkanRoot();
+//  Jembatan.tampilkanRoot();
   
-//  for(var i = 0; i < 5; i++) {
-//    var berkas = new Berkas();
-//    berkas.setNama("Ini Folder");
-//    berkas.setPathAbsolut("/home/" + berkas.getNama());
-//    berkas.setJenis("folder");
-//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-//    berkas.pasangElemen($(".tempatBerkas"));
-//  }
-//  
-//  Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
-//                      Berkas.eventSaatTidakTerpilih);
+  for(var i = 0; i < 5; i++) {
+    var berkas = new Berkas();
+    berkas.setNama("Ini Folder");
+    berkas.setPathAbsolut("/home/" + berkas.getNama());
+    berkas.setJenis("folder");
+    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+    berkas.pasangElemen($(".tempatBerkas"));
+  }
+  
+  Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
+                      Berkas.eventSaatTidakTerpilih);
 });
