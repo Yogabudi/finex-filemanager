@@ -12,13 +12,24 @@ import filemanager.webviewui.WebViewUI;
  * @author Yoga Budi Yulianto
  */
 public class Jembatan {
-
+  
   public static void buatFolder(WebViewUI ui, String namaFolder) {
-    String js = "var berkas = new Berkas();";
+    String js = "";
+    js += "var berkas = new Berkas();";
     js += "berkas.setNama('"+namaFolder+"');";
     js += "berkas.setJenis('folder');";
     js += "berkas.setPathAbsolut('/home/folder/"+namaFolder+"');";
+    js += "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);";
     js += "berkas.pasangElemen($('.tempatBerkas'));";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void pasangEventBerkas(WebViewUI ui) {
+    String js = "";
+    js += "Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak,";
+    js += "Berkas.eventSaatTerpilihSatu,";
+    js += "Berkas.eventSaatTidakTerpilih);";
     
     ui.eksekusiJavascript(js);
   }
