@@ -38,3 +38,12 @@
     font-weight: bold;
     color: #5E5E5E;
 }
+
+.icon-contextmenu img {
+    margin-right: 10px;
+}
+
+.icon-contextmenu span {
+    position: relative;
+    bottom: 5px;
+}
