@@ -3,12 +3,13 @@ body {
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    overflow-y: hidden;
 }
 
 #konten {
-    margin-left: 20px;
-    margin-top: 170px;
-    margin-bottom: 60px;
+    position: fixed;
+    top: 177px;
+    overflow-y: scroll;
 }
 
 .tombolIconDanTeks {
