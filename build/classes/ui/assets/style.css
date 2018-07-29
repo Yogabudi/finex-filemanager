@@ -277,15 +277,6 @@ body {
     background-color: #b0bec5 !important;
 }
 
-.icon-contextmenu img {
-    margin-right: 10px;
-}
-
-.icon-contextmenu span {
-    position: relative;
-    bottom: 5px;
-}
-
 .tombol-tutup-pencarian {
     position: relative;
     left: 200px;

@@ -59,8 +59,7 @@ function setContextMenuPosition(event, contextMenu) {
 function class2context(classgiv, title, options) {
   classgiv = JSON.parse(JSON.stringify(classgiv));
   
-  if (document.getElementById("context" + classgiv))
-  {
+  if (document.getElementById("context" + classgiv)) {
     //toastr.success("alreadyExist");
   }
   else {
@@ -95,7 +94,7 @@ function class2context(classgiv, title, options) {
         document.getElementById('context' + classgiv).style.display = 'block';
         document.getElementById('context' + classgiv).style.left = (posisi.x) + "px";
         document.getElementById('context' + classgiv).style.top = (posisi.y) + "px";
-      }, 150);
+      }, 100);
     });
   }
 

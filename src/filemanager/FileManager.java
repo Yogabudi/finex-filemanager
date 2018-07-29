@@ -61,8 +61,7 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    Jembatan.buatFolder(ui, "Musik");
-    Jembatan.buatFolder(ui, "Video");
+    Jembatan.pasangEventBerkas(ui);
   }
 
   @Override
@@ -79,8 +78,10 @@ implements PendengarWebBrowser {
       
       JOptionPane.showMessageDialog(FileManager.this, info);
     }
-    else if(perintah.equals("tampilkanBerkas")) {
-      String folder = (String)param[0];
+    else if(perintah.equals("tampilkanRoot")) {
+      for(int i = 1; i <= 100; i++) {
+        Jembatan.buatFolder(ui, "Folder kuning " + i);
+      }
     }
   }
 

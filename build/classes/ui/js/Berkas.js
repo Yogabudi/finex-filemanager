@@ -7,12 +7,14 @@ class Berkas {
     var nama = "";
     var pathAbsolut = "";
     var icon = "assets/Icons/64/101-folder-5.png";
-    var lokasiIcon = "assets/Icons/";
+    var contextMenu = new ContextMenu();
     
+    ////////////////////////////////////////////
+    //
     // getter & setter
     
     this.setIcon = function(iconBerkas) {
-      icon = lokasiIcon + iconBerkas;
+      icon = iconBerkas;
     };
     
     this.setNama = function(namaBerkas) {
@@ -43,7 +45,27 @@ class Berkas {
       return pathAbsolut;
     };
     
-    ///////////////////////
+    this.getContextMenu = function() {
+      return contextMenu;
+    };
+    
+    ////////////////////////////////////
+    
+    this.dataContextMenuBerkas = [
+      new ObjekMenu("Cut", "assets/Icons/24/scissors.png", "").buatMenu(),
+      new ObjekMenu("Salin", "assets/Icons/24/papers.png", "").buatMenu(),
+      new ObjekMenu("Paste kedalam folder", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
+      new ObjekMenu("Paste disini", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
+      new ObjekMenu("Info berkas", "assets/Icons/24/info.png", "").buatMenu(),
+      new ObjekMenu("Duplikat", "assets/Icons/24/duplicate-file.png", "").buatMenu(),
+      new ObjekMenu("Hapus ke trash", "assets/Icons/24/garbage.png", "").buatMenu(),
+      new ObjekMenu("Hapus", "assets/Icons/24/delete.png", "").buatMenu()
+    ];
+    
+    this.tambahkanMenu = function(labelMenu, iconMenu, evtSaatDipilih) {
+      var objMenu = new ObjekMenu(labelMenu, iconMenu, evtSaatDipilih).buatMenu();
+      contextMenu.masukkan(objMenu);
+    };
     
     this.tandai = function() {
       var id = nama.split(" ").join("");
@@ -61,38 +83,6 @@ class Berkas {
       return param;
     };
     
-    ///////////////////////////////////////////
-    //
-    // event dengan body default
-    
-    this.eventSaatTerpilihSatu = function(elements) {
-      $("#tabEdit").show();
-      $("#ribbon").tabs("select", "edit");
-      $("#ribbon").tabs("updateTabIndicator");
-
-      $("#btnUbahNama").show();
-      $("#btnDuplikat").show();
-      $("#btnInfoBerkas").show();
-      
-//      Jembatan.kirimInfoBerkas(Berkas.dapatkanBerkasTerpilih());
-    };
-    
-    this.eventSaatTerpilihBanyak = function(elements) {
-      $("#tabEdit").show();
-      $("#ribbon").tabs("select", "edit");
-      $("#ribbon").tabs("updateTabIndicator");
-
-      $("#btnUbahNama").hide();
-      $("#btnDuplikat").hide();
-      $("#btnInfoBerkas").hide();
-    };
-    
-    this.eventSaatTidakTerpilih = function() {
-      $("#ribbon").tabs("select", "berkas");
-      $("#ribbon").tabs("updateTabIndicator");
-      $("#tabEdit").hide();
-    };
-    
     ////////////////////////////////////////////////
     
     // panggil method ini setelah property yang diperlukan telah di atur
@@ -101,7 +91,7 @@ class Berkas {
       
       var berkas =
         "<button id='berkas_"+id+"' "+
-                  "class='button button-3d button-box button-jumbo berkas' "+
+                  "class='button button-3d button-box button-jumbo berkas targetMenu_"+id+"' "+
                   "path-absolut='"+pathAbsolut+"' jenis='"+jenis+"'>" +
           "<span class='row'>" +
             "<span class='center col s12 icon-berkas'>" +
@@ -115,9 +105,9 @@ class Berkas {
 
       elemenTempat.append(berkas);
       
-      Berkas.terapkanEventBerkas(this.eventSaatTerpilihBanyak,
-                          this.eventSaatTerpilihSatu,
-                          this.eventSaatTidakTerpilih);
+      if(contextMenu.getJumlah() > 0) {
+        contextMenu.pasang("targetMenu_" + id);
+      }
     };
     
     this.tampilkanInfo = function() {
@@ -128,8 +118,43 @@ class Berkas {
     };
   }
   
-  static terapkanEventBerkas(evtSaatTerpilihBanyak, evtSaatTerpilihSatu, evtSaatTidakTerpilih) {      
-    Berkas.terapkanEventBerkas.ds = new DragSelect({
+  ///////////////////////////////////////////
+  //
+  // event dengan body default
+
+  static eventSaatTerpilihSatu(elements) {
+    $("#tabEdit").show();
+    $("#ribbon").tabs("select", "edit");
+    $("#ribbon").tabs("updateTabIndicator");
+
+    $("#btnUbahNama").show();
+    $("#btnDuplikat").show();
+    $("#btnInfoBerkas").show();
+  }
+
+  static eventSaatTerpilihBanyak(elements) {
+    $("#tabEdit").show();
+    $("#ribbon").tabs("select", "edit");
+    $("#ribbon").tabs("updateTabIndicator");
+
+    $("#btnUbahNama").hide();
+    $("#btnDuplikat").hide();
+    $("#btnInfoBerkas").hide();
+  }
+
+  static eventSaatTidakTerpilih() {
+    $("#ribbon").tabs("select", "berkas");
+    $("#ribbon").tabs("updateTabIndicator");
+    $("#tabEdit").hide();
+  }
+  
+  static pasangEvent(evtSaatTerpilihBanyak, evtSaatTerpilihSatu, evtSaatTidakTerpilih) {
+    // jika sebelumnya sudah ada elemen DragSelect, maka hapus dan buat lagi
+    if($(".ds-selector").length) {
+      $(".ds-selector").remove();
+    }
+    
+    new DragSelect({
       area: document.getElementById("konten"),
       selectables: document.getElementsByClassName("berkas"),
       callback: function(elements) {
@@ -152,7 +177,7 @@ class Berkas {
         element.focus();
       }
     });
-  };
+  }
   
   static dapatkanBerkasTerpilih() {
     var namaBerkas = $.trim($(".ds-selected span .nama-berkas").text());
@@ -172,13 +197,13 @@ class Berkas {
 
 // testing
 $(document).ready(function() {
-  for(var i = 0; i < 10; i++) {
-    var berkas = new Berkas();
-    berkas.setNama("Ini Folder " + i);
-    berkas.setPathAbsolut("/home/" + berkas.getNama());
-    berkas.setJenis("folder");
-    berkas.pasangElemen($(".tempatBerkas"));
-  }
+//  for(var i = 0; i < 10; i++) {
+//    var berkas = new Berkas();
+//    berkas.setNama("Ini Folder " + i);
+//    berkas.setPathAbsolut("/home/" + berkas.getNama());
+//    berkas.setJenis("folder");
+//    berkas.pasangElemen($(".tempatBerkas"));
+//  }
   
 //  var berkas = new Berkas();
 //  berkas.setNama("Ini Folder");
