@@ -16,11 +16,6 @@ $(document).ready(function() {
   $("#loadingCircle").hide();
   $(".modal").hide();
   
-  //////////////////////////////////////////////////////
-  //
-  // atur seleksi berkas
-  
-  
   
   ///////////////////////////////////////////////
   //
@@ -249,91 +244,40 @@ $(document).ready(function() {
     return false;
   });
   
-  var menuFolder = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/scissors.png' />\n\
-        <span>Cut</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/papers.png' />\n\
-        <span>Salin</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste kedalam folder</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste disini</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/info.png' />\n\
-        <span>Info Berkas</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/duplicate-file.png' />\n\
-        <span>Duplikat</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/garbage.png' />\n\
-        <span>Hapus ke trash</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/delete.png' />\n\
-        <span>Hapus</span>\n\
-      </div>", ""]
+  var dataTempatBerkas = [
+    new ObjekMenu("Buat Folder Baru", "assets/Icons/24/new-add-folder.png", "").buatMenu(),
+    new ObjekMenu("Buat File Baru", "assets/Icons/24/new-document.png", "").buatMenu(),
+    new ObjekMenu("Paste", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
+    new ObjekMenu("Buka Terminal Disini", "assets/Icons/24/icon.png", "").buatMenu(),
+    new ObjekMenu("Kosongkan Trash", "assets/Icons/24/garbage.png", "").buatMenu(),
+    new ObjekMenu("Cari Berkas", "assets/Icons/24/loupe.png", "").buatMenu(),
+    new ObjekMenu("Koleksi Wajah", "assets/Icons/24/smile.png", "").buatMenu(),
+    new ObjekMenu("Lihat Operasi Berkas", "assets/Icons/24/operation.png", "").buatMenu()
   ];
-  
-  var menuTempatBerkas = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/new-add-folder.png' />\n\
-        <span>Buat Folder Baru</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/new-document.png' />\n\
-        <span>Buat File Baru</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/clipboard-paste-button.png' />\n\
-        <span>Paste</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/icon.png' />\n\
-        <span>Buka Terminal Disini</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/garbage.png' />\n\
-        <span>Kosongkan Trash</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/loupe.png' />\n\
-        <span>Cari Berkas</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/smile.png' />\n\
-        <span>Koleksi Wajah</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/operation.png' />\n\
-        <span>Lihat Operasi Berkas</span>\n\
-      </div>", ""]
+
+  var dataMenuBc = [
+    new ObjekMenu("Maju", "assets/Icons/24/right-arrow.png", "").buatMenu(),
+    new ObjekMenu("Mundur", "assets/Icons/24/left-arrow.png", "").buatMenu()
   ];
-  
-  var menuBreadcrumb = [
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/right-arrow.png' />\n\
-        <span>Maju</span>\n\
-      </div>", ""],
-    ["<div class='icon-contextmenu'>\n\
-        <img src='assets/Icons/24/left-arrow.png' />\n\
-        <span>Mundur</span>\n\
-      </div>", ""]
-  ];
-  
-  class2context("berkas", "", menuFolder);
-  class2context("tempatBerkas", "", menuTempatBerkas);
-  class2context("breadcrumbBerkas", "", menuBreadcrumb);
-  
+
+  var menuBc = new ContextMenu().tambahkanSemuaMenu(dataMenuBc).pasang("breadcrumbBerkas");
+  var menuTempatBerkas = new ContextMenu().tambahkanSemuaMenu(dataTempatBerkas).pasang("tempatBerkas");
+    
   //////////////////////////////////////////////////////////
+  //
+  // kirim pesan ke Java
   
+  Jembatan.tampilkanRoot();
+  
+//  for(var i = 0; i < 5; i++) {
+//    var berkas = new Berkas();
+//    berkas.setNama("Ini Folder");
+//    berkas.setPathAbsolut("/home/" + berkas.getNama());
+//    berkas.setJenis("folder");
+//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//    berkas.pasangElemen($(".tempatBerkas"));
+//  }
+//  
+//  Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
+//                      Berkas.eventSaatTidakTerpilih);
 });
