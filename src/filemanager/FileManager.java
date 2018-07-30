@@ -61,7 +61,7 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    Jembatan.pasangEventBerkas(ui);
+    Jembatan.pasangEventSeleksiBerkas(ui);
   }
 
   @Override
