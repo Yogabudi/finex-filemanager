@@ -25,9 +25,9 @@ public class Jembatan {
     ui.eksekusiJavascript(js);
   }
   
-  public static void pasangEventBerkas(WebViewUI ui) {
+  public static void pasangEventSeleksiBerkas(WebViewUI ui) {
     String js = "";
-    js += "Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak,";
+    js += "Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak,";
     js += "Berkas.eventSaatTerpilihSatu,";
     js += "Berkas.eventSaatTidakTerpilih);";
     
