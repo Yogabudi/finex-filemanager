@@ -83,7 +83,25 @@ class Berkas {
       return param;
     };
     
-    ////////////////////////////////////////////////
+    this.eventSaatDblKlik = function() {
+      if(jenis === "folder") {
+        Berkas.hapusSemuaBerkas();
+        for(var i = 1; i <= 6; i++) {
+          var berkas = new Berkas();
+          berkas.setNama("FOLDER LAIN " + i);
+          berkas.setPathAbsolut("/home/" + berkas.getNama());
+          berkas.setJenis("folder");
+          berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+          berkas.pasangElemen($(".tempatBerkas"));
+          
+          Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
+                      Berkas.eventSaatTidakTerpilih);
+        }
+      }
+      else if(jenis === "file") {
+        console.log("File");
+      }
+    };
     
     // panggil method ini setelah property yang diperlukan telah di atur
     this.pasangElemen = function(elemenTempat) {
@@ -108,6 +126,18 @@ class Berkas {
       if(contextMenu.getJumlah() > 0) {
         contextMenu.pasang("targetMenu_" + id);
       }
+      
+      $("#berkas_" + id).on("dblclick", this.eventSaatDblKlik);
+    };
+    
+    this.hapusBerkas = function() {
+      var id = nama.split(" ").join("");
+      
+      if($("#berkas_" + id).length) {
+        $("#berkas_" + id).remove();
+      }
+      
+      Berkas.eventSaatTidakTerpilih();
     };
     
     this.tampilkanInfo = function() {
@@ -120,7 +150,7 @@ class Berkas {
   
   ///////////////////////////////////////////
   //
-  // event dengan body default
+  // Method static
 
   static eventSaatTerpilihSatu(elements) {
     $("#tabEdit").show();
@@ -148,12 +178,12 @@ class Berkas {
     $("#tabEdit").hide();
   }
   
-  static pasangEvent(evtSaatTerpilihBanyak, evtSaatTerpilihSatu, evtSaatTidakTerpilih) {
+  static pasangEventSeleksi(evtSaatTerpilihBanyak, evtSaatTerpilihSatu, evtSaatTidakTerpilih) {
     // jika sebelumnya sudah ada elemen DragSelect, maka hapus dan buat lagi
     if($(".ds-selector").length) {
       $(".ds-selector").remove();
     }
-    
+        
     new DragSelect({
       area: document.getElementById("konten"),
       selectables: document.getElementsByClassName("berkas"),
@@ -163,7 +193,7 @@ class Berkas {
           evtSaatTerpilihBanyak(elements);
         }
         else {
-          if(!$(document.activeElement).hasClass("berkas")) {
+          if(!$(elements[0]).hasClass("berkas")) {
             // saat tidak terpilih (unselect)
             evtSaatTidakTerpilih();
           }
@@ -172,9 +202,6 @@ class Berkas {
             evtSaatTerpilihSatu(elements);
           }
         }
-      },
-      onElementSelect: function(element) {
-        element.focus();
       }
     });
   }
@@ -190,6 +217,67 @@ class Berkas {
     berkas.setJenis(jenis);
     berkas.setPathAbsolut(pathAbsolut);
     berkas.setIcon(iconBerkas);
+    
+    return berkas;
+  }
+  
+  static dapatkanBerkasBerdasarNama(nama) {
+    var id = nama.split(" ").join("");
+    
+    var namaBerkas = $.trim($("#berkas_"+id+" span .nama-berkas").text());
+    var iconBerkas = $("#berkas_"+id+" span .icon-berkas img").attr("src");
+    var pathAbsolut = $("#berkas_"+id).attr("path-absolut");
+    var jenis = $("#berkas_"+id).attr("jenis");
+    
+    var berkas = new Berkas();
+    berkas.setNama(namaBerkas);
+    berkas.setJenis(jenis);
+    berkas.setPathAbsolut(pathAbsolut);
+    berkas.setIcon(iconBerkas);
+    
+    return berkas;
+  }
+  
+  static hapusBerkasBerdasarNama(nama) {
+    var id = nama.split(" ").join("");
+    
+    if($("#berkas_"+id).length) {
+      $("#berkas_"+id).remove();
+    }
+    
+    Berkas.eventSaatTidakTerpilih();
+  }
+  
+  static hapusSemuaBerkas() {
+    var berkas = Berkas.dapatkanSemuaBerkas();
+    
+    for(var i = 0; i < berkas.length; i++) {
+      berkas[i].hapusBerkas();
+    }
+  }
+  
+  static keBerkas(elementButton) {
+    var namaBerkas = $.trim($(elementButton).find("span .nama-berkas").text());
+    var iconBerkas = $(elementButton).find("span .icon-berkas img").attr("src");
+    var pathAbsolut = $(elementButton).attr("path-absolut");
+    var jenis = $(elementButton).attr("jenis");
+    
+    var berkas = new Berkas();
+    berkas.setNama(namaBerkas);
+    berkas.setJenis(jenis);
+    berkas.setPathAbsolut(pathAbsolut);
+    berkas.setIcon(iconBerkas);
+    
+    return berkas;
+  }
+  
+  static dapatkanSemuaBerkas() {
+    var elemenBerkas = $(".tempatBerkas").children(".berkas");
+    var berkas = [];
+    
+    for(var i = 0; i < elemenBerkas.length; i++) {
+      berkas[i] = Berkas.keBerkas(elemenBerkas[i]);
+    }
     
     return berkas;
   }
