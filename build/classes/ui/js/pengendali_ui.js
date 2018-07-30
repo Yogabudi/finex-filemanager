@@ -153,6 +153,7 @@ $(document).ready(function() {
     url: "#popOperasiBerkas",
     width: "500",
     height: "380",
+    placement: "bottom-left",
     onShow: function(element) {
       $("#btnOperasiBerkas").removeClass("pulse");
     }
@@ -163,6 +164,7 @@ $(document).ready(function() {
     animation: "pop",
     url: "#popPath",
     width: "500",
+    placement: "bottom-right"
   });
   
   $("#btnUbahNama").webuiPopover({
@@ -171,6 +173,7 @@ $(document).ready(function() {
     url: "#popUbahNama",
     closeable: true,
     width: "300",
+    placement: "bottom-right",
     onShow: function(element) {
       var namaBerkas = Berkas.dapatkanBerkasTerpilih().getNama();
       $("#txNamaBaru").val(namaBerkas);
@@ -183,7 +186,8 @@ $(document).ready(function() {
     animation: "pop",
     url: "#popBuatFolderBaru",
     closeable: true,
-    width: "300"
+    width: "300",
+    placement: "bottom-right"
   });
   
   $("#btnBuatFile").webuiPopover({
@@ -191,7 +195,8 @@ $(document).ready(function() {
     animation: "pop",
     url: "#popBuatFileBaru",
     closeable: true,
-    width: "300"
+    width: "300",
+    placement: "bottom-right"
   });
   
   $("#btnLokasiGambarKustom").webuiPopover({
@@ -201,6 +206,7 @@ $(document).ready(function() {
     closeable: true,
     width: "400",
     height: "350",
+    placement: "bottom-right",
     onHide: function(element) {
       tutupAccordion("#accordFolderGambarLain");
     }
@@ -213,6 +219,7 @@ $(document).ready(function() {
     closeable: true,
     width: "400",
     height: "350",
+    placement: "bottom-right",
     onHide: function(element) {
       tutupAccordion("#accordPintasan");
     }
@@ -270,13 +277,13 @@ $(document).ready(function() {
   
   var tinggiWindow = $(window).height();
   var lebarWindow = $(window).width();
-  $("#konten").height(tinggiWindow - 175);
+  $("#konten").height(tinggiWindow - 190);
   $("#konten").width(lebarWindow - 7);
   
   $(window).resize(function() {
     var tinggiWindow = $(window).height();
     var lebarWindow = $(window).width();
-    $("#konten").height(tinggiWindow - 175);
+    $("#konten").height(tinggiWindow - 190);
     $("#konten").width(lebarWindow - 7);
   });
     
@@ -286,15 +293,25 @@ $(document).ready(function() {
   
 //  Jembatan.tampilkanRoot();
   
-  for(var i = 0; i < 5; i++) {
+  for(var i = 1; i <= 5; i++) {
     var berkas = new Berkas();
-    berkas.setNama("Ini Folder");
+    berkas.setNama("Ini Folder " + i);
     berkas.setPathAbsolut("/home/" + berkas.getNama());
     berkas.setJenis("folder");
     berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
     berkas.pasangElemen($(".tempatBerkas"));
   }
   
-  Berkas.pasangEvent(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
+  for(var i = 1; i <= 3; i++) {
+    var berkas = new Berkas();
+    berkas.setNama("File " + i);
+    berkas.setPathAbsolut("/home/" + berkas.getNama());
+    berkas.setJenis("file");
+    berkas.setIcon("assets/Icons/64/053-document-7.png");
+    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+    berkas.pasangElemen($(".tempatBerkas"));
+  }
+  
+  Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
                       Berkas.eventSaatTidakTerpilih);
 });
