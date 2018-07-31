@@ -128,6 +128,10 @@ class Berkas {
       }
       
       $("#berkas_" + id).on("dblclick", this.eventSaatDblKlik);
+      
+      Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak,
+                                  Berkas.eventSaatTerpilihSatu,
+                                  Berkas.eventSaatTidakTerpilih);
     };
     
     this.hapusBerkas = function() {
@@ -183,8 +187,16 @@ class Berkas {
     if($(".ds-selector").length) {
       $(".ds-selector").remove();
     }
-        
-    new DragSelect({
+    
+    if(typeof Berkas.pasangEventSeleksi.ds === "undefined") {
+      Berkas.pasangEventSeleksi.ds = null;
+    }
+    else {
+      Berkas.pasangEventSeleksi.ds.area = null;
+      Berkas.pasangEventSeleksi.ds.selectables = [];
+    }
+    
+    Berkas.pasangEventSeleksi.ds = new DragSelect({
       area: document.getElementById("konten"),
       selectables: document.getElementsByClassName("berkas"),
       callback: function(elements) {
