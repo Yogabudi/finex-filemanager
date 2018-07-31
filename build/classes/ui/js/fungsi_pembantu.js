@@ -44,11 +44,25 @@ function resetPanelInfo() {
 }
 
 function resetPanelPencarian() {
-  tutupAccordion("#accordBerdasarkan")
+  tutupAccordion("#accordBerdasarkan");
   
   $("#berdasarFormat").show();
   $("#berdasarNama").show();
   $("#tanggalAkses").show();
   $("#tanggalDibuat").show();
   $("#tanggalModif").show();
+}
+
+function aturKonten() {
+  var tinggiWindow = $(window).height();
+  var lebarWindow = $(window).width();
+  $("#konten").height(tinggiWindow - 190);
+  $("#konten").width(lebarWindow - 7);
+  
+  $(window).resize(function() {
+    var tinggiWindow = $(window).height();
+    var lebarWindow = $(window).width();
+    $("#konten").height(tinggiWindow - 190);
+    $("#konten").width(lebarWindow - 7);
+  });
 }

@@ -275,24 +275,12 @@ $(document).ready(function() {
   // atur ukuran konten
   //
   
-  var tinggiWindow = $(window).height();
-  var lebarWindow = $(window).width();
-  $("#konten").height(tinggiWindow - 190);
-  $("#konten").width(lebarWindow - 7);
-  
-  $(window).resize(function() {
-    var tinggiWindow = $(window).height();
-    var lebarWindow = $(window).width();
-    $("#konten").height(tinggiWindow - 190);
-    $("#konten").width(lebarWindow - 7);
-  });
+  aturKonten();
     
   //////////////////////////////////////////////////////////
   //
-  // kirim pesan ke Java
-  
-//  Jembatan.tampilkanRoot();
-  
+  // testing buat folder
+    
   for(var i = 1; i <= 5; i++) {
     var berkas = new Berkas();
     berkas.setNama("Ini Folder " + i);
@@ -312,6 +300,4 @@ $(document).ready(function() {
     berkas.pasangElemen($(".tempatBerkas"));
   }
   
-  Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
-                      Berkas.eventSaatTidakTerpilih);
 });
