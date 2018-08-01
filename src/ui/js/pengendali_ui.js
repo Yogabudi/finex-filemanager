@@ -281,15 +281,16 @@ $(document).ready(function() {
   //
   // testing buat folder
     
-  for(var i = 1; i <= 5; i++) {
-    var berkas = new Berkas();
-    berkas.setNama("Ini Folder " + i);
-    berkas.setPathAbsolut("/home/" + berkas.getNama());
-    berkas.setJenis("folder");
-    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-    berkas.pasangElemen($(".tempatBerkas"));
-  }
-  
+//  for(var i = 1; i <= 5; i++) {
+//    var berkas = new Berkas();
+//    berkas.setNama("Ini Folder " + i);
+//    berkas.setPathAbsolut("/home/" + berkas.getNama());
+//    berkas.setJenis("folder");
+//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//    berkas.pasangElemen($(".tempatBerkas"));
+//  }
+//  
+
   for(var i = 1; i <= 3; i++) {
     var berkas = new Berkas();
     berkas.setNama("File " + i);
@@ -299,5 +300,7 @@ $(document).ready(function() {
     berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
     berkas.pasangElemen($(".tempatBerkas"));
   }
+  
+  Berkas.hapusSemuaBerkas();
   
 });
