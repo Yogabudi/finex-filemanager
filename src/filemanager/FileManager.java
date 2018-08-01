@@ -1,5 +1,6 @@
 package filemanager;
 
+import filemanager.berkas.Berkas;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
@@ -61,9 +62,8 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    for(int i = 1; i <= 5; i++) {
-      Jembatan.buatFolder(ui, "Folder kuning " + i);
-    }
+    Berkas berkas = new Berkas(ui, "/");
+    berkas.tampilkanListBerkas();
   }
 
   @Override
@@ -71,18 +71,25 @@ implements PendengarWebBrowser {
     String perintah = wbce.getCommand();
     Object[] param = wbce.getParameters();
     
-    if(perintah.equals("kirimInfoBerkas")) {
-      String[] infoBerkas = ((String)param[0]).split(",");
+    if(perintah.equals("tampilkanListBerkas")) {
+      String pathAbsolut = (String)param[0];
       
-      String info = "NAMA BERKAS : " + infoBerkas[0] + "\n";
-      info += "JENIS : " + infoBerkas[1] + "\n";
-      info += "PATH : " + infoBerkas[2] + "\n";
-      
-      JOptionPane.showMessageDialog(FileManager.this, info);
-    }
-    else if(perintah.equals("tampilkanRoot")) {
-      
+      Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
+      berkasTerpilih.tampilkanListBerkas();
     }
   }
 
+  
+  public void tampilkanInfoBerkas(Berkas berkasTerpilih) {
+    String namaBerkas = berkasTerpilih.getObjekFile().getName();
+    String jenis = (berkasTerpilih.getObjekFile().isDirectory()) ? "folder" : "file";
+    String path = berkasTerpilih.getObjekFile().getAbsolutePath();
+
+    String info = "" +
+    "NAMA BERKAS : " + namaBerkas + "\n" +
+    "JENIS : " + jenis + "\n" +
+    "PATH : " + path + "\n";
+
+    JOptionPane.showMessageDialog(this, info);
+  }
 }
