@@ -85,18 +85,7 @@ class Berkas {
     
     this.eventSaatDblKlik = function() {
       if(jenis === "folder") {
-        Berkas.hapusSemuaBerkas();
-        for(var i = 1; i <= 6; i++) {
-          var berkas = new Berkas();
-          berkas.setNama("FOLDER LAIN " + i);
-          berkas.setPathAbsolut("/home/" + berkas.getNama());
-          berkas.setJenis("folder");
-          berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-          berkas.pasangElemen($(".tempatBerkas"));
-          
-          Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak, Berkas.eventSaatTerpilihSatu,
-                      Berkas.eventSaatTidakTerpilih);
-        }
+        
       }
       else if(jenis === "file") {
         console.log("File");
