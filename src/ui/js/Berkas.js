@@ -18,7 +18,16 @@ class Berkas {
     };
     
     this.setNama = function(namaBerkas) {
-      nama = namaBerkas;
+      nama = namaBerkas.replace("#", " ")
+                        .replace("&", " ")
+                        .replace("/", " ")
+                        .replace("\\", " ")
+                        .replace("\"", " ")
+                        .replace("\'", " ")
+                        .replace("#", " ")
+                        .replace(",", " ")
+                        .replace("(", " ")
+                        .replace(")", " ");
     };
     
     this.setJenis = function(jenisBerkas) {
@@ -84,11 +93,14 @@ class Berkas {
     };
     
     this.eventSaatDblKlik = function() {
-      if(jenis === "folder") {
-        
+      var berkasTerpilih = Berkas.dapatkanBerkasTerpilih();
+      var pathAbsolut = berkasTerpilih.getPathAbsolut();
+      
+      if(berkasTerpilih.getJenis() === "folder") {
+        sendNSCommand("tampilkanListBerkas", pathAbsolut);
       }
-      else if(jenis === "file") {
-        console.log("File");
+      else {
+        
       }
     };
     
@@ -105,7 +117,7 @@ class Berkas {
               "<img src='"+icon+"'/>"+
             "</span>"+
             "<span class='center col s12 nama-berkas'>"+
-              nama +
+              "<span class='truncate'>"+nama+"</span>" +
             "</span>"+
           "</span>"+
         "</button>";
@@ -121,16 +133,6 @@ class Berkas {
       Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak,
                                   Berkas.eventSaatTerpilihSatu,
                                   Berkas.eventSaatTidakTerpilih);
-    };
-    
-    this.hapusBerkas = function() {
-      var id = nama.split(" ").join("");
-      
-      if($("#berkas_" + id).length) {
-        $("#berkas_" + id).remove();
-      }
-      
-      Berkas.eventSaatTidakTerpilih();
     };
     
     this.tampilkanInfo = function() {
@@ -250,11 +252,13 @@ class Berkas {
   }
   
   static hapusSemuaBerkas() {
-    var berkas = Berkas.dapatkanSemuaBerkas();
+    var elemenBerkas = $(".tempatBerkas").children(".berkas");
     
-    for(var i = 0; i < berkas.length; i++) {
-      berkas[i].hapusBerkas();
+    if(elemenBerkas.length) {
+      elemenBerkas.remove();
     }
+    
+    Berkas.eventSaatTidakTerpilih();
   }
   
   static keBerkas(elementButton) {
