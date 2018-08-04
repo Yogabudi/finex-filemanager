@@ -286,6 +286,16 @@ class Berkas {
     
     return berkas;
   }
+  
+  static tampilkanLoadingCircle() {
+    $("#konten").hide();
+    $("#loadingCircle").show();
+  }
+  
+  static sembunyikanLoadingCircle() {
+    $("#konten").show();
+    $("#loadingCircle").hide();
+  }
 };
 
 // testing
