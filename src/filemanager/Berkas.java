@@ -1,8 +1,9 @@
 
-package filemanager.berkas;
+package filemanager;
 
 import filemanager.webviewui.WebViewUI;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,17 +63,16 @@ public class Berkas {
     return daftarBerkas.toArray(new Berkas[0]);
   }
   
-  public void tampilkanListBerkas() {
+  public void tampilkanListBerkas() {    
     Berkas[] daftarBerkas = this.listBerkas();
     
     this.js_hapusSemuaBerkas();
-    
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isDirectory()) {
         daftarBerkas[i].js_buatBerkas();
       }
     }
-    
+
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isFile()) {
         daftarBerkas[i].js_buatBerkas();
@@ -95,7 +95,39 @@ public class Berkas {
       ui.eksekusiJavascript(js);
   }
   
+  public Berkas[] pecahPathAbsolut() {
+    ArrayList<Berkas> hasil = new ArrayList<>();
+    Path pathAbsolut = objekFile.toPath();
+    String path = "/";
+    
+    hasil.add(new Berkas(ui, "/"));
+    
+    for(int i = 0; i < pathAbsolut.getNameCount(); i++) {
+      path += pathAbsolut.getName(i).toString() + "/";
+      
+      hasil.add(new Berkas(ui, path));
+    }
+    
+    return hasil.toArray(new Berkas[0]);
+  }
+  
   public void js_hapusSemuaBerkas() {
     ui.eksekusiJavascript("Berkas.hapusSemuaBerkas();");
+  }
+  
+  public void js_tampilkanLoadingCircle() {
+    String js = ""+
+    "$('#konten').hide();"+
+    "$('#loadingCircle').show();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public void js_sembunyikanLoadingCircle() {
+    String js = ""+
+    "$('#konten').show();"+
+    "$('#loadingCircle').hide();";
+    
+    ui.eksekusiJavascript(js);
   }
 }
