@@ -287,3 +287,8 @@ body {
     max-width: 100% !important;
     width: 50% !important;
 }
+
+#loadingCircle {
+    position: relative;
+    top: 250px;
+}
