@@ -16,7 +16,6 @@ $(document).ready(function() {
   $("#loadingCircle").hide();
   $(".modal").hide();
   
-  
   ///////////////////////////////////////////////
   //
   // atur modal & sidenav
@@ -276,6 +275,19 @@ $(document).ready(function() {
   //
   
   aturKonten();
+  
+  //////////////////////////////////////////////////////////
+  //
+  // atur tombol nav depan dan belakang
+  //
+  
+  $("#btnKebelakang").click(function () {
+    sendNSCommand("tampilkanBerkasSebelumnya");
+  });
+  
+  $("#btnKedepan").click(function() {
+    sendNSCommand("tampilkanBerkasKedepan");
+  });
     
   //////////////////////////////////////////////////////////
   //
@@ -291,16 +303,16 @@ $(document).ready(function() {
 //  }
 //  
 
-  for(var i = 1; i <= 3; i++) {
-    var berkas = new Berkas();
-    berkas.setNama("File " + i);
-    berkas.setPathAbsolut("/home/" + berkas.getNama());
-    berkas.setJenis("file");
-    berkas.setIcon("assets/Icons/64/053-document-7.png");
-    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-    berkas.pasangElemen($(".tempatBerkas"));
-  }
-  
-  Berkas.hapusSemuaBerkas();
+//  for(var i = 1; i <= 3; i++) {
+//    var berkas = new Berkas();
+//    berkas.setNama("File " + i);
+//    berkas.setPathAbsolut("/home/" + berkas.getNama());
+//    berkas.setJenis("file");
+//    berkas.setIcon("assets/Icons/64/053-document-7.png");
+//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//    berkas.pasangElemen($(".tempatBerkas"));
+//  }
+//  
+//  Berkas.hapusSemuaBerkas();
   
 });
