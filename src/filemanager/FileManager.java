@@ -1,6 +1,5 @@
 package filemanager;
 
-import filemanager.berkas.Berkas;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
@@ -11,6 +10,10 @@ import javax.swing.WindowConstants;
 import java.awt.EventQueue;
 
 import filemanager.webviewui.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,7 +24,9 @@ public class FileManager extends JFrame
 implements PendengarWebBrowser {
 
   public WebViewUI ui;
-
+  public List<Berkas> jejakNav = new ArrayList<>();
+  public NavMajuMundur nav;
+  
   public FileManager() {
     super();
 
@@ -37,6 +42,8 @@ implements PendengarWebBrowser {
     ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
     
     this.getContentPane().add(ui);
+    
+    nav = new NavMajuMundur(ui);
   }
 
   public void ketengahkan() {
@@ -63,7 +70,7 @@ implements PendengarWebBrowser {
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
     Berkas berkas = new Berkas(ui, "/");
-    berkas.tampilkanListBerkas();
+    nav.majuKe(berkas).tampilkanListBerkas();
   }
 
   @Override
@@ -74,12 +81,29 @@ implements PendengarWebBrowser {
     if(perintah.equals("tampilkanListBerkas")) {
       String pathAbsolut = (String)param[0];
       
+      js_tampilkanLoadingCircle();
+      
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
-      berkasTerpilih.tampilkanListBerkas();
+      nav.majuKe(berkasTerpilih).tampilkanListBerkas();
+      
+      js_sembunyikanLoadingCircle();
+    }
+    else if(perintah.equals("tampilkanBerkasSebelumnya")) {
+      if(!nav.sampaiRoot()) {
+        js_tampilkanLoadingCircle();
+        nav.mundur().tampilkanListBerkas();
+        js_sembunyikanLoadingCircle();
+      }
+    }
+    else if(perintah.equals("tampilkanBerkasKedepan")) {
+      js_tampilkanLoadingCircle();
+      nav.maju().tampilkanListBerkas();
+      js_sembunyikanLoadingCircle();
+      
+      System.out.println("ABS : " + nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
     }
   }
 
-  
   public void tampilkanInfoBerkas(Berkas berkasTerpilih) {
     String namaBerkas = berkasTerpilih.getObjekFile().getName();
     String jenis = (berkasTerpilih.getObjekFile().isDirectory()) ? "folder" : "file";
@@ -88,8 +112,25 @@ implements PendengarWebBrowser {
     String info = "" +
     "NAMA BERKAS : " + namaBerkas + "\n" +
     "JENIS : " + jenis + "\n" +
-    "PATH : " + path + "\n";
+    "PATH : " + path + "\n" +
+    "PARENT : " + berkasTerpilih.getObjekFile().getParent();
 
     JOptionPane.showMessageDialog(this, info);
+  }
+  
+  public void js_tampilkanLoadingCircle() {
+    String js = ""+
+    "$('#konten').hide();"+
+    "$('#loadingCircle').show();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public void js_sembunyikanLoadingCircle() {
+    String js = ""+
+    "$('#konten').show();"+
+    "$('#loadingCircle').hide();";
+    
+    ui.eksekusiJavascript(js);
   }
 }
