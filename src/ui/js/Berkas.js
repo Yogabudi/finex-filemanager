@@ -18,16 +18,17 @@ class Berkas {
     };
     
     this.setNama = function(namaBerkas) {
-      nama = namaBerkas.replace("#", " ")
-                        .replace("&", " ")
-                        .replace("/", " ")
-                        .replace("\\", " ")
-                        .replace("\"", " ")
-                        .replace("\'", " ")
-                        .replace("#", " ")
-                        .replace(",", " ")
-                        .replace("(", " ")
-                        .replace(")", " ");
+//      nama = namaBerkas.replace("#", " ")
+//                        .replace("&", " ")
+//                        .replace("/", " ")
+//                        .replace("\\", " ")
+//                        .replace("\"", " ")
+//                        .replace("\'", " ")
+//                        .replace("#", " ")
+//                        .replace(",", " ")
+//                        .replace("(", " ")
+//                        .replace(")", " ");
+      nama = namaBerkas;
     };
     
     this.setJenis = function(jenisBerkas) {
@@ -77,13 +78,11 @@ class Berkas {
     };
     
     this.tandai = function() {
-      var id = nama.split(" ").join("");
-      $("#berkas_" + id).addClass("ds-selected");
+      $("button[id-berkas='"+nama+"']").addClass("ds-selected");
     };
     
     this.hilangkanTanda = function() {
-      var id = nama.split(" ").join("");
-      $("#berkas_" + id).removeClass("ds-selected");
+      $("button[id-berkas='"+nama+"']").removeClass("ds-selected");
     };
     
     this.ubahKeFormatParam = function() {
@@ -105,12 +104,10 @@ class Berkas {
     };
     
     // panggil method ini setelah property yang diperlukan telah di atur
-    this.pasangElemen = function(elemenTempat) {
-      var id = nama.split(" ").join("");
-      
+    this.pasangElemen = function(elemenTempat) {      
       var berkas =
-        "<button id='berkas_"+id+"' "+
-                  "class='button button-3d button-box button-jumbo berkas targetMenu_"+id+"' "+
+        "<button id-berkas='"+nama+"' "+
+                  "class='button button-3d button-box button-jumbo berkas' "+
                   "path-absolut='"+pathAbsolut+"' jenis='"+jenis+"'>" +
           "<span class='row'>" +
             "<span class='center col s12 icon-berkas'>" +
@@ -125,10 +122,10 @@ class Berkas {
       elemenTempat.append(berkas);
       
       if(contextMenu.getJumlah() > 0) {
-        contextMenu.pasang("targetMenu_" + id);
+        contextMenu.pasang("berkas");
       }
       
-      $("#berkas_" + id).on("dblclick", this.eventSaatDblKlik);
+      $("button[id-berkas='"+nama+"']").on("dblclick", this.eventSaatDblKlik);
       
       Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak,
                                   Berkas.eventSaatTerpilihSatu,
@@ -225,12 +222,12 @@ class Berkas {
   }
   
   static dapatkanBerkasBerdasarNama(nama) {
-    var id = nama.split(" ").join("");
+    var id = this.getId();
     
-    var namaBerkas = $.trim($("#berkas_"+id+" span .nama-berkas").text());
-    var iconBerkas = $("#berkas_"+id+" span .icon-berkas img").attr("src");
-    var pathAbsolut = $("#berkas_"+id).attr("path-absolut");
-    var jenis = $("#berkas_"+id).attr("jenis");
+    var namaBerkas = $.trim($("button[id-berkas='"+nama+"'] span .nama-berkas").text());
+    var iconBerkas = $("button[id-berkas='"+nama+"'] span .icon-berkas img").attr("src");
+    var pathAbsolut = $("button[id-berkas='"+nama+"']").attr("path-absolut");
+    var jenis = $("button[id-berkas='"+nama+"']").attr("jenis");
     
     var berkas = new Berkas();
     berkas.setNama(namaBerkas);
@@ -242,10 +239,10 @@ class Berkas {
   }
   
   static hapusBerkasBerdasarNama(nama) {
-    var id = nama.split(" ").join("");
+    var id = this.getId();
     
-    if($("#berkas_"+id).length) {
-      $("#berkas_"+id).remove();
+    if($("button[id-berkas='"+nama+"']").length) {
+      $("button[id-berkas='"+nama+"']").remove();
     }
     
     Berkas.eventSaatTidakTerpilih();
