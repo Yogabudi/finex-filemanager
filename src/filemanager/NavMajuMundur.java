@@ -17,7 +17,7 @@ public class NavMajuMundur {
   private ArrayList<Berkas> jejak = new ArrayList<>();
   private Berkas berkasTerpilih;
   private WebViewUI ui;
-  private int index = -1;
+  private int indexJejak = -1;
   
   public NavMajuMundur(WebViewUI ui) {
     this.ui = ui;
@@ -28,9 +28,7 @@ public class NavMajuMundur {
   }
 
   public Berkas majuKe(Berkas berkas) {
-    for(int i = 0; i < jejak.size(); i++) {
-      jejak.remove(i);
-    }
+    jejak.clear();
     
     berkasTerpilih = berkas;
     
@@ -38,8 +36,8 @@ public class NavMajuMundur {
   }
   
   public Berkas maju() {
-    if(index > -1) {
-      berkasTerpilih = jejak.get(index--);
+    if(indexJejak > -1) {
+      berkasTerpilih = jejak.get(indexJejak--);
     }
     
     return berkasTerpilih;
@@ -48,7 +46,9 @@ public class NavMajuMundur {
   public Berkas mundur() {
     if(berkasTerpilih.getObjekFile().getParent() != null) {
       jejak.add(berkasTerpilih);
-      index = jejak.size() - 1;
+      
+      // isi index jejak, index jejak tidak dimulai dari 0, tapi dari jejak terbaru
+      indexJejak = jejak.size() - 1;
       berkasTerpilih = new Berkas(ui, berkasTerpilih.getObjekFile().getParent());
     }
     
