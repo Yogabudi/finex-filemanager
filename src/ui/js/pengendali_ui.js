@@ -21,7 +21,6 @@ $(document).ready(function() {
   // atur modal & sidenav
   
   jalankanTabYBY();
-  BreadcrumbBerkas.jalankanBreadcrumb();
   
   $(".modal").modal({
     onCloseEnd: function() {
@@ -295,13 +294,13 @@ $(document).ready(function() {
     
 //  for(var i = 1; i <= 5; i++) {
 //    var berkas = new Berkas();
-//    berkas.setNama("Ini Folder " + i);
+//    berkas.setNama(".Ini Folder " + i);
 //    berkas.setPathAbsolut("/home/" + berkas.getNama());
 //    berkas.setJenis("folder");
 //    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }
-//  
+  
 
 //  for(var i = 1; i <= 3; i++) {
 //    var berkas = new Berkas();
