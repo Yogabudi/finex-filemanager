@@ -66,21 +66,21 @@ public class Berkas {
   public void tampilkanListBerkas() {    
     Berkas[] daftarBerkas = this.listBerkas();
     
-    this.js_hapusSemuaBerkas();
+    this.hapusSemuaBerkasPadaJS();
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isDirectory()) {
-        daftarBerkas[i].js_buatBerkas();
+        daftarBerkas[i].buatBerkasPadaJS();
       }
     }
 
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isFile()) {
-        daftarBerkas[i].js_buatBerkas();
+        daftarBerkas[i].buatBerkasPadaJS();
       }
     }
   }
   
-  public void js_buatBerkas() {
+  public void buatBerkasPadaJS() {
     String jenisBerkas = (objekFile.isDirectory()) ? "folder" : "file";
     
     String js = ""+
@@ -111,11 +111,11 @@ public class Berkas {
     return hasil.toArray(new Berkas[0]);
   }
   
-  public void js_hapusSemuaBerkas() {
+  public void hapusSemuaBerkasPadaJS() {
     ui.eksekusiJavascript("Berkas.hapusSemuaBerkas();");
   }
   
-  public void js_tampilkanLoadingCircle() {
+  public void tampilkanCirclePadaJS() {
     String js = ""+
     "$('#konten').hide();"+
     "$('#loadingCircle').show();";
@@ -123,7 +123,7 @@ public class Berkas {
     ui.eksekusiJavascript(js);
   }
   
-  public void js_sembunyikanLoadingCircle() {
+  public void sembunyikanCirclePadaJS() {
     String js = ""+
     "$('#konten').show();"+
     "$('#loadingCircle').hide();";
