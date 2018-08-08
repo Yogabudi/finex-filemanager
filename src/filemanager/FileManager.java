@@ -7,14 +7,12 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.EventQueue;
 
 import filemanager.webviewui.*;
-import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -26,6 +24,7 @@ implements PendengarWebBrowser {
   public WebViewUI ui;
   public List<Berkas> jejakNav = new ArrayList<>();
   public NavMajuMundur nav;
+  public ListBreadcrumbBerkas bcBerkas = new ListBreadcrumbBerkas();
   
   public FileManager() {
     super();
@@ -57,7 +56,7 @@ implements PendengarWebBrowser {
   public static void main(String[] args) {
     WebViewUI.inisialisasi();
     
-    EventQueue.invokeLater(new Runnable() {
+    SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         new FileManager().setVisible(true);
@@ -71,6 +70,8 @@ implements PendengarWebBrowser {
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
     Berkas berkas = new Berkas(ui, "/");
     nav.majuKe(berkas).tampilkanListBerkas();
+    
+    bcBerkas.masukkanDanTampilkan(new BreadcrumbBerkas(ui, "/"));
   }
 
   @Override
@@ -81,26 +82,51 @@ implements PendengarWebBrowser {
     if(perintah.equals("tampilkanListBerkas")) {
       String pathAbsolut = (String)param[0];
       
-      js_tampilkanLoadingCircle();
+      tampilkanCirclePadaJS();
       
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
       nav.majuKe(berkasTerpilih).tampilkanListBerkas();
       
-      js_sembunyikanLoadingCircle();
+      bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
+      bcBerkas.tandaiYangTerakhir();
+      
+      sembunyikanCirclePadaJS();
+    }
+    else if(perintah.equals("tampilkanListBerkasDariBreadcrumb")) {
+      String pathAbsolut = (String)param[0];
+      String labelBc = (String)param[1];
+      
+      tampilkanCirclePadaJS();
+      
+      Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
+      nav.majuKe(berkasTerpilih).tampilkanListBerkas();
+      
+      bcBerkas.getBreadcrumb(labelBc).tandaiPadaJS();
+      
+      sembunyikanCirclePadaJS();
     }
     else if(perintah.equals("tampilkanBerkasSebelumnya")) {
       if(!nav.sampaiRoot()) {
-        js_tampilkanLoadingCircle();
-        nav.mundur().tampilkanListBerkas();
-        js_sembunyikanLoadingCircle();
+        tampilkanCirclePadaJS();
+        
+        Berkas berkasSebelumnya = nav.mundur();
+        berkasSebelumnya.tampilkanListBerkas();
+        bcBerkas.isiDariPath(berkasSebelumnya.pecahPathAbsolut(), ui);
+        bcBerkas.tandaiYangTerakhir();
+        
+        sembunyikanCirclePadaJS();
       }
     }
     else if(perintah.equals("tampilkanBerkasKedepan")) {
-      js_tampilkanLoadingCircle();
-      nav.maju().tampilkanListBerkas();
-      js_sembunyikanLoadingCircle();
+      tampilkanCirclePadaJS();
       
-      System.out.println("ABS : " + nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      Berkas berkasDidepan = nav.maju();
+      berkasDidepan.tampilkanListBerkas();
+      
+      bcBerkas.isiDariPath(berkasDidepan.pecahPathAbsolut(), ui);
+      bcBerkas.tandaiYangTerakhir();
+      
+      sembunyikanCirclePadaJS();
     }
   }
 
@@ -118,7 +144,7 @@ implements PendengarWebBrowser {
     JOptionPane.showMessageDialog(this, info);
   }
   
-  public void js_tampilkanLoadingCircle() {
+  public void tampilkanCirclePadaJS() {
     String js = ""+
     "$('#konten').hide();"+
     "$('#loadingCircle').show();";
@@ -126,7 +152,7 @@ implements PendengarWebBrowser {
     ui.eksekusiJavascript(js);
   }
   
-  public void js_sembunyikanLoadingCircle() {
+  public void sembunyikanCirclePadaJS() {
     String js = ""+
     "$('#konten').show();"+
     "$('#loadingCircle').hide();";
