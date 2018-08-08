@@ -7,10 +7,12 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.EventQueue;
 
 import filemanager.webviewui.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -20,7 +22,10 @@ public class FileManager extends JFrame
 implements PendengarWebBrowser {
 
   public WebViewUI ui;
-
+  public List<Berkas> jejakNav = new ArrayList<>();
+  public NavMajuMundur nav;
+  public ListBreadcrumbBerkas bcBerkas = new ListBreadcrumbBerkas();
+  
   public FileManager() {
     super();
 
@@ -36,6 +41,8 @@ implements PendengarWebBrowser {
     ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
     
     this.getContentPane().add(ui);
+    
+    nav = new NavMajuMundur(ui);
   }
 
   public void ketengahkan() {
@@ -49,7 +56,7 @@ implements PendengarWebBrowser {
   public static void main(String[] args) {
     WebViewUI.inisialisasi();
     
-    EventQueue.invokeLater(new Runnable() {
+    SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         new FileManager().setVisible(true);
@@ -61,9 +68,10 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    for(int i = 1; i <= 5; i++) {
-      Jembatan.buatFolder(ui, "Folder kuning " + i);
-    }
+    Berkas berkas = new Berkas(ui, "/");
+    nav.majuKe(berkas).tampilkanListBerkas();
+    
+    bcBerkas.masukkanDanTampilkan(new BreadcrumbBerkas(ui, "/"));
   }
 
   @Override
@@ -71,18 +79,84 @@ implements PendengarWebBrowser {
     String perintah = wbce.getCommand();
     Object[] param = wbce.getParameters();
     
-    if(perintah.equals("kirimInfoBerkas")) {
-      String[] infoBerkas = ((String)param[0]).split(",");
+    if(perintah.equals("tampilkanListBerkas")) {
+      String pathAbsolut = (String)param[0];
       
-      String info = "NAMA BERKAS : " + infoBerkas[0] + "\n";
-      info += "JENIS : " + infoBerkas[1] + "\n";
-      info += "PATH : " + infoBerkas[2] + "\n";
+      tampilkanCirclePadaJS();
       
-      JOptionPane.showMessageDialog(FileManager.this, info);
+      Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
+      nav.majuKe(berkasTerpilih).tampilkanListBerkas();
+      
+      bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
+      bcBerkas.tandaiYangTerakhir();
+      
+      sembunyikanCirclePadaJS();
     }
-    else if(perintah.equals("tampilkanRoot")) {
+    else if(perintah.equals("tampilkanListBerkasDariBreadcrumb")) {
+      String pathAbsolut = (String)param[0];
+      String labelBc = (String)param[1];
       
+      tampilkanCirclePadaJS();
+      
+      Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
+      nav.majuKe(berkasTerpilih).tampilkanListBerkas();
+      
+      bcBerkas.getBreadcrumb(labelBc).tandaiPadaJS();
+      
+      sembunyikanCirclePadaJS();
+    }
+    else if(perintah.equals("tampilkanBerkasSebelumnya")) {
+      if(!nav.sampaiRoot()) {
+        tampilkanCirclePadaJS();
+        
+        Berkas berkasSebelumnya = nav.mundur();
+        berkasSebelumnya.tampilkanListBerkas();
+        bcBerkas.isiDariPath(berkasSebelumnya.pecahPathAbsolut(), ui);
+        bcBerkas.tandaiYangTerakhir();
+        
+        sembunyikanCirclePadaJS();
+      }
+    }
+    else if(perintah.equals("tampilkanBerkasKedepan")) {
+      tampilkanCirclePadaJS();
+      
+      Berkas berkasDidepan = nav.maju();
+      berkasDidepan.tampilkanListBerkas();
+      
+      bcBerkas.isiDariPath(berkasDidepan.pecahPathAbsolut(), ui);
+      bcBerkas.tandaiYangTerakhir();
+      
+      sembunyikanCirclePadaJS();
     }
   }
 
+  public void tampilkanInfoBerkas(Berkas berkasTerpilih) {
+    String namaBerkas = berkasTerpilih.getObjekFile().getName();
+    String jenis = (berkasTerpilih.getObjekFile().isDirectory()) ? "folder" : "file";
+    String path = berkasTerpilih.getObjekFile().getAbsolutePath();
+
+    String info = "" +
+    "NAMA BERKAS : " + namaBerkas + "\n" +
+    "JENIS : " + jenis + "\n" +
+    "PATH : " + path + "\n" +
+    "PARENT : " + berkasTerpilih.getObjekFile().getParent();
+
+    JOptionPane.showMessageDialog(this, info);
+  }
+  
+  public void tampilkanCirclePadaJS() {
+    String js = ""+
+    "$('#konten').hide();"+
+    "$('#loadingCircle').show();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public void sembunyikanCirclePadaJS() {
+    String js = ""+
+    "$('#konten').show();"+
+    "$('#loadingCircle').hide();";
+    
+    ui.eksekusiJavascript(js);
+  }
 }

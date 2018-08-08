@@ -206,6 +206,10 @@ body {
     height: 40px;
 }
 
+.yby-breadcrumb-aktif {
+    background-color: #FFFFFF !important;
+}
+
 .yby-breadcrumb-tombol-lain {
     cursor: pointer;
     min-height: 0px !important;
@@ -286,4 +290,9 @@ body {
 #panelWajah {
     max-width: 100% !important;
     width: 50% !important;
+}
+
+#loadingCircle {
+    position: relative;
+    top: 250px;
 }
