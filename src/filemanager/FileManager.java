@@ -72,6 +72,7 @@ implements PendengarWebBrowser {
     nav.majuKe(berkas).tampilkanListBerkas();
     
     bcBerkas.masukkanDanTampilkan(new BreadcrumbBerkas(ui, "/"));
+    bcBerkas.tandaiYangTerakhir();
   }
 
   @Override
@@ -99,7 +100,7 @@ implements PendengarWebBrowser {
       tampilkanCirclePadaJS();
       
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
-      nav.majuKe(berkasTerpilih).tampilkanListBerkas();
+      nav.mundurKe(berkasTerpilih).tampilkanListBerkas();
       
       bcBerkas.getBreadcrumb(labelBc).tandaiPadaJS();
       
@@ -111,6 +112,7 @@ implements PendengarWebBrowser {
         
         Berkas berkasSebelumnya = nav.mundur();
         berkasSebelumnya.tampilkanListBerkas();
+        
         bcBerkas.isiDariPath(berkasSebelumnya.pecahPathAbsolut(), ui);
         bcBerkas.tandaiYangTerakhir();
         

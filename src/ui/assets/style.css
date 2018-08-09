@@ -83,7 +83,7 @@ body {
     background-position: left;
 }
 
-.berkas {
+/*.berkas {
     width: 150px !important;
     height: 160px !important;
     text-transform: none;
@@ -93,14 +93,36 @@ body {
     margin-top: 10px;
     font-size: 11pt;
     color: black;
+}*/
+
+.berkas {
+    width: 200px !important;
+    cursor: pointer;
+}
+
+.garis-card-berkas {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    right: 23px;
+    width: 199px;
+}
+
+.keterangan-jumlah span {
+    font-size: 9pt;
+    position: relative;
+    bottom: 4px;
+}
+
+.keterangan-jumlah img {
+    width: 18px;
+    height: 18px;
+    margin-top: 10px;
+    margin-right: 5px;
 }
 
 #tabRibbon {
-    position: fixed;
-    top: 0;
     width: 100%;
-    height: 49px;
-    z-index: 2;
 }
 
 #kontenRibbon {
@@ -279,7 +301,9 @@ body {
 }
 
 .ds-selected {
-    background-color: #b0bec5 !important;
+    /*background-color: #b0bec5 !important;*/
+  background-color: #009688 !important;
+  color: #FFFFFF !important;
 }
 
 .tombol-tutup-pencarian {

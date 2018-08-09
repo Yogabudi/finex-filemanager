@@ -292,13 +292,23 @@ $(document).ready(function() {
   //
   // testing buat folder
     
-//  for(var i = 1; i <= 5; i++) {
-//    var berkas = new Berkas();
-//    berkas.setNama(".Ini Folder " + i);
-//    berkas.setPathAbsolut("/home/" + berkas.getNama());
-//    berkas.setJenis("folder");
-//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-//    berkas.pasangElemen($(".tempatBerkas"));
+//  for(var i = 1; i <= 10; i++) {
+//    if(i === 4) {
+//      var berkas = new Berkas();
+//      berkas.setNama("Ini folder yang sangat panjang panjang panjang sekali");
+//      berkas.setPathAbsolut("/home/" + berkas.getNama());
+//      berkas.setJenis("folder");
+//      berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//      berkas.pasangElemen($(".tempatBerkas"));
+//    }
+//    else {
+//      var berkas = new Berkas();
+//      berkas.setNama("Ini Folder " + i);
+//      berkas.setPathAbsolut("/home/" + berkas.getNama());
+//      berkas.setJenis("folder");
+//      berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//      berkas.pasangElemen($(".tempatBerkas"));
+//    }
 //  }
   
 

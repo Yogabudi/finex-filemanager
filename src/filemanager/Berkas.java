@@ -15,12 +15,37 @@ public class Berkas {
   
   private File objekFile;
   private String icon;
+  private int jumlahBerkas = 0;
+  private long ukuranFile = 0;
+  
   private WebViewUI ui;
   
   public Berkas(WebViewUI ui, String pathname) {
     this.objekFile = new File(pathname);
+    this.jumlahBerkas = (objekFile.listFiles() != null)
+                          ? objekFile.listFiles().length : 0;
+    
+    // konversikan ukuran file dari bytes ke KB
+    this.ukuranFile = objekFile.length() / 1024;
+    
     this.icon = "";
     this.ui = ui;
+  }
+
+  public long getUkuranFile() {
+    return ukuranFile;
+  }
+
+  public void setUkuranFile(long ukuranFile) {
+    this.ukuranFile = ukuranFile;
+  }
+
+  public int getJumlahBerkas() {
+    return jumlahBerkas;
+  }
+
+  public void setJumlahBerkas(int jumlahBerkas) {
+    this.jumlahBerkas = jumlahBerkas;
   }
 
   public String getIcon() {
@@ -89,6 +114,8 @@ public class Berkas {
       "berkas.setJenis('"+jenisBerkas+"');"+
       "berkas.setIcon('"+icon+"');"+
       "berkas.setPathAbsolut('"+objekFile.getAbsolutePath()+"');"+
+      "berkas.setJumlahBerkas("+jumlahBerkas+");"+
+      "berkas.setUkuranFile("+ukuranFile+");"+
       "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);"+
       "berkas.pasangElemen($('.tempatBerkas'));";
 

@@ -1,6 +1,4 @@
-.c2c-dropdown{
 
-}
 .c2c-dropdown{
     display:block;
     z-index:10000;
@@ -14,24 +12,27 @@
     min-width:160px;
     margin:0;
     padding-bottom: 5px;
+    width: 250px;
 }
 .c2c-dropdown a{
     padding:6px 16px;
     display:block;
     text-decoration: none;
     color: #000000;
-    font-size: 13px;
+    font-size: 12px;
 }
 .c2c-dropdown a:hover{
     background-color:#ccc
 }
 
-.c2c-border{border:1px solid #ccc!important}
+.c2c-border {
+    border: 0 !important;
+}
 
 .contextMenu {
-  position: absolute;
-  display:none;
-  z-index: 10000;
+    position: absolute;
+    display:none;
+    z-index: 10000;
 }
 .contextTitle{
     padding:6px 16px;
@@ -41,9 +42,11 @@
 
 .icon-contextmenu img {
     margin-right: 10px;
+    width: 15px;
+    height: 15px;
 }
 
 .icon-contextmenu span {
     position: relative;
-    bottom: 5px;
+    bottom: 2px;
 }

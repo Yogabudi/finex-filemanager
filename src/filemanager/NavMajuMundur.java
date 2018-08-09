@@ -29,6 +29,7 @@ public class NavMajuMundur {
 
   public Berkas majuKe(Berkas berkas) {
     jejak.clear();
+    indexJejak = -1;
     
     berkasTerpilih = berkas;
     
@@ -43,12 +44,21 @@ public class NavMajuMundur {
     return berkasTerpilih;
   }
   
+  public Berkas mundurKe(Berkas berkas) {
+    jejak.add(berkasTerpilih);
+    indexJejak++;
+    
+    berkasTerpilih = berkas;
+    
+    return berkasTerpilih;
+  }
+  
   public Berkas mundur() {
     if(berkasTerpilih.getObjekFile().getParent() != null) {
       jejak.add(berkasTerpilih);
       
-      // isi index jejak, index jejak tidak dimulai dari 0, tapi dari jejak terbaru
-      indexJejak = jejak.size() - 1;
+      // naikkan index jejak
+      indexJejak++;
       berkasTerpilih = new Berkas(ui, berkasTerpilih.getObjekFile().getParent());
     }
     
