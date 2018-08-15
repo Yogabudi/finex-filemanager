@@ -13,6 +13,7 @@ $(document).ready(function() {
   $(".tap-target").tapTarget();
 
   $("#tabEdit").hide();
+  $("#tabTab").hide();
   $("#loadingCircle").hide();
   $(".modal").hide();
   
@@ -36,6 +37,36 @@ $(document).ready(function() {
         $("#ribbon").tabs("select", "berkas");
         $("#ribbon").tabs("updateTabIndicator");
       }
+  });
+  
+  $("#menuDokumen").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeDokumen");
+  });
+  
+  $("#menuFoto").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeFoto");
+  });
+  
+  $("#menuMusik").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeMusik");
+  });
+  
+  $("#menuVideo").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeVideo");
+  });
+  
+  $("#menuUnduhan").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeUnduhan");
+  });
+  
+  $("#menuKomputerku").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeRoot");
   });
   
   $("#panelWajah").sidenav(
@@ -162,7 +193,10 @@ $(document).ready(function() {
     animation: "pop",
     url: "#popPath",
     width: "500",
-    placement: "bottom-right"
+    placement: "bottom-right",
+    onShow: function(element) {
+      $("#txPath").select();
+    }
   });
   
   $("#btnUbahNama").webuiPopover({
@@ -221,6 +255,15 @@ $(document).ready(function() {
     onHide: function(element) {
       tutupAccordion("#accordPintasan");
     }
+  });
+  
+  $("#txPath").keypress(function(e) {
+    if(e.which === 13) {
+      var path = $("#txPath").val();
+      sendNSCommand("keyEnterDitekan", "#txPath", path);
+    }
+    
+    e.stopPropagation();
   });
   
   $("#btnOkUbahNama").click(function () {
@@ -287,7 +330,7 @@ $(document).ready(function() {
   $("#btnKedepan").click(function() {
     sendNSCommand("tampilkanBerkasKedepan");
   });
-    
+  
   //////////////////////////////////////////////////////////
   //
   // testing buat folder
