@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
   // inisialisasi komponen
   
@@ -330,6 +329,12 @@ $(document).ready(function() {
   $("#btnKedepan").click(function() {
     sendNSCommand("tampilkanBerkasKedepan");
   });
+  
+  //////////////////////////////////////////////////////////
+  //
+  // atur berkas
+  //
+  
   
   //////////////////////////////////////////////////////////
   //
