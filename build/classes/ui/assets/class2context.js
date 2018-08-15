@@ -88,7 +88,8 @@ function class2context(classgiv, title, options) {
     document.getElementsByClassName(classgiv)[i].addEventListener("contextmenu", function (e) {
       // Avoid the real one
       e.preventDefault();
-      e.stopPropagation();
+//      e.stopPropagation();
+      
       setTimeout(function () {
         var posisi = setContextMenuPosition(e, $("#context" + classgiv));
         document.getElementById('context' + classgiv).style.display = 'block';
@@ -101,6 +102,7 @@ function class2context(classgiv, title, options) {
   document.body.addEventListener("mousedown", function (e) {
     // Avoid the real one
     //e.preventDefault();
+    
     if (document.getElementById('context' + classgiv)) {
       setTimeout(function () {
         document.getElementById('context' + classgiv).style.display = 'none';
