@@ -78,7 +78,7 @@ class Berkas {
     };
     
     ////////////////////////////////////
-    
+        
     this.dataContextMenuBerkas = [
       new ObjekMenu("Cut", "assets/Icons/24/scissors.png", "").buatMenu(),
       new ObjekMenu("Salin", "assets/Icons/24/papers.png", "").buatMenu(),
@@ -102,6 +102,10 @@ class Berkas {
     this.hilangkanTanda = function() {
       $("div[id-berkas='"+nama+"'] .card-panel").removeClass("ds-selected");
     };
+    
+    this.hilangkanSemuaTanda = function() {
+      $(".cont-berkas .card-panel").removeClass("ds-selected");
+    }
     
     this.ubahKeFormatParam = function() {
       var param = nama + "," + jenis + "," + pathAbsolut + "," + icon;
@@ -144,7 +148,7 @@ class Berkas {
       
       var berkas = ""+
       "<div id-berkas='"+nama+"' class='col cont-berkas' "+
-            "path-absolut='"+pathAbsolut+"' jenis='"+jenis+"' >"+
+            "path-absolut='"+pathAbsolut+"' jenis='"+jenis+"' diklik-kanan='false'>"+
         "<div class='card-panel white berkas'>"+
           "<div class='card-image center-align icon-berkas'>"+
             "<img src='"+icon+"'/>"+
@@ -167,6 +171,15 @@ class Berkas {
       }
       
       $("div[id-berkas='"+nama+"']").on("dblclick", this.eventSaatDblKlik);
+      
+      $("div[id-berkas='"+nama+"']").on("contextmenu", function(e) {
+        $(".cont-berkas .card-panel").removeClass("ds-selected");
+        $("div[diklik-kanan='true']").attr("diklik-kanan", "false");
+        
+        $(this).attr("diklik-kanan", "true")
+                .children(".card-panel")
+                .addClass("ds-selected");
+      });
       
       Berkas.pasangEventSeleksi(Berkas.eventSaatTerpilihBanyak,
                                   Berkas.eventSaatTerpilihSatu,
@@ -235,10 +248,17 @@ class Berkas {
         }
         else {
           if(!$(elements[0]).hasClass("berkas")) {
+            $(elements[0]).removeClass("ds-selected");
+            
             // saat tidak terpilih (unselect)
             evtSaatTidakTerpilih();
           }
           else {
+            $(".cont-berkas").attr("diklik-kanan", "false")
+                .children(".card-panel")
+                .removeClass("ds-selected");
+            $(elements[0]).addClass("ds-selected");
+        
             // saat terpilih satu
             evtSaatTerpilihSatu(elements);
           }
@@ -262,9 +282,7 @@ class Berkas {
     return berkas;
   }
   
-  static dapatkanBerkasBerdasarNama(nama) {
-    var id = this.getId();
-    
+  static dapatkanBerkasBerdasarNama(nama) {    
     var namaBerkas = $("div[id-berkas='"+nama+"']").attr("id-berkas");
     var iconBerkas = $("div[id-berkas='"+nama+"'] .card-panel .card-image img").attr("src");
     var pathAbsolut = $("div[id-berkas='"+nama+"']").attr("path-absolut");
