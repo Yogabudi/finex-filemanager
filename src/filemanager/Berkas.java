@@ -67,6 +67,10 @@ public class Berkas {
   public File getObjekFile() {
     return objekFile;
   }
+  
+  public boolean berkasTersedia() {
+    return objekFile.exists();
+  }
 
   public Berkas[] listBerkas() {
     List<Berkas> daftarBerkas = new ArrayList<>();
