@@ -9,11 +9,20 @@ class Berkas {
     var icon = "assets/Icons/64/101-folder-5.png";
     var jumlahBerkas = 0;
     var ukuranFile = 0;
+    var tersembunyi = false;
     var contextMenu = new ContextMenu();
     
     ////////////////////////////////////////////
     //
     // getter & setter
+    
+    this.apakahTersembunyi = function() {
+      return tersembunyi;
+    };
+    
+    this.setTersembunyi = function(sembunyikan) {
+      tersembunyi = sembunyikan;
+    };
     
     this.setUkuranFile = function(ukuran) {
       ukuranFile = ukuran;
@@ -105,7 +114,7 @@ class Berkas {
     
     this.hilangkanSemuaTanda = function() {
       $(".cont-berkas .card-panel").removeClass("ds-selected");
-    }
+    };
     
     this.ubahKeFormatParam = function() {
       var param = nama + "," + jenis + "," + pathAbsolut + "," + icon;
@@ -147,8 +156,12 @@ class Berkas {
                     ? (jumlahBerkas + " Berkas") : (ukuranFile + " KB");
       
       var berkas = ""+
-      "<div id-berkas='"+nama+"' class='col cont-berkas' "+
-            "path-absolut='"+pathAbsolut+"' jenis='"+jenis+"' diklik-kanan='false'>"+
+      "<div id-berkas='"+nama+"' "+
+            "class='col cont-berkas' "+
+            "path-absolut='"+pathAbsolut+"' "+
+            "jenis='"+jenis+"' "+
+            "tersembunyi='"+tersembunyi+"' "+
+            "diklik-kanan='false'>"+
         "<div class='card-panel white berkas'>"+
           "<div class='card-image center-align icon-berkas'>"+
             "<img src='"+icon+"'/>"+
@@ -168,6 +181,14 @@ class Berkas {
       
       if(contextMenu.getJumlah() > 0) {
         contextMenu.pasang("berkas");
+      }
+      
+      if(tersembunyi) {
+        $("div[id-berkas='"+nama+"'] .card-panel")
+                .removeClass("white")
+                .addClass("grey");
+        
+        $("div[id-berkas='"+nama+"']").hide();
       }
       
       $("div[id-berkas='"+nama+"']").on("dblclick", this.eventSaatDblKlik);
@@ -349,5 +370,28 @@ class Berkas {
   static sembunyikanLoadingCircle() {
     $("#konten").show();
     $("#loadingCircle").hide();
+  }
+  
+  static tandai(nama) {
+    $("div[id-berkas='"+nama+"'] .card-panel").addClass("ds-selected");
+    Berkas.eventSaatTerpilihSatu(null);
+  };
+
+  static hilangkanTanda(nama) {
+    $("div[id-berkas='"+nama+"'] .card-panel").removeClass("ds-selected");
+    Berkas.eventSaatTidakTerpilih();
+  };
+
+  static hilangkanSemuaTanda() {
+    $(".cont-berkas .card-panel").removeClass("ds-selected");
+    Berkas.eventSaatTidakTerpilih();
+  }
+  
+  static janganTampilkanBerkasTersembunyi() {
+    $("div[tersembunyi='true']").hide();
+  }
+  
+  static tampilkanBerkasTersembunyi() {
+    $("div[tersembunyi='true']").show();
   }
 };
