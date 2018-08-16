@@ -1,4 +1,8 @@
 
+function log(judul, data) {
+  sendNSCommand("log", judul, data);
+}
+
 function warnaiTabYBY() {
   $(".yby-tab").addClass("grey");
   $(".yby-tab").addClass("lighten-2");
@@ -51,18 +55,4 @@ function resetPanelPencarian() {
   $("#tanggalAkses").show();
   $("#tanggalDibuat").show();
   $("#tanggalModif").show();
-}
-
-function aturKonten() {
-  var tinggiWindow = $(window).height();
-  var lebarWindow = $(window).width();
-  $("#konten").height(tinggiWindow - 190);
-  $("#konten").width(lebarWindow - 7);
-  
-  $(window).resize(function() {
-    var tinggiWindow = $(window).height();
-    var lebarWindow = $(window).width();
-    $("#konten").height(tinggiWindow - 190);
-    $("#konten").width(lebarWindow - 7);
-  });
 }
