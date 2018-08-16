@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import filemanager.webviewui.*;
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -26,7 +25,7 @@ implements PendengarWebBrowser {
   public List<Berkas> jejakNav = new ArrayList<>();
   public NavMajuMundur nav;
   public ListBreadcrumbBerkas bcBerkas = new ListBreadcrumbBerkas();
-  
+    
   public FileManager() {
     super();
 
@@ -35,7 +34,7 @@ implements PendengarWebBrowser {
     this.setName("UI Utama");
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.ketengahkan();
-    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
@@ -323,10 +322,12 @@ implements PendengarWebBrowser {
             if(!tersembunyi) {
               Berkas.buatFolderBaru(lokasiSekarang + "/" + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS(namaFolder, ui);
+              scrollKeBawahPadaJS();
             }
             else {
               Berkas.buatFolderBaru(lokasiSekarang + "/." + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS("." + namaFolder, ui);
+              scrollKeBawahPadaJS();
             }   
           }
           else {
@@ -351,6 +352,9 @@ implements PendengarWebBrowser {
               "Anda Bukan Root!",
               JOptionPane.ERROR_MESSAGE);
       }
+    }
+    else if(perintah.equals("log")) {
+      System.out.println(param[0].toString().toUpperCase() + " : " + param[1]);
     }
   }
 
@@ -387,6 +391,13 @@ implements PendengarWebBrowser {
   public void setTextPathPadaJS(String path) {
     String js = ""+
     "$('#txPath').val('"+path+"');";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public void scrollKeBawahPadaJS() {
+    String js = ""+
+    "$('#konten').animate({ scrollTop: $(document).height() }, 500);";
     
     ui.eksekusiJavascript(js);
   }
