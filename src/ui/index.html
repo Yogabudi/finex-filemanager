@@ -136,6 +136,12 @@
                  style="background-image: url(assets/Icons/32/003-papers.png)">
 
               </button>
+              <button id="btnHideDanView"
+                 class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+                 data-position="top" data-tooltip="Sembunyikan"
+                 style="background-image: url(assets/Icons/32/hide.png)">
+
+              </button>
               <button id="btnUbahNama"
                   class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
                  data-position="top" data-tooltip="Ubah Nama"
@@ -823,40 +829,13 @@
         <div class="col s12" style="margin-bottom: 16px;">
           <div class="input-field">
             <input id="txNamaFile" type="text" class="validate">
-            <label for="txNamaFile">Masukkan nama file baru...</label>
+            <label for="txNamaFile">Masukkan nama file</label>
           </div>
-
-          <form action="#">
-            <p>
-              <label>
-                <input name="radBuatFile" type="radio" checked />
-                <span>File Teks (TXT)</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input name="radBuatFile" type="radio" />
-                <span>Dokumen LibreOffice Writer</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input name="radBuatFile" type="radio"  />
-                <span>Dokumen LibreOffice Calc</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input name="radBuatFile" type="radio" />
-                <span>Dokumen LibreOffice Base</span>
-              </label>
-            </p>
-          </form>
 
           <div class="switch">
             <label class="black-text">
               Sembunyikan File
-              <input type="checkbox">
+              <input id="cbSembunyikanFileBaru" type="checkbox">
               <span class="lever"></span>
             </label>
           </div>
