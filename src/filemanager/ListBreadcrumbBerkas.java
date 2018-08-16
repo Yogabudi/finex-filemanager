@@ -50,6 +50,8 @@ public class ListBreadcrumbBerkas extends ArrayList<BreadcrumbBerkas> {
       this.masukkanDanTampilkan(new BreadcrumbBerkas(ui,
                           pecahanPath[i].getObjekFile().getAbsolutePath()));
     }
+    
+    tandaiYangTerakhir();
   }
   
   public void tandaiYangTerakhir() {

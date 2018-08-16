@@ -27,6 +27,7 @@
             </a>
           </li>
           <li id="tabBerkas" class="tab"><a class="active" href="#berkas">berkas</a></li>
+          <li id="tabCari" class="tab"><a class="active" href="#kontenTabCari">pencarian</a></li>
           <li id="tabTab" class="tab"><a href="#tabs">tab</a></li>
           <li id="tabPengaturan" class="tab"><a href="#kontenTabPengaturan">pengaturan</a></li>
           <li id="tabAbout" class="tab"><a href="#kontenTabAbout">About</a></li>
@@ -38,6 +39,40 @@
     <!-- konten ribbon -->
     <nav id="kontenRibbon">
       <div class="nav-wrapper teal lighten-1">
+        <div id="kontenTabCari">
+          <ul class="left">
+            <li>
+              <button id="btnCariBerdasarkan"
+                  class="waves-effect waves-light btn-large
+                              btn-flat white-text tombolIconDanTeks
+                              modal-trigger"
+                 data-target="panelPencarianBerkas"
+                 style="background-image: url(assets/Icons/32/110-research.png)">
+                Cari Berdasarkan...
+              </button>
+            </li>
+            <li id="kotakPencarian">
+              <div class="center row">
+                <div class="col s6 s12">
+                  <nav class="teal lighten-1" style="height: 68px;">
+                    <div class="nav-wrapper">
+                      <form>
+                        <div class="input-field">
+                          <input id="search" type="search"
+                                 placeholder="Cari File/Folder disini...">
+                          <label class="label-icon" for="search">
+                            <img style="position: relative; top: 10px;" 
+                                src="assets/Icons/32/109-search-1.png" />
+                          </label>
+                        </div>
+                      </form>
+                    </div>
+                  </nav>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
         <div id="berkas">
           <ul class="left">
             <li>
@@ -83,33 +118,6 @@
                 style="background-image: url(assets/Icons/32/152-trash-3.png)">
 
               </button>
-              <button id="btnCariBerdasarkan"
-                  class="waves-effect waves-light btn-large
-                              btn-flat white-text tombolIconDanTeks
-                              modal-trigger"
-                 data-target="panelPencarianBerkas"
-                 style="background-image: url(assets/Icons/32/110-research.png)">
-                Cari Berdasarkan...
-              </button>
-            </li>
-            <li id="kotakPencarian">
-              <div class="center row">
-                <div class="col s6 s12">
-                  <nav class="teal lighten-1" style="height: 68px;">
-                    <div class="nav-wrapper">
-                      <form>
-                        <div class="input-field">
-                          <input id="search" type="search" placeholder="Cari File/Folder...">
-                          <label class="label-icon" for="search">
-                            <img style="position: relative; top: 10px;" 
-                                src="assets/Icons/32/109-search-1.png" />
-                          </label>
-                        </div>
-                      </form>
-                    </div>
-                  </nav>
-                </div>
-              </div>
             </li>
           </ul>
         </div>
@@ -184,16 +192,6 @@
                 Tutup Semua Tab
               </button>
             </li>
-            <li>
-              <div class="switch">
-                <label class="white-text">
-                  Tampilkan file tersembunyi
-                  <input type="checkbox">
-                  <span class="lever"></span>
-                  On
-                </label>
-              </div>
-            </li>
           </ul>
         </div>
         <div id="kontenTabPengaturan">
@@ -211,6 +209,16 @@
                   style="background-image: url(assets/Icons/32/120-questions.png)">
                 Atur Pintasan
               </button>
+            </li>
+            <li>
+              <div class="switch">
+                <label class="white-text">
+                  Tampilkan file tersembunyi
+                  <input id="cbTampilkanTersembunyi" type="checkbox">
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
             </li>
           </ul>
         </div>
@@ -273,12 +281,12 @@
               <img src="assets/Icons/64/060-folder-13.png" />
             </div>
             <div class="col s6">
-              <a href="#name">
+              <a href="">
                 <span class="white-text name">
                   Akses Cepat
                 </span>
               </a>
-              <a href="#email">
+              <a href="">
                 <span class="white-text email">
                   Pintasan
                 </span>
@@ -288,7 +296,7 @@
         </div>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuKomputerku" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/012-hard-drive-1.png)">
             <div class="col s3 offset-s2">Komputerku</div>
@@ -296,7 +304,7 @@
         </a>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuDokumen" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/183-document.png)">
             <div class="col s3 offset-s2">Dokumen</div>
@@ -304,7 +312,7 @@
         </a>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuFoto" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/164-picture-1.png)">
             <div class="col s3 offset-s2">Foto</div>
@@ -312,7 +320,7 @@
         </a>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuVideo" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/162-video-camera.png)">
             <div class="col s3 offset-s2">Video</div>
@@ -320,7 +328,7 @@
         </a>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuMusik" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/178-music-player.png)">
             <div class="col s3 offset-s2">Musik</div>
@@ -328,7 +336,7 @@
         </a>
       </li>
       <li>
-        <a href="#!" class="waves-effect">
+        <a id="menuUnduhan" href="#!" class="waves-effect">
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/180-down-arrow.png)">
             <div class="col s3 offset-s2">Unduhan</div>
@@ -795,7 +803,7 @@
           <div class="switch">
             <label class="black-text">
               Sembunyikan Folder
-              <input type="checkbox">
+              <input id="swHideFolderBaru" type="checkbox">
               <span class="lever"></span>
             </label>
           </div>

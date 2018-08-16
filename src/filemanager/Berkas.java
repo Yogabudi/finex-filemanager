@@ -3,7 +3,11 @@ package filemanager;
 
 import filemanager.webviewui.WebViewUI;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +21,7 @@ public class Berkas {
   private String icon;
   private int jumlahBerkas = 0;
   private long ukuranFile = 0;
+  private boolean tersembunyi = false;
   
   private WebViewUI ui;
   
@@ -32,6 +37,14 @@ public class Berkas {
     this.ui = ui;
   }
 
+  public boolean isTersembunyi() {
+    return tersembunyi;
+  }
+
+  public void setTersembunyi(boolean tersembunyi) {
+    this.tersembunyi = tersembunyi;
+  }
+  
   public long getUkuranFile() {
     return ukuranFile;
   }
@@ -67,6 +80,10 @@ public class Berkas {
   public File getObjekFile() {
     return objekFile;
   }
+  
+  public boolean berkasTersedia() {
+    return objekFile.exists();
+  }
 
   public Berkas[] listBerkas() {
     List<Berkas> daftarBerkas = new ArrayList<>();
@@ -74,6 +91,7 @@ public class Berkas {
     
     for(int i = 0; i < daftarFile.length; i++) {
       Berkas berkas = new Berkas(ui, daftarFile[i].getAbsolutePath());
+      berkas.setTersembunyi((berkas.getObjekFile().getName().charAt(0) == '.'));
       
       if(berkas.getObjekFile().isDirectory()) {
         berkas.setIcon("assets/Icons/64/101-folder-5.png");
@@ -116,6 +134,7 @@ public class Berkas {
       "berkas.setPathAbsolut('"+objekFile.getAbsolutePath()+"');"+
       "berkas.setJumlahBerkas("+jumlahBerkas+");"+
       "berkas.setUkuranFile("+ukuranFile+");"+
+      "berkas.setTersembunyi("+tersembunyi+");"+
       "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);"+
       "berkas.pasangElemen($('.tempatBerkas'));";
 
@@ -138,6 +157,20 @@ public class Berkas {
     return hasil.toArray(new Berkas[0]);
   }
   
+  public static Berkas buatFolderBaru(String pathFolder, WebViewUI ui)
+          throws AccessDeniedException, IOException {
+    Berkas berkas = null;
+    
+    Path folder = Files.createDirectory(Paths.get(pathFolder));
+    berkas = new Berkas(ui, folder.toString());
+
+    berkas.setTersembunyi((berkas.getObjekFile().getName().charAt(0) == '.'));
+    berkas.setIcon("assets/Icons/64/101-folder-5.png");
+    berkas.buatBerkasPadaJS();
+      
+    return berkas;
+  }
+  
   public void hapusSemuaBerkasPadaJS() {
     ui.eksekusiJavascript("Berkas.hapusSemuaBerkas();");
   }
@@ -154,6 +187,14 @@ public class Berkas {
     String js = ""+
     "$('#konten').show();"+
     "$('#loadingCircle').hide();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void tandaiBerkasPadaJS(String namaBerkas, WebViewUI ui) {
+    String js = "" +
+    "Berkas.hilangkanSemuaTanda();"+
+    "Berkas.tandai('"+namaBerkas+"');";
     
     ui.eksekusiJavascript(js);
   }

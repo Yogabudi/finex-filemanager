@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
   // inisialisasi komponen
   
@@ -13,6 +12,7 @@ $(document).ready(function() {
   $(".tap-target").tapTarget();
 
   $("#tabEdit").hide();
+  $("#tabTab").hide();
   $("#loadingCircle").hide();
   $(".modal").hide();
   
@@ -36,6 +36,36 @@ $(document).ready(function() {
         $("#ribbon").tabs("select", "berkas");
         $("#ribbon").tabs("updateTabIndicator");
       }
+  });
+  
+  $("#menuDokumen").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeDokumen");
+  });
+  
+  $("#menuFoto").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeFoto");
+  });
+  
+  $("#menuMusik").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeMusik");
+  });
+  
+  $("#menuVideo").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeVideo");
+  });
+  
+  $("#menuUnduhan").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeUnduhan");
+  });
+  
+  $("#menuKomputerku").click(function(e) {
+    $("#panelBookmark").sidenav("close");
+    sendNSCommand("loncatKeRoot");
   });
   
   $("#panelWajah").sidenav(
@@ -72,6 +102,15 @@ $(document).ready(function() {
   
   $("#btnRefresh").click(function () {
     M.toast({ html: "Refreshed!" });
+  });
+  
+  $("#cbTampilkanTersembunyi").click(function(e) {
+    if($(this).prop("checked") === true) {
+      Berkas.tampilkanBerkasTersembunyi();
+    }
+    else{
+      Berkas.janganTampilkanBerkasTersembunyi();
+    }
   });
   
   ///////////////////////////////////////////////////////////
@@ -162,7 +201,10 @@ $(document).ready(function() {
     animation: "pop",
     url: "#popPath",
     width: "500",
-    placement: "bottom-right"
+    placement: "bottom-right",
+    onShow: function(element) {
+      $("#txPath").select();
+    }
   });
   
   $("#btnUbahNama").webuiPopover({
@@ -221,6 +263,24 @@ $(document).ready(function() {
     onHide: function(element) {
       tutupAccordion("#accordPintasan");
     }
+  });
+  
+  $("#txPath").keypress(function(e) {
+    if(e.which === 13) {
+      var path = $("#txPath").val();
+      sendNSCommand("keyEnterDitekan", "#txPath", path);
+    }
+    
+    e.stopPropagation();
+  });
+  
+  $("#btnOkBuatFolder").click(function(e) {
+    var namaFolder = $("#txNamaFolder").val();
+    var tersembunyi = $("#swHideFolderBaru").prop("checked");
+    
+    sendNSCommand("buatFolderBaru", namaFolder, tersembunyi);
+    $("#btnBuatFolder").webuiPopover("hide");
+    $("#txNamaFolder").val("");
   });
   
   $("#btnOkUbahNama").click(function () {
@@ -287,7 +347,7 @@ $(document).ready(function() {
   $("#btnKedepan").click(function() {
     sendNSCommand("tampilkanBerkasKedepan");
   });
-    
+  
   //////////////////////////////////////////////////////////
   //
   // testing buat folder
@@ -318,6 +378,7 @@ $(document).ready(function() {
 //    berkas.setPathAbsolut("/home/" + berkas.getNama());
 //    berkas.setJenis("file");
 //    berkas.setIcon("assets/Icons/64/053-document-7.png");
+//    berkas.setTersembunyi(true);
 //    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }

@@ -23,6 +23,7 @@ body {
 .tombolRibbon {
     background-repeat: no-repeat;
     background-position: center;
+    text-transform: none;
 }
 
 .tombolPanelKiri {
@@ -319,4 +320,8 @@ body {
 #loadingCircle {
     position: relative;
     top: 250px;
+}
+
+#kotakPencarian {
+    width: 500px;
 }
