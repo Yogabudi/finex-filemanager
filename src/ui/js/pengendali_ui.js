@@ -227,7 +227,10 @@ $(document).ready(function() {
     url: "#popBuatFolderBaru",
     closeable: true,
     width: "300",
-    placement: "bottom-right"
+    placement: "bottom-right",
+    onShow: function(element) {
+      $("#txNamaFolder").select();
+    }
   });
   
   $("#btnBuatFile").webuiPopover({
@@ -236,7 +239,10 @@ $(document).ready(function() {
     url: "#popBuatFileBaru",
     closeable: true,
     width: "300",
-    placement: "bottom-right"
+    placement: "bottom-right",
+    onShow: function(element) {
+      $("#txNamaFile").select();
+    }
   });
   
   $("#btnLokasiGambarKustom").webuiPopover({
@@ -281,6 +287,12 @@ $(document).ready(function() {
     sendNSCommand("buatFolderBaru", namaFolder, tersembunyi);
     $("#btnBuatFolder").webuiPopover("hide");
     $("#txNamaFolder").val("");
+  });
+  
+  $("#txNamaFolder").keypress(function(e) {
+    if(e.which === 13) {
+      $("#btnOkBuatFolder").click();
+    }
   });
   
   $("#btnOkUbahNama").click(function () {
@@ -333,7 +345,13 @@ $(document).ready(function() {
   // atur ukuran konten
   //
   
-  aturKonten();
+  $("#konten").height($(window).height() - 190);
+  $("#konten").width($(window).width() - 7);
+  
+  $(window).resize(function() {
+    $("#konten").height($(window).height() - 190);
+    $("#konten").width($(window).width() - 7);
+  });
   
   //////////////////////////////////////////////////////////
   //
@@ -378,7 +396,7 @@ $(document).ready(function() {
 //    berkas.setPathAbsolut("/home/" + berkas.getNama());
 //    berkas.setJenis("file");
 //    berkas.setIcon("assets/Icons/64/053-document-7.png");
-//    berkas.setTersembunyi(true);
+//    berkas.setTersembunyi(false);
 //    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }
