@@ -191,6 +191,8 @@ class Berkas {
         $("div[id-berkas='"+nama+"']").hide();
       }
       
+      $("#cbTampilkanTersembunyi").prop("checked", false);
+      
       $("div[id-berkas='"+nama+"']").on("dblclick", this.eventSaatDblKlik);
       
       $("div[id-berkas='"+nama+"']").on("contextmenu", function(e) {
@@ -227,6 +229,18 @@ class Berkas {
     $("#btnUbahNama").show();
     $("#btnDuplikat").show();
     $("#btnInfoBerkas").show();
+    
+    if(Berkas.dapatkanBerkasTerpilih().apakahTersembunyi()) {
+      $("#btnHideDanView")
+              .css("background-image", "url(assets/Icons/32/view.png)")
+              .attr("data-tooltip", "Tampilkan (Unhide)");
+    }
+    else {
+      $("#btnHideDanView")
+              .css("background-image", "url(assets/Icons/32/hide.png)")
+              .attr("data-tooltip", "Sembunyikan");
+    }
+    
   }
 
   static eventSaatTerpilihBanyak(elements) {
@@ -293,12 +307,14 @@ class Berkas {
     var iconBerkas = $(".ds-selected .card-image img").attr("src");
     var pathAbsolut = $(".ds-selected").parent().attr("path-absolut");
     var jenis = $(".ds-selected").parent().attr("jenis");
+    var tersembunyi = $(".ds-selected").parent().attr("tersembunyi");
     
     var berkas = new Berkas();
     berkas.setNama(namaBerkas);
     berkas.setJenis(jenis);
     berkas.setPathAbsolut(pathAbsolut);
     berkas.setIcon(iconBerkas);
+    berkas.setTersembunyi((tersembunyi === "true"));
     
     return berkas;
   }
@@ -308,12 +324,14 @@ class Berkas {
     var iconBerkas = $("div[id-berkas='"+nama+"'] .card-panel .card-image img").attr("src");
     var pathAbsolut = $("div[id-berkas='"+nama+"']").attr("path-absolut");
     var jenis = $("div[id-berkas='"+nama+"']").attr("jenis");
+    var tersembunyi = $("div[id-berkas='"+nama+"']").attr("tersembunyi");
     
     var berkas = new Berkas();
     berkas.setNama(namaBerkas);
     berkas.setJenis(jenis);
     berkas.setPathAbsolut(pathAbsolut);
     berkas.setIcon(iconBerkas);
+    berkas.setTersembunyi((tersembunyi === "true"));
     
     return berkas;
   }
@@ -341,12 +359,14 @@ class Berkas {
     var iconBerkas = $(elementButton).find(".card-panel .card-image img").attr("src");
     var pathAbsolut = $(elementButton).attr("path-absolut");
     var jenis = $(elementButton).attr("jenis");
+    var tersembunyi = $(elementButton).attr("tersembunyi");
     
     var berkas = new Berkas();
     berkas.setNama(namaBerkas);
     berkas.setJenis(jenis);
     berkas.setPathAbsolut(pathAbsolut);
     berkas.setIcon(iconBerkas);
+    berkas.setTersembunyi((tersembunyi === "true"));
     
     return berkas;
   }
