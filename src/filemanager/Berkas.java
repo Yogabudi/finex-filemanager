@@ -5,11 +5,14 @@ import filemanager.webviewui.WebViewUI;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -25,6 +28,8 @@ public class Berkas {
   
   private WebViewUI ui;
   
+  private ExecutorService execService;
+  
   public Berkas(WebViewUI ui, String pathname) {
     this.objekFile = new File(pathname);
     this.jumlahBerkas = (objekFile.listFiles() != null)
@@ -35,6 +40,8 @@ public class Berkas {
     
     this.icon = "";
     this.ui = ui;
+    
+    this.execService = Executors.newCachedThreadPool();
   }
 
   public boolean isTersembunyi() {
@@ -106,10 +113,10 @@ public class Berkas {
     return daftarBerkas.toArray(new Berkas[0]);
   }
   
-  public void tampilkanListBerkas() {    
-    Berkas[] daftarBerkas = this.listBerkas();
-    
-    this.hapusSemuaBerkasPadaJS();
+  public void tampilkanListBerkas() {
+    Berkas[] daftarBerkas = Berkas.this.listBerkas();
+
+    Berkas.this.hapusSemuaBerkasPadaJS();
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isDirectory()) {
         daftarBerkas[i].buatBerkasPadaJS();
@@ -158,7 +165,7 @@ public class Berkas {
   }
   
   public static Berkas buatFolderBaru(String pathFolder, WebViewUI ui)
-          throws AccessDeniedException, IOException {
+          throws AccessDeniedException, IOException, FileAlreadyExistsException {
     Berkas berkas = null;
     
     Path folder = Files.createDirectory(Paths.get(pathFolder));
@@ -169,6 +176,36 @@ public class Berkas {
     berkas.buatBerkasPadaJS();
       
     return berkas;
+  }
+  
+  public static Berkas buatFileBaru(String pathFile, WebViewUI ui)
+          throws AccessDeniedException, IOException, FileAlreadyExistsException {
+    
+    Berkas berkas = null;
+    
+    Path file = Files.createFile(Paths.get(pathFile));
+    berkas = new Berkas(ui, file.toString());
+
+    berkas.setTersembunyi((berkas.getObjekFile().getName().charAt(0) == '.'));
+    berkas.setIcon("assets/Icons/64/053-document-7.png");
+    berkas.buatBerkasPadaJS();
+      
+    return berkas;
+  }
+  
+  public static boolean pindahkanBerkas(Berkas berkas, Berkas tujuan)
+          throws IOException {
+    
+    boolean sukses = false;
+    
+    Path op = Files.move(berkas.getObjekFile().toPath(),
+            berkas.getObjekFile().toPath());
+    
+    if(op != null) {
+      sukses = true;
+    }
+    
+    return sukses;
   }
   
   public void hapusSemuaBerkasPadaJS() {
