@@ -9,8 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import filemanager.webviewui.*;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -18,14 +22,15 @@ import javax.swing.SwingUtilities;
  *
  * @author Yoga Budi Yulianto
  */
-public class FileManager extends JFrame
-implements PendengarWebBrowser {
+public class FileManager extends JFrame implements PendengarWebBrowser {
 
   public WebViewUI ui;
-  public List<Berkas> jejakNav = new ArrayList<>();
   public NavMajuMundur nav;
   public ListBreadcrumbBerkas bcBerkas = new ListBreadcrumbBerkas();
-    
+  
+  public List<Berkas> jejakNav = new ArrayList<>();
+  public ArrayList<Berkas> holderBerkas = new ArrayList<>();
+  
   public FileManager() {
     super();
 
@@ -38,11 +43,12 @@ implements PendengarWebBrowser {
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
-    ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
-    
+    ui.setURL(getClass().getResource("/ui/index.html").toExternalForm());
     this.getContentPane().add(ui);
     
     nav = new NavMajuMundur(ui);
+    
+    
   }
 
   public void ketengahkan() {
@@ -83,6 +89,9 @@ implements PendengarWebBrowser {
     String perintah = wbce.getCommand();
     Object[] param = wbce.getParameters();
     
+    if(perintah.equals("log")) {
+      System.out.println(param[0].toString().toUpperCase() + " : " + param[1]);
+    }
     if(perintah.equals("tampilkanListBerkas")) {
       String pathAbsolut = (String)param[0];
       
@@ -116,6 +125,7 @@ implements PendengarWebBrowser {
           nav.majuKe(berkas).tampilkanListBerkas();
         }
       }
+      
     }
     else if(perintah.equals("tampilkanListBerkasDariBreadcrumb")) {
       String pathAbsolut = (String)param[0];
@@ -346,15 +356,118 @@ implements PendengarWebBrowser {
               JOptionPane.ERROR_MESSAGE);
         }
       }
-      catch(Exception ex) {
+      catch(AccessDeniedException accdenex) {
         JOptionPane.showMessageDialog(this,
               "Maaf, anda tidak diizinkan membuat folder disini!\n",
               "Anda Bukan Root!",
               JOptionPane.ERROR_MESSAGE);
       }
+      catch(FileAlreadyExistsException faee) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, nama folder yang anda masukkan sudah ada!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(IOException ioe) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuat folder, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
     }
-    else if(perintah.equals("log")) {
-      System.out.println(param[0].toString().toUpperCase() + " : " + param[1]);
+    else if(perintah.equals("buatFileBaru")) {
+      String namaFile = (String)param[0];
+      boolean tersembunyi = (boolean)param[1];
+      String lokasiSekarang =
+              nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      
+      try {
+        if(!namaFile.equals("")) {
+          if(!namaFile.contains("/")) {
+            if(!tersembunyi) {
+              Berkas.buatFileBaru(lokasiSekarang + "/" + namaFile, ui);
+              Berkas.tandaiBerkasPadaJS(namaFile, ui);
+              scrollKeBawahPadaJS();
+            }
+            else {
+              Berkas.buatFileBaru(lokasiSekarang + "/." + namaFile, ui);
+              Berkas.tandaiBerkasPadaJS("." + namaFile, ui);
+              scrollKeBawahPadaJS();
+            }   
+          }
+          else {
+            JOptionPane.showMessageDialog(this,
+              "Nama file yang anda masukkan tidak valid!\n" +
+              "Disarankan menggunakan karakter huruf dan angka",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(this,
+              "Anda belum memasukkan nama file baru!\n" +
+              "Mohon masukkan nama file baru",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        }
+      }
+      catch(AccessDeniedException accdenex) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, anda tidak diizinkan membuat file disini!\n",
+              "Anda Bukan Root!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(FileAlreadyExistsException faee) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, nama file yang anda masukkan sudah ada!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(IOException ioe) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuat file, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+    }
+    else if(perintah.equals("bukaTerminal")) {
+      String lokasiSekarang =
+              nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      String fileSh = "src/filemanager/programsh/bukaterminal.sh";
+      
+      try {
+        ProcessBuilder pb = new ProcessBuilder(fileSh, lokasiSekarang);
+        Process proc = pb.start();
+      }
+      catch (IOException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuka terminal, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+      }
+      
+    }
+    else if(perintah.equals("kosongkanTrash")) {
+      try {
+        ProcessBuilder pb = new ProcessBuilder("gio", "trash", "--empty");
+        Process proc = pb.start();
+      }
+      catch(IOException ioex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat mengosongkan trash, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ioex.printStackTrace();
+      }
+      
+    }
+    else if(perintah.equals("cutBerkas")) {
+      String namaBerkas = (String)param[0];
+      Berkas berkas = new Berkas(ui, namaBerkas);
+      
+      holderBerkas.clear();
+      holderBerkas.add(berkas);
     }
   }
 
