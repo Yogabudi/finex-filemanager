@@ -84,6 +84,10 @@ $(document).ready(function() {
     $(this).prop("checked", true);
   });
   
+  $("#btnOkEmptyTrash").click(function(e) {
+    sendNSCommand("kosongkanTrash");
+  });
+  
   /////////////////////////////////////////////////////
   //
   // atur tombol ribbon 
@@ -98,6 +102,11 @@ $(document).ready(function() {
   
   $("#btnCut").click(function () {
     M.toast({ html: "Cut!" });
+    sendNSCommand("cutBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  });
+  
+  $("#btnTempel").click(function() {
+    
   });
   
   $("#btnRefresh").click(function () {
@@ -111,6 +120,10 @@ $(document).ready(function() {
     else{
       Berkas.janganTampilkanBerkasTersembunyi();
     }
+  });
+  
+  $("#btnBukaTerminal").click(function(e) {
+    sendNSCommand("bukaTerminal");
   });
   
   ///////////////////////////////////////////////////////////
@@ -271,15 +284,6 @@ $(document).ready(function() {
     }
   });
   
-  $("#txPath").keypress(function(e) {
-    if(e.which === 13) {
-      var path = $("#txPath").val();
-      sendNSCommand("keyEnterDitekan", "#txPath", path);
-    }
-    
-    e.stopPropagation();
-  });
-  
   $("#btnOkBuatFolder").click(function(e) {
     var namaFolder = $("#txNamaFolder").val();
     var tersembunyi = $("#swHideFolderBaru").prop("checked");
@@ -289,9 +293,33 @@ $(document).ready(function() {
     $("#txNamaFolder").val("");
   });
   
+  $("#btnOkBuatFile").click(function(e) {
+    var namaFile = $("#txNamaFile").val();
+    var tersembunyi = $("#cbSembunyikanFileBaru").prop("checked");
+    
+    sendNSCommand("buatFileBaru", namaFile, tersembunyi);
+    $("#btnBuatFile").webuiPopover("hide");
+    $("#txNamaFile").val("");
+  });
+  
+  $("#txPath").keypress(function(e) {
+    if(e.which === 13) {
+      var path = $("#txPath").val();
+      sendNSCommand("keyEnterDitekan", "#txPath", path);
+    }
+    
+    e.stopPropagation();
+  });
+  
   $("#txNamaFolder").keypress(function(e) {
     if(e.which === 13) {
       $("#btnOkBuatFolder").click();
+    }
+  });
+  
+  $("#txNamaFile").keypress(function(e) {
+    if(e.which === 13) {
+      $("#btnOkBuatFile").click();
     }
   });
   
