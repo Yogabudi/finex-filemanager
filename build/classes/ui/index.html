@@ -254,13 +254,13 @@
         </div>
         <div id="library"></div>
         
-        <button id="tombolBuatTab"
+<!--        <button id="tombolBuatTab"
            class="btn-floating btn-large halfway-fab waves-effect waves-light
                   red tooltipped tombol-halfway purple"
            data-position="top" data-tooltip="Buat Tab Baru"
            style="background-image: url(assets/Icons/32/050-paper.png);">
           
-        </button>
+        </button>-->
       </div>
     </nav>
     
@@ -597,10 +597,10 @@
         <h5>Apakah anda ingin mengosongkan Trash ?</h5>
       </div>
       <div class="modal-footer">
-        <button class="modal-close waves-effect waves-light btn-flat">
+        <button id="btnBatalEmptyTrash" class="modal-close waves-effect waves-light btn-flat">
           Batalkan
         </button>
-        <button class="modal-close waves-effect waves-light btn">
+        <button id="btnOkEmptyTrash" class="modal-close waves-effect waves-light btn">
           OK
         </button>
       </div>
@@ -875,7 +875,8 @@
               <button class="btn-floating halfway-fab waves-effect waves-light red
                               tooltipped tombol-halfway btn-large"
                       data-tooltip="Batalkan" data-position="top"
-                      style="background-image: url(assets/Icons/32/stop2.png);">
+                      style="background-image: url(assets/Icons/48/batalkan.png);
+                              background-size: 25px;">
               </button>
             </div>
             <div class="card-action">
@@ -905,7 +906,8 @@
               <button class="btn-floating halfway-fab waves-effect waves-light red
                               tooltipped tombol-halfway btn-large"
                       data-tooltip="Batalkan" data-position="top"
-                      style="background-image: url(assets/Icons/32/stop2.png);">
+                      style="background-image: url(assets/Icons/48/batalkan.png);
+                              background-size: 25px;">
               </button>
             </div>
             <div class="card-action">
@@ -1060,18 +1062,18 @@
     
     <!-- btn panel wajah -->
     <button id="btnPanelWajah" data-target="panelWajah"
-        class="btn-floating btn-large waves-effect waves-light purple
+        class="btn-floating btn-large waves-effect waves-light red
                 sidenav-trigger tombol-mengapung"
-        style="background-image: url(assets/Icons/32/006-happy-1.png);">
+        style="background-image: url(assets/Icons/48/wajah.png);
+                background-size: 32px;">
     </button>
     
     <!-- btn panel operasi berkas -->
     <button id="btnOperasiBerkas"
-        class="btn-floating btn-large waves-effect waves-light purple
-                tombol-mengapung-ribbon tooltipped"
-                data-tooltip="Operasi Berkas"
-                data-position="top"
-        style="background-image: url(assets/Icons/32/003-papers.png);">
+        class="btn-floating btn-large waves-effect waves-light red
+                tombol-mengapung-ribbon"
+        style="background-image: url(assets/Icons/48/fileop.png);
+                background-size: 32px;">
     </button>
     
     <script src="assets/jquery-3.3.1.min.js"></script>
