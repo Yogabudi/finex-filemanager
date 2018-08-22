@@ -87,6 +87,35 @@ class Berkas {
     };
     
     ////////////////////////////////////
+    
+    this.ubahTersembunyi = function(sembunyikan) {
+      tersembunyi = sembunyikan;
+      $("div[id-berkas='"+nama+"']").attr("tersembunyi", tersembunyi);
+      
+      if(tersembunyi) {
+        $("div[id-berkas='"+nama+"'] .card-panel")
+                .removeClass("white")
+                .addClass("grey");
+      }
+      else {
+        $("div[id-berkas='"+nama+"'] .card-panel")
+                .removeClass("grey")
+                .addClass("white");
+      }
+    };
+    
+    this.ubahNama = function(n) {
+      $("div[id-berkas='"+nama+"']")
+              .attr("id-berkas", n)
+              .find(".nama-berkas b")
+              .text(n);
+      nama = n;
+    };
+    
+    this.ubahPathAbsolut = function(p) {
+      pathAbsolut = p;
+      $("div[id-berkas='"+nama+"']").attr("path-absolut", pathAbsolut);
+    };
         
     this.dataContextMenuBerkas = [
       new ObjekMenu("Cut", "assets/Icons/24/scissors.png", "").buatMenu(),

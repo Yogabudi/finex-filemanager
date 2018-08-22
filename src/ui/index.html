@@ -163,12 +163,16 @@
                  style="background-image: url(assets/Icons/32/121-info-1.png)">
 
               </button>
-              <button class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+              <button id="btnHapus"
+                class="waves-effect waves-light btn-large btn-flat tombolRibbon
+                       modal-trigger tooltipped"
                 data-position="top" data-tooltip="Hapus"
+                data-target="panelConfirmHapusBerkas"
                 style="background-image: url(assets/Icons/32/025-report.png)">
 
               </button>
-              <button class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+              <button id="btnHapusKeTrash"
+                class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
                 data-position="top" data-tooltip="Hapus Ke Tempat Sampah"
                 style="background-image: url(assets/Icons/32/150-garbage-1.png)">
 
@@ -306,6 +310,14 @@
           <div class="row iconPintasan"
                style="background-image: url(assets/Icons/32/012-hard-drive-1.png)">
             <div class="col s3 offset-s2">Komputerku</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a id="menuHome" href="#!" class="waves-effect">
+          <div class="row iconPintasan"
+               style="background-image: url(assets/Icons/32/186-home.png)">
+            <div class="col s3 offset-s2">Home</div>
           </div>
         </a>
       </li>
@@ -594,13 +606,28 @@
     <!-- panel confirm empty trash -->
     <div id="panelConfirmEmptyTrash" class="modal">
       <div class="modal-content">
-        <h5>Apakah anda ingin mengosongkan Trash ?</h5>
+        <h5>Apakah anda yakin ingin mengosongkan Trash ?</h5>
       </div>
       <div class="modal-footer">
         <button id="btnBatalEmptyTrash" class="modal-close waves-effect waves-light btn-flat">
           Batalkan
         </button>
         <button id="btnOkEmptyTrash" class="modal-close waves-effect waves-light btn">
+          OK
+        </button>
+      </div>
+    </div>
+    
+    <!-- panel confirm hapus berkas permanen -->
+    <div id="panelConfirmHapusBerkas" class="modal">
+      <div class="modal-content">
+        <h5>Apakah anda yakin ingin menghapus berkas ini ?</h5>
+      </div>
+      <div class="modal-footer">
+        <button id="btnBatalHapusBerkas" class="modal-close waves-effect waves-light btn-flat">
+          Batalkan
+        </button>
+        <button id="btnOkHapusBerkasPermanen" class="modal-close waves-effect waves-light btn">
           OK
         </button>
       </div>
@@ -851,70 +878,8 @@
     
     <!-- pop operasi berkas -->
     <div id="popOperasiBerkas" class="webui-popover-content">
-      <div class="row">
-        <div class="col s12 panel-op">
-          <div class="card">
-            <div class="card-content">
-              <div class="row">
-                <div class="col s12">
-                  <span class="card-title">Menyalin berkas...</span>
-                </div>
-                <div class="col s12 center-align">
-                  <img id="iconSalin_File1"
-                       src="assets/Icons/64/053-document-7.png"/>
-                  <img id="iconSalin_File2"
-                       src="assets/Icons/64/053-document-7.png"
-                       class="animated infinite slideOutRight" />
-                  <img id="iconSalin_TempatBerkas"
-                       src="assets/Icons/64/194-document-1.png" />
-                </div>
-              </div>
-            </div>
-            <div class="card-action">
-              <b>Berkas : </b><span>/home/yourname/inifile.docx</span>
-              <button class="btn-floating halfway-fab waves-effect waves-light red
-                              tooltipped tombol-halfway btn-large"
-                      data-tooltip="Batalkan" data-position="top"
-                      style="background-image: url(assets/Icons/48/batalkan.png);
-                              background-size: 25px;">
-              </button>
-            </div>
-            <div class="card-action">
-              <b>Lokasi Tujuan : </b><span>/home/inifile.docx</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col s12 panel-op">
-          <div class="card">
-            <div class="card-content">
-              <div class="row">
-                <div class="col s12">
-                  <span class="card-title">Memindahkan berkas...</span>
-                </div>
-                <div class="col s12 right-align">
-                  <img id="iconPindahkan_TempatBerkas"
-                       src="assets/Icons/64/194-document-1.png" />
-                  <img id="iconPindahkan_File"
-                       class="animated infinite bounceInLeft"
-                       src="assets/Icons/64/053-document-7.png"/>
-                </div>
-              </div>
-            </div>
-            <div class="card-action">
-              <b>Berkas : </b><span>/home/yourname/inifile.docx</span>
-              <button class="btn-floating halfway-fab waves-effect waves-light red
-                              tooltipped tombol-halfway btn-large"
-                      data-tooltip="Batalkan" data-position="top"
-                      style="background-image: url(assets/Icons/48/batalkan.png);
-                              background-size: 25px;">
-              </button>
-            </div>
-            <div class="card-action">
-              <b>Lokasi Tujuan : </b><span>/home/inifile.docx</span>
-            </div>
-          </div>
-        </div>
+      <div id="rowOperasiBerkas" class="row">
+        <!-- TEMPAT PANEL OPERASI BERKAS -->
       </div>
       
       <div id="pesanTidakAdaOp" class="container">
@@ -1070,10 +1035,8 @@
     
     <!-- btn panel operasi berkas -->
     <button id="btnOperasiBerkas"
-        class="btn-floating btn-large waves-effect waves-light red
-                tombol-mengapung-ribbon"
-        style="background-image: url(assets/Icons/48/fileop.png);
-                background-size: 32px;">
+        class="btn-floating btn-large waves-effect waves-light red tombol-mengapung-ribbon"
+        style="background-image: url(assets/Icons/48/fileop.png); background-size: 32px;">
     </button>
     
     <script src="assets/jquery-3.3.1.min.js"></script>
@@ -1087,6 +1050,7 @@
     <script src="js/ContextMenu.js"></script>
     <script src="js/Berkas.js"></script>
     <script src="js/BreadcrumbBerkas.js"></script>
+    <script src="js/PanelOperasiBerkas.js"></script>
     <script src="js/KotakWajah.js"></script>
     
     <script src="js/fungsi_pembantu.js"></script>
