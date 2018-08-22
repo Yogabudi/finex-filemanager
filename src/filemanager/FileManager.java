@@ -557,6 +557,26 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
         ex.printStackTrace();
       }
     }
+    else if(perintah.equals("tampilkanInfoBerkas")) {
+      String pathAbsolut = (String)param[0];
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        berkas.tampilkanInfoBerkas();
+      }
+      catch(IOException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, anda tidak diizinkan melihat detail berkas ini!\n",
+              "Anda Bukan Root!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(NullPointerException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, anda tidak diizinkan melihat detail berkas ini!\n",
+              "Anda Bukan Root!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+    }
   }
 
   public void tampilkanInfoBerkas(Berkas berkasTerpilih) {

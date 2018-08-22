@@ -9,6 +9,9 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -138,24 +141,6 @@ public class Berkas {
     }
   }
   
-  public void buatBerkasPadaJS() {
-    String jenisBerkas = (objekFile.isDirectory()) ? "folder" : "file";
-    
-    String js = ""+
-      "var berkas = new Berkas();"+
-      "berkas.setNama('"+objekFile.getName()+"');"+
-      "berkas.setJenis('"+jenisBerkas+"');"+
-      "berkas.setIcon('"+icon+"');"+
-      "berkas.setPathAbsolut('"+objekFile.getAbsolutePath()+"');"+
-      "berkas.setJumlahBerkas("+jumlahBerkas+");"+
-      "berkas.setUkuranFile("+ukuranFile+");"+
-      "berkas.setTersembunyi("+tersembunyi+");"+
-      "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);"+
-      "berkas.pasangElemen($('.tempatBerkas'));";
-
-      ui.eksekusiJavascript(js);
-  }
-  
   public Berkas[] pecahPathAbsolut() {
     ArrayList<Berkas> hasil = new ArrayList<>();
     Path pathAbsolut = objekFile.toPath();
@@ -170,6 +155,31 @@ public class Berkas {
     }
     
     return hasil.toArray(new Berkas[0]);
+  }
+  
+  public void tampilkanInfoBerkas() throws IOException {
+    BasicFileAttributes atribut =
+            Files.readAttributes(objekFile.toPath(), BasicFileAttributes.class);
+    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    
+    String namaBerkas = objekFile.getName();
+    String jenisBerkas = (objekFile.isDirectory()) ? "Direktori" : "File";
+    long ukuranBerkas = ukuranFile;
+    int jmlKonten = (objekFile.isDirectory()) ? objekFile.listFiles().length : 0;
+    String tglDibuat = df.format(atribut.creationTime().toMillis());
+    String tglModif = df.format(atribut.lastModifiedTime().toMillis());
+    String tglAkses = df.format(atribut.lastAccessTime().toMillis());
+    
+    String js = ""+
+    "$('#txNamaBerkas').val('"+namaBerkas+"');"+
+    "$('#jenisBerkas').text('"+jenisBerkas+"');"+
+    "$('#ukuranBerkas').text('"+ukuranBerkas+" KB');"+
+    "$('#jmlKonten').text('"+jmlKonten+"');"+
+    "$('#tglDibuat').text('"+tglDibuat+"');"+
+    "$('#tglModif').text('"+tglModif+"');"+
+    "$('#tglAkses').text('"+tglAkses+"');";
+    
+    ui.eksekusiJavascript(js);
   }
   
   public void hapusKeTrash() throws IOException {
@@ -332,6 +342,24 @@ public class Berkas {
     var+".ubahPathAktif('"+path+"');";
     
     ui.eksekusiJavascript(js);
+  }
+  
+  public void buatBerkasPadaJS() {
+    String jenisBerkas = (objekFile.isDirectory()) ? "folder" : "file";
+    
+    String js = ""+
+      "var berkas = new Berkas();"+
+      "berkas.setNama('"+objekFile.getName()+"');"+
+      "berkas.setJenis('"+jenisBerkas+"');"+
+      "berkas.setIcon('"+icon+"');"+
+      "berkas.setPathAbsolut('"+objekFile.getAbsolutePath()+"');"+
+      "berkas.setJumlahBerkas("+jumlahBerkas+");"+
+      "berkas.setUkuranFile("+ukuranFile+");"+
+      "berkas.setTersembunyi("+tersembunyi+");"+
+      "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);"+
+      "berkas.pasangElemen($('.tempatBerkas'));";
+
+      ui.eksekusiJavascript(js);
   }
   
   public void hapusBerkasPadaJS(WebViewUI ui) {

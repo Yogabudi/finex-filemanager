@@ -93,6 +93,10 @@ $(document).ready(function() {
     sendNSCommand("kosongkanTrash");
   });
   
+  $("#btnOkHapusBerkasPermanen").click(function(e) {
+    sendNSCommand("hapusBerkasPermanen", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  });
+  
   /////////////////////////////////////////////////////
   //
   // atur tombol ribbon 
@@ -149,6 +153,15 @@ $(document).ready(function() {
   
   $("#btnDuplikat").click(function(e) {
     sendNSCommand("duplikatBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  });
+  
+  $("#btnHapusKeTrash").click(function(e) {
+    sendNSCommand("hapusKeTrash", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  });
+  
+  $("#btnInfoBerkas").click(function(e) {
+    sendNSCommand("tampilkanInfoBerkas",
+                    Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
   });
   
   ///////////////////////////////////////////////////////////
@@ -221,6 +234,36 @@ $(document).ready(function() {
   /////////////////////////////////////////////////
   //
   // atur popover
+  
+  $("#btnTglDibuat").webuiPopover({
+    title: "Cari Berdasarkan Tanggal Dibuat",
+    width: 300,
+    animation: "pop",
+    url: "#popTglDibuat",
+    closeable: true,
+    placement: "bottom",
+    trigger: "manual"
+  });
+  
+  $("#btnTglModif").webuiPopover({
+    title: "Cari Berdasarkan Tanggal Diubah",
+    width: 300,
+    animation: "pop",
+    url: "#popTglModif",
+    closeable: true,
+    placement: "bottom",
+    trigger: "manual"
+  });
+  
+  $("#btnTglAkses").webuiPopover({
+    title: "Cari Berdasarkan Tanggal Akses",
+    width: 300,
+    animation: "pop",
+    url: "#popTglAkses",
+    closeable: true,
+    placement: "bottom",
+    trigger: "manual"
+  });
   
   $("#btnOperasiBerkas").webuiPopover({
     title: "Operasi Berkas",
@@ -335,14 +378,6 @@ $(document).ready(function() {
                   $("#txNamaBaru").val());
   });
   
-  $("#btnOkHapusBerkasPermanen").click(function(e) {
-    sendNSCommand("hapusBerkasPermanen", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
-  });
-  
-  $("#btnHapusKeTrash").click(function(e) {
-    sendNSCommand("hapusKeTrash", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
-  });
-  
   $("#txPath").keypress(function(e) {
     if(e.which === 13) {
       var path = $("#txPath").val();
@@ -376,19 +411,77 @@ $(document).ready(function() {
     e.stopPropagation();
   });
   
-  $(document).scroll(function() {
-    $("#btnOperasiBerkas").webuiPopover("hide");
-    $("#btnBuatFolder").webuiPopover("hide");
-    $("#btnEditPath").webuiPopover("hide");
-    $("#btnUbahNama").webuiPopover("hide");
-    $("#btnBuatFile").webuiPopover("hide");
-    $("#btnLokasiGambarKustom").webuiPopover("hide");
-    $("#btnAturPintasan").webuiPopover("hide");
-  });
+//  $(document).scroll(function() {
+//    $("#btnOperasiBerkas").webuiPopover("hide");
+//    $("#btnBuatFolder").webuiPopover("hide");
+//    $("#btnEditPath").webuiPopover("hide");
+//    $("#btnUbahNama").webuiPopover("hide");
+//    $("#btnBuatFile").webuiPopover("hide");
+//    $("#btnLokasiGambarKustom").webuiPopover("hide");
+//    $("#btnAturPintasan").webuiPopover("hide");
+//    $("#btnTglDibuat").webuiPopover("hide");
+//  });
   
   $("#pesanTidakAdaFolderLain").hide();
   $("#pesanTidakAdaOp").show();
   $("#pesanTidakAdaPintasan").hide();
+  
+  $("#btnTglDibuat").click(function(e) {
+    e.stopPropagation();
+    $(this).webuiPopover("show");
+  });
+  
+  $("#btnTglModif").click(function(e) {
+    e.stopPropagation();
+    $(this).webuiPopover("show");
+  });
+  
+  $("#btnTglAkses").click(function(e) {
+    e.stopPropagation();
+    $(this).webuiPopover("show");
+  });
+  
+  $("#konten").click(function(e) {
+    $("#btnTglAkses").webuiPopover("hide");
+    $("#btnTglModif").webuiPopover("hide");
+    $("#btnTglDibuat").webuiPopover("hide");
+  });
+  
+  $("#txTglDibuat").datepicker({
+    container: $("html"),
+    format: "dd/mm/yyyy",
+    i18n: {
+      cancel: "batalkan",
+      done: "cari berkas"
+    },
+    onClose: function() {
+      $("#btnTglDibuat").webuiPopover("hide");
+    }
+  });
+  
+  $("#txTglModif").datepicker({
+    container: $("html"),
+    format: "dd/mm/yyyy",
+    i18n: {
+      cancel: "batalkan",
+      done: "cari berkas"
+    },
+    onClose: function() {
+      $("#btnTglModif").webuiPopover("hide");
+    }
+  });
+  
+  $("#txTglAkses").datepicker({
+    container: $("html"),
+    format: "dd/mm/yyyy",
+    i18n: {
+      cancel: "batalkan",
+      done: "cari berkas"
+    },
+    onClose: function() {
+      $("#btnTglAkses").webuiPopover("hide");
+    }
+  });
   
   ////////////////////////////////////////////////////////////
   //
@@ -541,6 +634,34 @@ function menu_koleksiWajah() {
 function menu_lihatOpBerkas() {
   setTimeout(function() {
     $("#btnOperasiBerkas").webuiPopover("show");
+    
+  }, 150);
+}
+
+function menu_infoBerkas() {
+  setTimeout(function() {
+    $("#btnInfoBerkas").click();
+    
+  }, 150);
+}
+
+function menu_hapusKeTrash() {
+  setTimeout(function() {
+    $("#btnHapusKeTrash").click();
+    
+  }, 150);
+}
+
+function menu_hapusPermanen() {
+  setTimeout(function() {
+    $("#btnHapus").click();
+    
+  }, 150);
+}
+
+function menu_duplikat() {
+  setTimeout(function() {
+    $("#btnDuplikat").click();
     
   }, 150);
 }

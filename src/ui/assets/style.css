@@ -6,6 +6,14 @@ body {
     overflow-y: hidden;
 }
 
+.datepicker {
+    z-index: 9999 !important;
+}
+
+.webui-popover {
+    z-index: 1000 !important;
+}
+
 #konten {
     position: fixed;
     top: 177px;
@@ -320,8 +328,4 @@ body {
 #loadingCircle {
     position: relative;
     top: 250px;
-}
-
-#kotakPencarian {
-    width: 500px;
 }

@@ -122,10 +122,10 @@ class Berkas {
       new ObjekMenu("Salin", "assets/Icons/24/papers.png", "").buatMenu(),
       new ObjekMenu("Paste kedalam folder", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
       new ObjekMenu("Paste disini", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
-      new ObjekMenu("Info berkas", "assets/Icons/24/info.png", "").buatMenu(),
-      new ObjekMenu("Duplikat", "assets/Icons/24/duplicate-file.png", "").buatMenu(),
-      new ObjekMenu("Hapus ke trash", "assets/Icons/24/garbage.png", "").buatMenu(),
-      new ObjekMenu("Hapus", "assets/Icons/24/delete.png", "").buatMenu()
+      new ObjekMenu("Info berkas", "assets/Icons/24/info.png", "menu_infoBerkas()").buatMenu(),
+      new ObjekMenu("Duplikat", "assets/Icons/24/duplicate-file.png", "menu_duplikat()").buatMenu(),
+      new ObjekMenu("Hapus ke trash", "assets/Icons/24/garbage.png", "menu_hapusKeTrash()").buatMenu(),
+      new ObjekMenu("Hapus", "assets/Icons/24/delete.png", "menu_hapusPermanen()").buatMenu()
     ];
     
     this.tambahkanMenu = function(labelMenu, iconMenu, evtSaatDipilih) {
