@@ -42,13 +42,21 @@
         <div id="kontenTabCari">
           <ul class="left">
             <li>
-              <button id="btnCariBerdasarkan"
+<!--              <button id="btnCariBerdasarkan"
                   class="waves-effect waves-light btn-large
                               btn-flat white-text tombolIconDanTeks
                               modal-trigger"
                  data-target="panelPencarianBerkas"
                  style="background-image: url(assets/Icons/32/110-research.png)">
                 Cari Berdasarkan...
+              </button>-->
+              <button id="btnFilterEkstensi" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Filter berdasarkan ekstensi"
+                 style="background-image: url(assets/Icons/32/funnel.png)">
+
               </button>
             </li>
             <li id="kotakPencarian">
@@ -70,6 +78,32 @@
                   </nav>
                 </div>
               </div>
+            </li>
+            <li>
+              <button id="btnTglDibuat" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Cari berdasarkan tanggal dibuat"
+                 style="background-image: url(assets/Icons/32/cal-dibuat.png)">
+
+              </button>
+              <button id="btnTglModif" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Cari berdasarkan tanggal modifikasi"
+                 style="background-image: url(assets/Icons/32/cal-modif.png)">
+
+              </button>
+              <button id="btnTglAkses" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Cari berdasarkan tanggal akses"
+                 style="background-image: url(assets/Icons/32/cal-akses.png)">
+
+              </button>
             </li>
           </ul>
         </div>
@@ -669,34 +703,34 @@
                     <th>Nama Berkas : </th>
                     <td>
                       <div id="formNamaBerkas" class="input-field">
-                        <input type="text" class="validate"
-                               value="ini berkas">
+                        <input id="txNamaBerkas" type="text" class="validate"
+                               value="-">
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <th>Jenis : </th>
-                    <td>(ini jenis)</td>
+                    <td id="jenisBerkas">-</td>
                   </tr>
                   <tr>
                     <th>Ukuran : </th>
-                    <td>(ini ukuran)</td>
+                    <td id="ukuranBerkas">-</td>
                   </tr>
                   <tr>
                     <th>Jumlah Konten : </th>
-                    <td>(ini jumlah)</td>
+                    <td id="jmlKonten">-</td>
                   </tr>
                   <tr>
                     <th>Tanggal Dibuat : </th>
-                    <td>(tgl)</td>
+                    <td id="tglDibuat">-</td>
                   </tr>
                   <tr>
                     <th>Tanggal Diubah : </th>
-                    <td>(tgl)</td>
+                    <td id="tglModif">-</td>
                   </tr>
                   <tr>
                     <th>Tanggal Diakses : </th>
-                    <td>(tgl)</td>
+                    <td id="tglAkses">-</td>
                   </tr>
                 </table>
               </div>
@@ -998,6 +1032,63 @@
             <h5 class="center-align grey-text">
               Anda tidak memiliki pintasan
             </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- pop tanggal dibuat -->
+    <div id="popTglDibuat" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12" style="margin-bottom: 16px;">
+          <div class="switch">
+            <label class="black-text">
+              Cari di seluruh file system
+              <input id="swCariSeluruhnyaTglDibuat" type="checkbox">
+              <span class="lever"></span>
+            </label>
+          </div>
+          <div class="input-field">
+            <input id="txTglDibuat" type="text" class="validate datepicker">
+            <label for="txTglDibuat">Masukkan tanggal</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- pop tanggal modif -->
+    <div id="popTglModif" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12" style="margin-bottom: 16px;">
+          <div class="switch">
+            <label class="black-text">
+              Cari di seluruh file system
+              <input id="swCariSeluruhnyaTglModif" type="checkbox">
+              <span class="lever"></span>
+            </label>
+          </div>
+          <div class="input-field">
+            <input id="txTglModif" type="text" class="validate datepicker">
+            <label for="txTglModif">Masukkan tanggal</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- pop tanggal akses -->
+    <div id="popTglAkses" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12" style="margin-bottom: 16px;">
+          <div class="switch">
+            <label class="black-text">
+              Cari di seluruh file system
+              <input id="swCariSeluruhnyaTglAkses" type="checkbox">
+              <span class="lever"></span>
+            </label>
+          </div>
+          <div class="input-field">
+            <input id="txTglAkses" type="text" class="validate datepicker">
+            <label for="txTglAkses">Masukkan tanggal</label>
           </div>
         </div>
       </div>
