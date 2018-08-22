@@ -74,13 +74,13 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    Berkas berkas = new Berkas(ui, "/");
+    Berkas berkas = new Berkas(ui, System.getProperty("user.home"));
     nav.majuKe(berkas).tampilkanListBerkas();
     
-    bcBerkas.masukkanDanTampilkan(new BreadcrumbBerkas(ui, "/"));
+    bcBerkas.isiDariPath(berkas.pecahPathAbsolut(), ui);
     bcBerkas.tandaiYangTerakhir();
     
-    setTextPathPadaJS(berkas.getObjekFile().getAbsolutePath());
+    Berkas.setTextPathPadaJS(ui, berkas.getObjekFile().getAbsolutePath());
     System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
   }
 
@@ -98,12 +98,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       try {
         Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
         
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkasTerpilih).tampilkanListBerkas();
         bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
 
-        setTextPathPadaJS(berkasTerpilih.getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, berkasTerpilih.getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       catch(NullPointerException nullex) {
@@ -112,7 +112,7 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
                   "Anda Bukan Root!",
                   JOptionPane.ERROR_MESSAGE);
         
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
           
         if(!nav.sampaiRoot()) {
           nav.mundur().tampilkanListBerkas();
@@ -133,32 +133,32 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
       
-      tampilkanCirclePadaJS();
+      Berkas.tampilkanCirclePadaJS(ui);
       nav.mundurKe(berkasTerpilih).tampilkanListBerkas();
       bcBerkas.getBreadcrumb(labelBc).tandaiPadaJS();
-      sembunyikanCirclePadaJS();
+      Berkas.sembunyikanCirclePadaJS(ui);
       
-      setTextPathPadaJS(berkasTerpilih.getObjekFile().getAbsolutePath());
+      Berkas.setTextPathPadaJS(ui, berkasTerpilih.getObjekFile().getAbsolutePath());
       System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
     }
     else if(perintah.equals("tampilkanBerkasSebelumnya")) {
       if(!nav.sampaiRoot()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.mundur().tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
     }
     else if(perintah.equals("tampilkanBerkasKedepan")) {
-      tampilkanCirclePadaJS();
+      Berkas.tampilkanCirclePadaJS(ui);
       nav.maju().tampilkanListBerkas();
       bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-      sembunyikanCirclePadaJS();
+      Berkas.sembunyikanCirclePadaJS(ui);
       
-      setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
     }
     else if(perintah.equals("keyEnterDitekan")) {
@@ -170,10 +170,10 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
           Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
 
           if(berkasTerpilih.berkasTersedia()) {
-            tampilkanCirclePadaJS();
+            Berkas.tampilkanCirclePadaJS(ui);
             nav.majuKe(berkasTerpilih).tampilkanListBerkas();
             bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
-            sembunyikanCirclePadaJS();
+            Berkas.sembunyikanCirclePadaJS(ui);
             
             System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
           }
@@ -199,12 +199,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -220,12 +220,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -241,12 +241,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -262,12 +262,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -283,12 +283,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -304,12 +304,33 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      }
+      else {
+        JOptionPane.showMessageDialog(this,
+            "Path yang anda masukkan tidak valid!\n" +
+            "Pastikan folder tujuan anda tersedia",
+            "Terjadi Kesalahan!",
+            JOptionPane.ERROR_MESSAGE);
+      }
+    }
+    else if(perintah.equals("loncatKeHome")) {
+      String path = System.getProperty("user.home");
+      Berkas berkas = new Berkas(ui, path);
+      
+      if(berkas.berkasTersedia()) {
+        Berkas.tampilkanCirclePadaJS(ui);
+        nav.majuKe(berkas).tampilkanListBerkas();
+        bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
+        Berkas.sembunyikanCirclePadaJS(ui);
+        
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -332,12 +353,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
             if(!tersembunyi) {
               Berkas.buatFolderBaru(lokasiSekarang + "/" + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS(namaFolder, ui);
-              scrollKeBawahPadaJS();
+              Berkas.scrollKeBawahPadaJS(ui);
             }
             else {
               Berkas.buatFolderBaru(lokasiSekarang + "/." + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS("." + namaFolder, ui);
-              scrollKeBawahPadaJS();
+              Berkas.scrollKeBawahPadaJS(ui);
             }   
           }
           else {
@@ -387,12 +408,12 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
             if(!tersembunyi) {
               Berkas.buatFileBaru(lokasiSekarang + "/" + namaFile, ui);
               Berkas.tandaiBerkasPadaJS(namaFile, ui);
-              scrollKeBawahPadaJS();
+              Berkas.scrollKeBawahPadaJS(ui);
             }
             else {
               Berkas.buatFileBaru(lokasiSekarang + "/." + namaFile, ui);
               Berkas.tandaiBerkasPadaJS("." + namaFile, ui);
-              scrollKeBawahPadaJS();
+              Berkas.scrollKeBawahPadaJS(ui);
             }   
           }
           else {
@@ -469,6 +490,73 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       holderBerkas.clear();
       holderBerkas.add(berkas);
     }
+    else if(perintah.equals("tempelBerkas")) {
+      
+    }
+    else if(perintah.equals("hideBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.hideBerkas();
+    }
+    else if(perintah.equals("unhideBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.unhideBerkas();
+    }
+    else if(perintah.equals("duplikatBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        Berkas duplikatan = berkas.duplikatDanTampilkan();
+        
+      }
+      catch(IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("ubahNama")) {
+      String pathAbsolut = (String)param[0];
+      String namaBaru = (String)param[1];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.ubahNamaDanTampilkan(namaBaru);
+    }
+    else if(perintah.equals("hapusKeTrash")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        berkas.hapusKeTrash();
+      }
+      catch(IOException ioex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat menghapus berkas, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ioex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("hapusBerkasPermanen")) {
+      String pathAbsolut = (String)param[0];
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        berkas.hapusPermanen();
+        
+      }
+      catch(IOException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat menghapus berkas, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+      }
+    }
   }
 
   public void tampilkanInfoBerkas(Berkas berkasTerpilih) {
@@ -485,33 +573,4 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
     JOptionPane.showMessageDialog(this, info);
   }
   
-  public void tampilkanCirclePadaJS() {
-    String js = ""+
-    "$('#konten').hide();"+
-    "$('#loadingCircle').show();";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
-  public void sembunyikanCirclePadaJS() {
-    String js = ""+
-    "$('#konten').show();"+
-    "$('#loadingCircle').hide();";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
-  public void setTextPathPadaJS(String path) {
-    String js = ""+
-    "$('#txPath').val('"+path+"');";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
-  public void scrollKeBawahPadaJS() {
-    String js = ""+
-    "$('#konten').animate({ scrollTop: $(document).height() }, 500);";
-    
-    ui.eksekusiJavascript(js);
-  }
 }
