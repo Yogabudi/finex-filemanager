@@ -9,9 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import filemanager.webviewui.*;
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -19,13 +22,14 @@ import javax.swing.SwingUtilities;
  *
  * @author Yoga Budi Yulianto
  */
-public class FileManager extends JFrame
-implements PendengarWebBrowser {
+public class FileManager extends JFrame implements PendengarWebBrowser {
 
   public WebViewUI ui;
-  public List<Berkas> jejakNav = new ArrayList<>();
   public NavMajuMundur nav;
   public ListBreadcrumbBerkas bcBerkas = new ListBreadcrumbBerkas();
+  
+  public List<Berkas> jejakNav = new ArrayList<>();
+  public ArrayList<Berkas> holderBerkas = new ArrayList<>();
   
   public FileManager() {
     super();
@@ -35,15 +39,16 @@ implements PendengarWebBrowser {
     this.setName("UI Utama");
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.ketengahkan();
-    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
-    ui.setURL(FileManager.class.getResource("/ui/index.html").toExternalForm());
-    
+    ui.setURL(getClass().getResource("/ui/index.html").toExternalForm());
     this.getContentPane().add(ui);
     
     nav = new NavMajuMundur(ui);
+    
+    
   }
 
   public void ketengahkan() {
@@ -69,13 +74,13 @@ implements PendengarWebBrowser {
 
   @Override
   public void saatSelesaiLoading(WebBrowserEvent wbe, JWebBrowser browser) {
-    Berkas berkas = new Berkas(ui, "/");
+    Berkas berkas = new Berkas(ui, System.getProperty("user.home"));
     nav.majuKe(berkas).tampilkanListBerkas();
     
-    bcBerkas.masukkanDanTampilkan(new BreadcrumbBerkas(ui, "/"));
+    bcBerkas.isiDariPath(berkas.pecahPathAbsolut(), ui);
     bcBerkas.tandaiYangTerakhir();
     
-    setTextPathPadaJS(berkas.getObjekFile().getAbsolutePath());
+    Berkas.setTextPathPadaJS(ui, berkas.getObjekFile().getAbsolutePath());
     System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
   }
 
@@ -84,18 +89,21 @@ implements PendengarWebBrowser {
     String perintah = wbce.getCommand();
     Object[] param = wbce.getParameters();
     
+    if(perintah.equals("log")) {
+      System.out.println(param[0].toString().toUpperCase() + " : " + param[1]);
+    }
     if(perintah.equals("tampilkanListBerkas")) {
       String pathAbsolut = (String)param[0];
       
       try {
         Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
         
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkasTerpilih).tampilkanListBerkas();
         bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
 
-        setTextPathPadaJS(berkasTerpilih.getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, berkasTerpilih.getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       catch(NullPointerException nullex) {
@@ -104,7 +112,7 @@ implements PendengarWebBrowser {
                   "Anda Bukan Root!",
                   JOptionPane.ERROR_MESSAGE);
         
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
           
         if(!nav.sampaiRoot()) {
           nav.mundur().tampilkanListBerkas();
@@ -117,6 +125,7 @@ implements PendengarWebBrowser {
           nav.majuKe(berkas).tampilkanListBerkas();
         }
       }
+      
     }
     else if(perintah.equals("tampilkanListBerkasDariBreadcrumb")) {
       String pathAbsolut = (String)param[0];
@@ -124,32 +133,32 @@ implements PendengarWebBrowser {
       
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
       
-      tampilkanCirclePadaJS();
+      Berkas.tampilkanCirclePadaJS(ui);
       nav.mundurKe(berkasTerpilih).tampilkanListBerkas();
       bcBerkas.getBreadcrumb(labelBc).tandaiPadaJS();
-      sembunyikanCirclePadaJS();
+      Berkas.sembunyikanCirclePadaJS(ui);
       
-      setTextPathPadaJS(berkasTerpilih.getObjekFile().getAbsolutePath());
+      Berkas.setTextPathPadaJS(ui, berkasTerpilih.getObjekFile().getAbsolutePath());
       System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
     }
     else if(perintah.equals("tampilkanBerkasSebelumnya")) {
       if(!nav.sampaiRoot()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.mundur().tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
     }
     else if(perintah.equals("tampilkanBerkasKedepan")) {
-      tampilkanCirclePadaJS();
+      Berkas.tampilkanCirclePadaJS(ui);
       nav.maju().tampilkanListBerkas();
       bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-      sembunyikanCirclePadaJS();
+      Berkas.sembunyikanCirclePadaJS(ui);
       
-      setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
     }
     else if(perintah.equals("keyEnterDitekan")) {
@@ -161,10 +170,10 @@ implements PendengarWebBrowser {
           Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
 
           if(berkasTerpilih.berkasTersedia()) {
-            tampilkanCirclePadaJS();
+            Berkas.tampilkanCirclePadaJS(ui);
             nav.majuKe(berkasTerpilih).tampilkanListBerkas();
             bcBerkas.isiDariPath(berkasTerpilih.pecahPathAbsolut(), ui);
-            sembunyikanCirclePadaJS();
+            Berkas.sembunyikanCirclePadaJS(ui);
             
             System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
           }
@@ -190,12 +199,12 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -211,12 +220,12 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -232,12 +241,12 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -253,12 +262,12 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -274,12 +283,12 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -295,12 +304,33 @@ implements PendengarWebBrowser {
       Berkas berkas = new Berkas(ui, path);
       
       if(berkas.berkasTersedia()) {
-        tampilkanCirclePadaJS();
+        Berkas.tampilkanCirclePadaJS(ui);
         nav.majuKe(berkas).tampilkanListBerkas();
         bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
-        sembunyikanCirclePadaJS();
+        Berkas.sembunyikanCirclePadaJS(ui);
         
-        setTextPathPadaJS(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      }
+      else {
+        JOptionPane.showMessageDialog(this,
+            "Path yang anda masukkan tidak valid!\n" +
+            "Pastikan folder tujuan anda tersedia",
+            "Terjadi Kesalahan!",
+            JOptionPane.ERROR_MESSAGE);
+      }
+    }
+    else if(perintah.equals("loncatKeHome")) {
+      String path = System.getProperty("user.home");
+      Berkas berkas = new Berkas(ui, path);
+      
+      if(berkas.berkasTersedia()) {
+        Berkas.tampilkanCirclePadaJS(ui);
+        nav.majuKe(berkas).tampilkanListBerkas();
+        bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
+        Berkas.sembunyikanCirclePadaJS(ui);
+        
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
         System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
       }
       else {
@@ -323,10 +353,12 @@ implements PendengarWebBrowser {
             if(!tersembunyi) {
               Berkas.buatFolderBaru(lokasiSekarang + "/" + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS(namaFolder, ui);
+              Berkas.scrollKeBawahPadaJS(ui);
             }
             else {
               Berkas.buatFolderBaru(lokasiSekarang + "/." + namaFolder, ui);
               Berkas.tandaiBerkasPadaJS("." + namaFolder, ui);
+              Berkas.scrollKeBawahPadaJS(ui);
             }   
           }
           else {
@@ -345,11 +377,184 @@ implements PendengarWebBrowser {
               JOptionPane.ERROR_MESSAGE);
         }
       }
-      catch(Exception ex) {
+      catch(AccessDeniedException accdenex) {
         JOptionPane.showMessageDialog(this,
               "Maaf, anda tidak diizinkan membuat folder disini!\n",
               "Anda Bukan Root!",
               JOptionPane.ERROR_MESSAGE);
+      }
+      catch(FileAlreadyExistsException faee) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, nama folder yang anda masukkan sudah ada!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(IOException ioe) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuat folder, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+    }
+    else if(perintah.equals("buatFileBaru")) {
+      String namaFile = (String)param[0];
+      boolean tersembunyi = (boolean)param[1];
+      String lokasiSekarang =
+              nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      
+      try {
+        if(!namaFile.equals("")) {
+          if(!namaFile.contains("/")) {
+            if(!tersembunyi) {
+              Berkas.buatFileBaru(lokasiSekarang + "/" + namaFile, ui);
+              Berkas.tandaiBerkasPadaJS(namaFile, ui);
+              Berkas.scrollKeBawahPadaJS(ui);
+            }
+            else {
+              Berkas.buatFileBaru(lokasiSekarang + "/." + namaFile, ui);
+              Berkas.tandaiBerkasPadaJS("." + namaFile, ui);
+              Berkas.scrollKeBawahPadaJS(ui);
+            }   
+          }
+          else {
+            JOptionPane.showMessageDialog(this,
+              "Nama file yang anda masukkan tidak valid!\n" +
+              "Disarankan menggunakan karakter huruf dan angka",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+          }
+        }
+        else {
+          JOptionPane.showMessageDialog(this,
+              "Anda belum memasukkan nama file baru!\n" +
+              "Mohon masukkan nama file baru",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        }
+      }
+      catch(AccessDeniedException accdenex) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, anda tidak diizinkan membuat file disini!\n",
+              "Anda Bukan Root!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(FileAlreadyExistsException faee) {
+        JOptionPane.showMessageDialog(this,
+              "Maaf, nama file yang anda masukkan sudah ada!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+      catch(IOException ioe) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuat file, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+      }
+    }
+    else if(perintah.equals("bukaTerminal")) {
+      String lokasiSekarang =
+              nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      String fileSh = "src/filemanager/programsh/bukaterminal.sh";
+      
+      try {
+        ProcessBuilder pb = new ProcessBuilder(fileSh, lokasiSekarang);
+        Process proc = pb.start();
+      }
+      catch (IOException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat membuka terminal, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+      }
+      
+    }
+    else if(perintah.equals("kosongkanTrash")) {
+      try {
+        ProcessBuilder pb = new ProcessBuilder("gio", "trash", "--empty");
+        Process proc = pb.start();
+      }
+      catch(IOException ioex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat mengosongkan trash, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ioex.printStackTrace();
+      }
+      
+    }
+    else if(perintah.equals("cutBerkas")) {
+      String namaBerkas = (String)param[0];
+      Berkas berkas = new Berkas(ui, namaBerkas);
+      
+      holderBerkas.clear();
+      holderBerkas.add(berkas);
+    }
+    else if(perintah.equals("tempelBerkas")) {
+      
+    }
+    else if(perintah.equals("hideBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.hideBerkas();
+    }
+    else if(perintah.equals("unhideBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.unhideBerkas();
+    }
+    else if(perintah.equals("duplikatBerkas")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        Berkas duplikatan = berkas.duplikatDanTampilkan();
+        
+      }
+      catch(IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("ubahNama")) {
+      String pathAbsolut = (String)param[0];
+      String namaBaru = (String)param[1];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      berkas.ubahNamaDanTampilkan(namaBaru);
+    }
+    else if(perintah.equals("hapusKeTrash")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        berkas.hapusKeTrash();
+      }
+      catch(IOException ioex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat menghapus berkas, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ioex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("hapusBerkasPermanen")) {
+      String pathAbsolut = (String)param[0];
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      try {
+        berkas.hapusPermanen();
+        
+      }
+      catch(IOException ex) {
+        JOptionPane.showMessageDialog(this,
+              "Terjadi Kesalahan saat menghapus berkas, silahkan coba lagi!\n",
+              "Terjadi Kesalahan!",
+              JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
       }
     }
   }
@@ -368,26 +573,4 @@ implements PendengarWebBrowser {
     JOptionPane.showMessageDialog(this, info);
   }
   
-  public void tampilkanCirclePadaJS() {
-    String js = ""+
-    "$('#konten').hide();"+
-    "$('#loadingCircle').show();";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
-  public void sembunyikanCirclePadaJS() {
-    String js = ""+
-    "$('#konten').show();"+
-    "$('#loadingCircle').hide();";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
-  public void setTextPathPadaJS(String path) {
-    String js = ""+
-    "$('#txPath').val('"+path+"');";
-    
-    ui.eksekusiJavascript(js);
-  }
 }
