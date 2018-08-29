@@ -18,6 +18,7 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -58,7 +59,12 @@ public class WebViewUI extends JPanel
   }
   
   public void eksekusiJavascript(String js) {
-    this.browser.executeJavascript(js);
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        WebViewUI.this.browser.executeJavascript(js);
+      }
+    });
   }
   
   public Object eksekusiJavascriptDenganHasil(String js) {
