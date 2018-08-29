@@ -29,11 +29,17 @@ public class Berkas {
   private int jumlahBerkas = 0;
   private long ukuranFile = 0;
   private boolean tersembunyi = false;
+  private boolean pakeThumbnail = false;
   private ArrayList<Berkas> duplikatanBerkas = new ArrayList<>();
   
   private WebViewUI ui;
-  
   private ExecutorService execService;
+  
+  // kriteria berdasarkan
+  public static final String BERDASAR_TGL_DIBUAT = "berdasarkantgldibuat";
+  public static final String BERDASAR_TGL_MODIFIKASI = "berdasarkantglmodif";
+  public static final String BERDASAR_TGL_AKSES = "berdasarkantglakses";
+  public static final String BERDASAR_NAMA = "berdasarkannama";
   
   public Berkas(WebViewUI ui, String pathname) {
     this.objekFile = new File(pathname);
@@ -55,6 +61,22 @@ public class Berkas {
     this.execService = Executors.newCachedThreadPool();
   }
 
+  public boolean isPakeThumbnail() {
+    return pakeThumbnail;
+  }
+
+  public void setPakeThumbnail(boolean pakeThumbnail) {
+    this.pakeThumbnail = pakeThumbnail;
+  }
+
+  public ExecutorService getExecService() {
+    return execService;
+  }
+
+  public void setExecService(ExecutorService execService) {
+    this.execService = execService;
+  }
+  
   public boolean isTersembunyi() {
     return tersembunyi;
   }
@@ -116,6 +138,13 @@ public class Berkas {
       }
       else {
         berkas.setIcon("assets/Icons/64/053-document-7.png");
+        
+        if(berkas.getObjekFile().getName().endsWith(".jpg") ||
+           berkas.getObjekFile().getName().endsWith(".png") ||
+           berkas.getObjekFile().getName().endsWith(".jpeg")) {
+          
+          berkas.setPakeThumbnail(true);
+        }
       }
       
       daftarBerkas.add(berkas);
@@ -125,9 +154,9 @@ public class Berkas {
   }
   
   public void tampilkanListBerkas() {
-    Berkas[] daftarBerkas = Berkas.this.listBerkas();
+    Berkas[] daftarBerkas = listBerkas();
 
-    Berkas.this.hapusSemuaBerkasPadaJS();
+    Berkas.hapusSemuaBerkasPadaJS(ui);
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isDirectory()) {
         daftarBerkas[i].buatBerkasPadaJS();
@@ -155,6 +184,40 @@ public class Berkas {
     }
     
     return hasil.toArray(new Berkas[0]);
+  }
+  
+  public static ArrayList<Berkas> cariBerkas(String kriteria,
+          String teks, Berkas tempatCari) throws IOException {
+    
+    ArrayList<Berkas> dataHasil = new ArrayList<>();
+    Berkas[] dataBerkas = tempatCari.listBerkas();
+    
+    if(kriteria.equals(Berkas.BERDASAR_NAMA)) {
+      for(int i = 0; i < dataBerkas.length; i++) {
+        String namaBerkas = dataBerkas[i].getObjekFile().getName();
+
+        if(namaBerkas.toLowerCase().contains(teks.toLowerCase())) {
+          dataHasil.add(dataBerkas[i]);
+        }
+      }
+    }
+    else if(kriteria.equals(Berkas.BERDASAR_TGL_DIBUAT)) {
+      String tgl = teks;
+      
+      for(int i = 0; i < dataBerkas.length; i++) {
+        BasicFileAttributes attr =
+                Files.readAttributes(dataBerkas[i].getObjekFile().toPath(),
+                        BasicFileAttributes.class);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String tglDibuat = df.format(attr.creationTime().toMillis());
+        
+        if(tglDibuat.contains(tgl)) {
+          dataHasil.add(dataBerkas[i]);
+        }
+      }
+    }
+    
+    return dataHasil;
   }
   
   public void tampilkanInfoBerkas() throws IOException {
@@ -240,8 +303,11 @@ public class Berkas {
   public boolean ubahNama(String pathNamaBaru) {
     boolean sukses = false;
     
-    if(objekFile.renameTo(new File(pathNamaBaru))) {
+    File hasilRename = new File(pathNamaBaru);
+    
+    if(objekFile.renameTo(hasilRename)) {
       sukses = true;
+      objekFile = hasilRename;
     }
     
     return sukses;
@@ -250,29 +316,37 @@ public class Berkas {
   public void ubahNamaDanTampilkan(String namaBaru) {
     String pathNamaBaru = objekFile.getParent() + "/" + namaBaru;
     
-    if(ubahNama(pathNamaBaru)) {
-      Berkas.ubahNamaPadaJS(ui, namaBaru);
-      Berkas.ubahPathAbsolutPadaJS(ui, pathNamaBaru);
-    }
+    ubahPathAbsolutPadaJS(ui, pathNamaBaru);
+    ubahNamaPadaJS(ui, namaBaru);
+    
+    ubahNama(pathNamaBaru);
   }
   
   public void hideBerkas() {
-    String pathNamaBaru = objekFile.getParent() + "/." + objekFile.getName();
-    ubahNama(pathNamaBaru);
-    
-    Berkas.ubahNamaPadaJS(ui, "." + objekFile.getName());
-    Berkas.ubahPathAbsolutPadaJS(ui, pathNamaBaru);
-    Berkas.ubahTersembunyiPadaJS(ui, true);
+    if(!objekFile.getName().startsWith(".")) {
+      String pathNamaBaru = objekFile.getParent() + "/." + objekFile.getName();
+      String namaBaru = "." + objekFile.getName();
+
+      ubahTersembunyiPadaJS(ui, true);
+      ubahPathAbsolutPadaJS(ui, pathNamaBaru);
+      ubahNamaPadaJS(ui, namaBaru);
+
+      ubahNama(pathNamaBaru);
+    }
   }
   
   public void unhideBerkas() {
-    String pathNamaBaru = objekFile.getParent() + "/" +
-                          objekFile.getName().substring(1);
-    ubahNama(pathNamaBaru);
-    
-    Berkas.ubahNamaPadaJS(ui, objekFile.getName().substring(1));
-    Berkas.ubahPathAbsolutPadaJS(ui, pathNamaBaru);
-    Berkas.ubahTersembunyiPadaJS(ui, false);
+    if(objekFile.getName().startsWith(".")) {
+      String pathNamaBaru = objekFile.getParent() + "/" +
+                            objekFile.getName().substring(1);
+      String namaBaru = objekFile.getName().substring(1);
+
+      ubahTersembunyiPadaJS(ui, false);
+      ubahPathAbsolutPadaJS(ui, pathNamaBaru);
+      ubahNamaPadaJS(ui, namaBaru);
+
+      ubahNama(pathNamaBaru);
+    }
   }
   
   public static Berkas buatFolderBaru(String pathFolder, WebViewUI ui)
@@ -356,10 +430,11 @@ public class Berkas {
       "berkas.setJumlahBerkas("+jumlahBerkas+");"+
       "berkas.setUkuranFile("+ukuranFile+");"+
       "berkas.setTersembunyi("+tersembunyi+");"+
+      "berkas.setPakeThumbnail("+pakeThumbnail+");"+
       "berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);"+
       "berkas.pasangElemen($('.tempatBerkas'));";
 
-      ui.eksekusiJavascript(js);
+    ui.eksekusiJavascript(js);
   }
   
   public void hapusBerkasPadaJS(WebViewUI ui) {
@@ -369,28 +444,31 @@ public class Berkas {
     ui.eksekusiJavascript(js);
   }
   
-  public static void ubahTersembunyiPadaJS(WebViewUI ui, boolean sembunyikan) {
+  public void ubahTersembunyiPadaJS(WebViewUI ui, boolean sembunyikan) {
     String js = ""+
-    "Berkas.dapatkanBerkasTerpilih().ubahTersembunyi("+sembunyikan+");";
+    "Berkas.dapatkanBerkasBerdasarNama('"+objekFile.getName()+"')"+
+    ".ubahTersembunyi("+sembunyikan+");";
     
     ui.eksekusiJavascript(js);
   }
   
-  public static void ubahPathAbsolutPadaJS(WebViewUI ui, String path) {
+  public void ubahPathAbsolutPadaJS(WebViewUI ui, String path) {
     String js = ""+
-    "Berkas.dapatkanBerkasTerpilih().ubahPathAbsolut('"+path+"');";
+    "Berkas.dapatkanBerkasBerdasarNama('"+objekFile.getName()+"')"+
+    ".ubahPathAbsolut('"+path+"');";
     
     ui.eksekusiJavascript(js);
   }
   
-  public static void ubahNamaPadaJS(WebViewUI ui, String nama) {
+  public void ubahNamaPadaJS(WebViewUI ui, String nama) {
     String js = ""+
-    "Berkas.dapatkanBerkasTerpilih().ubahNama('"+nama+"');";
+    "Berkas.dapatkanBerkasBerdasarNama('"+objekFile.getName()+"')"+
+    ".ubahNama('"+nama+"');";
     
     ui.eksekusiJavascript(js);
   }
   
-  public void hapusSemuaBerkasPadaJS() {
+  public static void hapusSemuaBerkasPadaJS(WebViewUI ui) {
     ui.eksekusiJavascript("Berkas.hapusSemuaBerkas();");
   }
   
