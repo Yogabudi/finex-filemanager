@@ -131,22 +131,22 @@ class KotakWajah {
 
 // testing
 $(document).ready(function() {
-  var punk = new KotakWajah();
-  punk.setNama("Nicholas Flamel");
-  punk.setFoto("file:///home/ini_laptop/Pictures/punk.jpg");
-  
-  punk.setEventKlikUbahNama(function(nama) {
-    console.log("HALO : " + nama);
-  });
-  
-  var punk2 = new KotakWajah();
-  punk2.setNama("Sarah Phoenix");
-  punk2.setFoto("file:///home/ini_laptop/Pictures/punk_jumping.jpg");
-  
-  punk2.setEventKlikUbahNama(function(nama) {
-    console.log("HALO : " + nama);
-  });
-  
-  punk.pasangElemen($("#tempatKotakWajah"));
-  punk2.pasangElemen($("#tempatKotakWajah"));
-})
+//  var punk = new KotakWajah();
+//  punk.setNama("Nicholas Flamel");
+//  punk.setFoto("file:///home/ini_laptop/Pictures/punk.jpg");
+//  
+//  punk.setEventKlikUbahNama(function(nama) {
+//    console.log("HALO : " + nama);
+//  });
+//  
+//  var punk2 = new KotakWajah();
+//  punk2.setNama("Sarah Phoenix");
+//  punk2.setFoto("file:///home/ini_laptop/Pictures/punk_jumping.jpg");
+//  
+//  punk2.setEventKlikUbahNama(function(nama) {
+//    console.log("HALO : " + nama);
+//  });
+//  
+//  punk.pasangElemen($("#tempatKotakWajah"));
+//  punk2.pasangElemen($("#tempatKotakWajah"));
+});
