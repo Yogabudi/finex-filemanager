@@ -106,7 +106,15 @@ body {
 
 .berkas {
     width: 200px !important;
+    height: 180px !important;
     cursor: pointer;
+}
+
+.gambar-thumbnail img {
+    position: relative;
+    right: 20px;
+    width: 190px;
+    height: 70px;
 }
 
 .garis-card-berkas {
