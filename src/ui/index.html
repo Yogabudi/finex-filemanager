@@ -26,12 +26,24 @@
                style="background-image: url(assets/Icons/32/044-folder-13.png)">
             </a>
           </li>
-          <li id="tabBerkas" class="tab"><a class="active" href="#berkas">berkas</a></li>
-          <li id="tabCari" class="tab"><a class="active" href="#kontenTabCari">pencarian</a></li>
-          <li id="tabTab" class="tab"><a href="#tabs">tab</a></li>
-          <li id="tabPengaturan" class="tab"><a href="#kontenTabPengaturan">pengaturan</a></li>
-          <li id="tabAbout" class="tab"><a href="#kontenTabAbout">About</a></li>
-          <li id="tabEdit" class="tab blue"><a href="#edit">edit</a></li>
+          <li id="tabBerkas" class="tab">
+            <a class="active" href="#berkas">berkas</a>
+          </li>
+          <li id="tabCari" class="tab">
+            <a href="#kontenTabCari">pencarian</a>
+          </li>
+          <li id="tabTab" class="tab">
+            <a href="#tabs">tab</a>
+          </li>
+          <li id="tabPengaturan" class="tab">
+            <a href="#kontenTabPengaturan">pengaturan</a>
+          </li>
+          <li id="tabAbout" class="tab">
+            <a href="#kontenTabAbout">About</a>
+          </li>
+          <li id="tabEdit" class="tab blue">
+            <a href="#edit">edit</a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -66,7 +78,7 @@
                     <div class="nav-wrapper">
                       <form>
                         <div class="input-field">
-                          <input id="search" type="search"
+                          <input id="txCariBerkas" type="search"
                                  placeholder="Cari File/Folder disini...">
                           <label class="label-icon" for="search">
                             <img style="position: relative; top: 10px;" 
@@ -170,10 +182,16 @@
                  style="background-image: url(assets/Icons/32/003-papers.png)">
 
               </button>
-              <button id="btnHideDanView"
+              <button id="btnHideBerkas"
                  class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
                  data-position="top" data-tooltip="Sembunyikan"
                  style="background-image: url(assets/Icons/32/hide.png)">
+
+              </button>
+              <button id="btnViewBerkas"
+                 class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+                 data-position="top" data-tooltip="Tampilkan (Unhide) Berkas"
+                 style="background-image: url(assets/Icons/32/view.png)">
 
               </button>
               <button id="btnUbahNama"
@@ -452,7 +470,7 @@
     </div>
     
     <!-- panel pencarian berkas -->
-    <div id="panelPencarianBerkas" class="modal panelFullScreen">
+<!--    <div id="panelPencarianBerkas" class="modal panelFullScreen">
       <div class="modal-content">
         <div class="row">
           <div class="col s1">
@@ -635,7 +653,7 @@
           Cari
         </button>
       </div>
-    </div>
+    </div>-->
     
     <!-- panel confirm empty trash -->
     <div id="panelConfirmEmptyTrash" class="modal">
