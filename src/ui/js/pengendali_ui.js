@@ -1,3 +1,11 @@
+
+/////////////////////////////////////////////
+//
+// variabel global
+//
+
+var kontenTabTerpilih = "#berkas";
+
 $(document).ready(function() {
   // inisialisasi komponen
   
@@ -15,6 +23,30 @@ $(document).ready(function() {
   $("#tabTab").hide();
   $("#loadingCircle").hide();
   $(".modal").hide();
+  
+  ///////////////////////////////////////////////
+  //
+  // atur tab ribbon
+  
+  $("#tabBerkas").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabCari").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabTab").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabPengaturan").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabAbout").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
   
   ///////////////////////////////////////////////
   //
@@ -93,13 +125,39 @@ $(document).ready(function() {
     sendNSCommand("kosongkanTrash");
   });
   
-  $("#btnOkHapusBerkasPermanen").click(function(e) {
-    sendNSCommand("hapusBerkasPermanen", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  $("#btnOkHapusBerkasPermanen").click(function(e) {    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hapusBerkasPermanen";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   /////////////////////////////////////////////////////
   //
-  // atur tombol ribbon 
+  // atur ribbon 
+  
+  $("#txCariBerkas").keypress(function(e) {
+    if(e.which === 13) {
+      e.preventDefault();
+      
+      sendNSCommand("cariBerkas", this.value);
+    }
+  });
+  
+  $("#txCariBerkas").on("input", function(e) {
+    sendNSCommand("cariBerkas", this.value);
+  });
   
   $(".tooltipped").click(function() {
     $(".tooltipped").tooltip("destroy").tooltip();
@@ -136,18 +194,39 @@ $(document).ready(function() {
     sendNSCommand("bukaTerminal");
   });
   
-  $("#btnHideDanView").click(function(e) {
-    if($(this).attr("data-tooltip") === "Sembunyikan") {
-      $(this).attr("data-tooltip", "Tampilkan (Unhide)")
-              .css("background-image", "url(assets/Icons/32/view.png)");
-      
-      sendNSCommand("hideBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  $("#btnViewBerkas").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "unhideBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
     }
-    else if($(this).attr("data-tooltip") === "Tampilkan (Unhide)") {
-      $(this).attr("data-tooltip", "Sembunyikan")
-              .css("background-image", "url(assets/Icons/32/hide.png)");
-      
-      sendNSCommand("unhideBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
+  });
+  
+  $("#btnHideBerkas").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hideBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
     }
   });
   
@@ -156,7 +235,21 @@ $(document).ready(function() {
   });
   
   $("#btnHapusKeTrash").click(function(e) {
-    sendNSCommand("hapusKeTrash", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hapusKeTrash";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnInfoBerkas").click(function(e) {
@@ -483,6 +576,10 @@ $(document).ready(function() {
     }
   });
   
+  $("#txTglDibuat").change(function(e) {
+    sendNSCommand("cariBerkasBerdasarTglDibuat", this.value);
+  });
+  
   ////////////////////////////////////////////////////////////
   //
   // atur contextmenu
@@ -560,16 +657,26 @@ $(document).ready(function() {
 //  }
   
 
-//  for(var i = 1; i <= 3; i++) {
-//    var berkas = new Berkas();
-//    berkas.setNama("File " + i);
-//    berkas.setPathAbsolut("/home/" + berkas.getNama());
-//    berkas.setJenis("file");
-//    berkas.setIcon("assets/Icons/64/053-document-7.png");
-//    berkas.setTersembunyi(false);
-//    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-//    berkas.pasangElemen($(".tempatBerkas"));
-//  }
+  for(var i = 1; i <= 3; i++) {
+    var berkas = new Berkas();
+    berkas.setNama("File " + i);
+    berkas.setPathAbsolut("/home/" + berkas.getNama());
+    berkas.setJenis("file");
+    berkas.setIcon("assets/Icons/64/053-document-7.png");
+    berkas.setTersembunyi(false);
+    berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+    berkas.pasangElemen($(".tempatBerkas"));
+  }
+  
+  var berkas = new Berkas();
+  berkas.setNama("File Thumbnail");
+  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
+  berkas.setJenis("file");
+  berkas.setIcon("assets/Icons/64/053-document-7.png");
+  berkas.setTersembunyi(false);
+  berkas.setPakeThumbnail(true);
+  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+  berkas.pasangElemen($(".tempatBerkas"));
 //  
 //  var opSalin = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/i/a/a")
@@ -579,8 +686,14 @@ $(document).ready(function() {
 //  var opSalin2 = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/c/s/b")
 //          .setPathTujuan("/s/f/w")
-//          .pasangElemen($("#rowOperasiBerkas"));  
+//          .pasangElemen($("#rowOperasiBerkas"));
 });
+
+//var param = ["tesArray", "hello", "world", "!!!!"];
+//var fungsi = window["sendNSCommand"];
+//if(typeof fungsi === "function") {
+//  fungsi.apply(null, param);
+//}
 
 ////////////////////////////////////////////
 //
