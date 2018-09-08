@@ -167,8 +167,8 @@ class Berkas {
       if(berkasTerpilih.getJenis() === "folder") {
         sendNSCommand("tampilkanListBerkas", pathAbsolut);
       }
-      else {
-        
+      else if(berkasTerpilih.getJenis() === "file") {
+        sendNSCommand("bukaFile", pathAbsolut);
       }
     };
     
@@ -463,5 +463,10 @@ class Berkas {
   
   static tampilkanBerkasTersembunyi() {
     $("div[tersembunyi='true']").show();
+  }
+  
+  static bukaFileGambar(pathAbsolut) {
+    $("#panelGambar .modal-content img").attr("src", pathAbsolut);
+    $("#panelGambar").modal("open");
   }
 };
