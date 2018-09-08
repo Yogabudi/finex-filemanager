@@ -4,6 +4,7 @@ body {
     -webkit-user-select: none;
     user-select: none;
     overflow-y: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .datepicker {
@@ -182,6 +183,12 @@ body {
     top: 0px !important;
 }
 
+#panelGambar {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 550px !important;
+}
+
 .panelFullScreen {
     max-width: 100% !important;
     max-height: 100% !important;
@@ -333,7 +340,7 @@ body {
     width: 50% !important;
 }
 
-#loadingCircle {
+#loadingCircle, #teksInfo {
     position: relative;
     top: 250px;
 }
