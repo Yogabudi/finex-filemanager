@@ -67,8 +67,14 @@
                                                 tombolRibbon tooltipped"
                  data-position="top"
                  data-tooltip="Filter berdasarkan ekstensi"
+                 style="background-image: url(assets/Icons/32/098-test.png)">
+              </button>
+              <button id="btnUrutkanAtime" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Urutkan berdasarkan waktu akses"
                  style="background-image: url(assets/Icons/32/funnel.png)">
-
               </button>
             </li>
             <li id="kotakPencarian">
@@ -469,191 +475,24 @@
       </div>
     </div>
     
-    <!-- panel pencarian berkas -->
-<!--    <div id="panelPencarianBerkas" class="modal panelFullScreen">
-      <div class="modal-content">
-        <div class="row">
-          <div class="col s1">
-            <img src="assets/Icons/64/081-research.png" />
-          </div>
-          <div class="col s9 left-align">
-            <h4>Pencarian Berkas</h4>
-          </div>
-        </div>
-        
-        <div id="contPencarianBerkas" class="container">
-          <ul id="accordBerdasarkan" class="collapsible">
-            <li>
-              <div id="berdasarNama" class="collapsible-header">
-                Cari Berdasarkan Nama File/Folder
-              </div>
-              <div id="bodyBerdasarNama" class="collapsible-body">
-                <div class="row">
-                  <div class="col s11">
-                    <div class="input-field">
-                      <input id="txCariNama" type="text" class="validate">
-                      <label for="txCariNama">Masukkan nama file/folder...</label>
-                    </div>
-                  </div>
-                  <div class="col s1">
-                    <button id="btnCloseBerdasarNama"
-                           class="waves-effect waves-light
-                                  btn-flat">
-                      <img src="assets/Icons/24/delete.png" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div id="berdasarFormat" class="collapsible-header">
-                Cari Berdasarkan Format File
-              </div>
-              <div id="bodyBerdasarFormat" class="collapsible-body">
-                <div class="row">
-                  <div class="col s11">
-                    <p>Tentukan format file : </p>
-                    <div id="listFormat">
-                      <form action="#">
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>LibreOffice Writer</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>LibreOffice Calc</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>gedit</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>Clementine</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>Spotify</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>Netbeans IDE</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>Chromium</span>
-                          </label>
-                        </p>
-                        <p>
-                          <label>
-                            <input name="groupFormat" type="radio" checked />
-                            <span>Mozilla Firefox</span>
-                          </label>
-                        </p>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="col s1">
-                    <button id="btnCloseBerdasarFormat"
-                           class="waves-effect waves-light
-                                  btn-flat">
-                      <img src="assets/Icons/24/delete.png" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div id="tanggalDibuat" class="collapsible-header">
-                Cari Berdasarkan Tanggal Dibuat
-              </div>
-              <div id="bodyTanggalDibuat" class="collapsible-body">
-
-                <div class="row">
-                  <div class="col s11">
-                    <input id="txtglDibuat" type="text"
-                     placeholder="Klik disini untuk membuka kalender..."
-                     class="datepicker" />
-                  </div>
-                  <div class="col s1">
-                    <button id="btnCloseTglDibuat"
-                           class="waves-effect waves-light
-                                  btn-flat">
-                      <img src="assets/Icons/24/delete.png" />
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </li>
-            <li>
-              <div id="tanggalModif" class="collapsible-header">
-                Cari Berdasarkan Tanggal Modifikasi
-              </div>
-              <div id="bodyTanggalModif" class="collapsible-body">
-
-                <div class="row">
-                  <div class="col s11">
-                    <input type="text" id="txtglModif"
-                     placeholder="Klik disini untuk membuka kalender..."
-                     class="datepicker" />
-                  </div>
-                  <div class="col s1">
-                    <button id="btnCloseTglModif" class="waves-effect waves-light btn-flat">
-                      <img src="assets/Icons/24/delete.png" />
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </li>
-            <li>
-              <div id="tanggalAkses" class="collapsible-header">
-                Cari Berdasarkan Tanggal Akses
-              </div>
-              <div id="bodyTanggalAkses" class="collapsible-body">
-
-                <div class="row">
-                  <div class="col s11">
-                    <input type="text" id="txtglAkses"
-                     placeholder="Klik disini untuk membuka kalender..."
-                     class="datepicker" />
-                  </div>
-                  <div class="col s1">
-                    <button id="btnCloseTglAkses" class="waves-effect waves-light btn-flat">
-                      <img src="assets/Icons/24/delete.png" />
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </li>
-          </ul>
-        </div>
+    <!-- teks info -->
+    <div id="teksInfo">
+      <h5 class="center-align blue-grey-text lighten-4">
+        Berkas yang anda cari tidak ditemukan!
+      </h5>
+    </div>
+    
+    <!-- panel gambar -->
+    <div id="panelGambar" class="modal modal-fixed-footer">
+      <div class="modal-content center-align">
+        <img class="responsive-img materialboxed" src="" />
       </div>
       <div class="modal-footer">
-        <button class="modal-close waves-effect waves-light
-                        btn-flat btn-large">
-          Batalkan
-        </button>
-        <button class="modal-close waves-effect waves-light btn-large">
-          Cari
+        <button class=" btn modal-close waves-effect waves-light">
+          tutup
         </button>
       </div>
-    </div>-->
+    </div>
     
     <!-- panel confirm empty trash -->
     <div id="panelConfirmEmptyTrash" class="modal">
@@ -1067,9 +906,17 @@
             </label>
           </div>
           <div class="input-field">
-            <input id="txTglDibuat" type="text" class="validate datepicker">
-            <label for="txTglDibuat">Masukkan tanggal</label>
+            <input id="txTglDibuat" type="text" class="validate">
+            <label for="txTglDibuat">Masukkan tanggal atau bulan atau tahun</label>
           </div>
+          <button id="btnTglDibuat_BukaKalender"
+                  class="btn waves-effect waves-light tombol-fluid datepicker">
+            buka kalender
+          </button><br><br>
+          <button id="btnTglDibuat_CariBerkas"
+                  class="btn waves-effect waves-light tombol-fluid">
+            cari berkas
+          </button>
         </div>
       </div>
     </div>
@@ -1086,9 +933,17 @@
             </label>
           </div>
           <div class="input-field">
-            <input id="txTglModif" type="text" class="validate datepicker">
-            <label for="txTglModif">Masukkan tanggal</label>
+            <input id="txTglModif" type="text" class="validate">
+            <label for="txTglModif">Masukkan tanggal atau bulan atau tahun</label>
           </div>
+          <button id="btnTglModif_BukaKalender"
+                  class="btn waves-effect waves-light tombol-fluid datepicker">
+            buka kalender
+          </button><br><br>
+          <button id="btnTglModif_CariBerkas"
+                  class="btn waves-effect waves-light tombol-fluid">
+            cari berkas
+          </button>
         </div>
       </div>
     </div>
@@ -1105,8 +960,74 @@
             </label>
           </div>
           <div class="input-field">
-            <input id="txTglAkses" type="text" class="validate datepicker">
-            <label for="txTglAkses">Masukkan tanggal</label>
+            <input id="txTglAkses" type="text" class="validate">
+            <label for="txTglAkses">Masukkan tanggal atau bulan atau tahun</label>
+          </div>
+          <button id="btnTglAkses_BukaKalender"
+                  class="btn waves-effect waves-light tombol-fluid datepicker">
+            buka kalender
+          </button><br><br>
+          <button id="btnTglAkses_CariBerkas"
+                  class="btn waves-effect waves-light tombol-fluid">
+            cari berkas
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- pop urutkan ekstensi -->
+    <div id="popUrutkanEks" class="webui-popover-content">
+      <div class="row">
+        <div class="col">
+          <button id="btnTXT" class="btn-large waves-effect waves-light">
+            TXT
+          </button>
+        </div>
+        <div class="col">
+          <button id="btnPDF" class="btn-large waves-effect waves-light">
+            PDF
+          </button>
+        </div>
+        <div class="col">
+          <button id="btnODF" class="btn-large waves-effect waves-light">
+            ODF
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button id="btnDOC" class="btn-large waves-effect waves-light">
+            DOC
+          </button>
+        </div>
+        <div class="col">
+          <button id="btnDOCX" class="btn-large waves-effect waves-light">
+            DOCX
+          </button>
+        </div>
+        <div class="col">
+          <button id="btnXLSX" class="btn-large waves-effect waves-light">
+            XLSX
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button id="btnMP3" class="btn-large waves-effect waves-light">
+            MP3
+          </button>
+        </div>
+        <div class="col">
+          <button id="btnMP4" class="btn-large waves-effect waves-light">
+            MP4
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container">
+          <div class="input-field">
+            <input id="txEkstensi" type="text" class="validate">
+            <label for="txEkstensi">Atau masukkan ekstensi lain</label>
           </div>
         </div>
       </div>
