@@ -1,3 +1,11 @@
+
+/////////////////////////////////////////////
+//
+// variabel global
+//
+
+var kontenTabTerpilih = "#berkas";
+
 $(document).ready(function() {
   // inisialisasi komponen
   
@@ -10,11 +18,37 @@ $(document).ready(function() {
   $(".datepicker").datepicker();
   $(".collapsible").collapsible();
   $(".tap-target").tapTarget();
+  $(".materialboxed").materialbox();
 
   $("#tabEdit").hide();
   $("#tabTab").hide();
   $("#loadingCircle").hide();
+  $("#teksInfo").hide();
   $(".modal").hide();
+  
+  ///////////////////////////////////////////////
+  //
+  // atur tab ribbon
+  
+  $("#tabBerkas").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabCari").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabTab").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabPengaturan").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
+  
+  $("#tabAbout").click(function(e) {
+    kontenTabTerpilih = $(this).children().attr("href");
+  });
   
   ///////////////////////////////////////////////
   //
@@ -93,13 +127,45 @@ $(document).ready(function() {
     sendNSCommand("kosongkanTrash");
   });
   
-  $("#btnOkHapusBerkasPermanen").click(function(e) {
-    sendNSCommand("hapusBerkasPermanen", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  $("#btnOkHapusBerkasPermanen").click(function(e) {    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hapusBerkasPermanen";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
+  
+//  $("#panelGambar").modal("open");
   
   /////////////////////////////////////////////////////
   //
-  // atur tombol ribbon 
+  // atur ribbon 
+  
+  $("#btnUrutkanAtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarATime");
+  });
+  
+  $("#txCariBerkas").keypress(function(e) {
+    if(e.which === 13) {
+      e.preventDefault();
+      
+      sendNSCommand("cariBerkas", this.value);
+    }
+  });
+  
+  $("#txCariBerkas").on("input", function(e) {
+    sendNSCommand("cariBerkas", this.value);
+  });
   
   $(".tooltipped").click(function() {
     $(".tooltipped").tooltip("destroy").tooltip();
@@ -136,18 +202,39 @@ $(document).ready(function() {
     sendNSCommand("bukaTerminal");
   });
   
-  $("#btnHideDanView").click(function(e) {
-    if($(this).attr("data-tooltip") === "Sembunyikan") {
-      $(this).attr("data-tooltip", "Tampilkan (Unhide)")
-              .css("background-image", "url(assets/Icons/32/view.png)");
-      
-      sendNSCommand("hideBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+  $("#btnViewBerkas").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "unhideBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
     }
-    else if($(this).attr("data-tooltip") === "Tampilkan (Unhide)") {
-      $(this).attr("data-tooltip", "Sembunyikan")
-              .css("background-image", "url(assets/Icons/32/hide.png)");
-      
-      sendNSCommand("unhideBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
+  });
+  
+  $("#btnHideBerkas").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hideBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
     }
   });
   
@@ -156,7 +243,21 @@ $(document).ready(function() {
   });
   
   $("#btnHapusKeTrash").click(function(e) {
-    sendNSCommand("hapusKeTrash", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "hapusKeTrash";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnInfoBerkas").click(function(e) {
@@ -235,34 +336,52 @@ $(document).ready(function() {
   //
   // atur popover
   
+  $("#btnFilterEkstensi").webuiPopover({
+    title: "Filter Berdasarkan Ekstensi",
+    width: 400,
+    animation: "pop",
+    url: "#popUrutkanEks",
+    closeable: true,
+    placement: "bottom-right",
+  });
+  
   $("#btnTglDibuat").webuiPopover({
     title: "Cari Berdasarkan Tanggal Dibuat",
-    width: 300,
+    width: 400,
     animation: "pop",
     url: "#popTglDibuat",
     closeable: true,
     placement: "bottom",
-    trigger: "manual"
+    trigger: "manual",
+    onShow: function(element) {
+      $("#txTglDibuat").select();
+    }
   });
   
   $("#btnTglModif").webuiPopover({
     title: "Cari Berdasarkan Tanggal Diubah",
-    width: 300,
+    width: 400,
     animation: "pop",
     url: "#popTglModif",
     closeable: true,
     placement: "bottom",
-    trigger: "manual"
+    trigger: "manual",
+    onShow: function(element) {
+      $("#txTglModif").select();
+    }
   });
   
   $("#btnTglAkses").webuiPopover({
     title: "Cari Berdasarkan Tanggal Akses",
-    width: 300,
+    width: 400,
     animation: "pop",
     url: "#popTglAkses",
     closeable: true,
     placement: "bottom",
-    trigger: "manual"
+    trigger: "manual",
+    onShow: function(element) {
+      $("#txTglAkses").select();
+    }
   });
   
   $("#btnOperasiBerkas").webuiPopover({
@@ -351,6 +470,46 @@ $(document).ready(function() {
     onHide: function(element) {
       tutupAccordion("#accordPintasan");
     }
+  });
+  
+  $("#btnTXT").click(function(e) {
+    sendNSCommand("filterEkstensi", "TXT");
+  });
+  
+  $("#btnPDF").click(function(e) {
+    sendNSCommand("filterEkstensi", "PDF");
+  });
+  
+  $("#btnODF").click(function(e) {
+    sendNSCommand("filterEkstensi", "ODF");
+  });
+  
+  $("#btnDOC").click(function(e) {
+    sendNSCommand("filterEkstensi", "DOC");
+  });
+  
+  $("#btnDOCX").click(function(e) {
+    sendNSCommand("filterEkstensi", "DOCX");
+  });
+  
+  $("#btnXLSX").click(function(e) {
+    sendNSCommand("filterEkstensi", "XLSX");
+  });
+  
+  $("#btnMP3").click(function(e) {
+    sendNSCommand("filterEkstensi", "MP3");
+  });
+  
+  $("#btnMP4").click(function(e) {
+    sendNSCommand("filterEkstensi", "MP4");
+  });
+  
+  $("#txEkstensi").keypress(function(e) {
+    if(e.which === 13) {
+      sendNSCommand("filterEkstensi", this.value);
+    }
+    
+    e.stopPropagation();
   });
   
   $("#btnOkBuatFolder").click(function(e) {
@@ -447,40 +606,100 @@ $(document).ready(function() {
     $("#btnTglDibuat").webuiPopover("hide");
   });
   
-  $("#txTglDibuat").datepicker({
+  $("#btnTglDibuat_BukaKalender").datepicker({
     container: $("html"),
-    format: "dd/mm/yyyy",
+    format: "d mmm yyyy",
     i18n: {
-      cancel: "batalkan",
-      done: "cari berkas"
+      cancel: "tutup",
+      done: "OK"
     },
-    onClose: function() {
-      $("#btnTglDibuat").webuiPopover("hide");
+    onSelect: function(selectedDate) {
+      $("#txTglDibuat").select();
+      
+      var daftarBulan = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+                    "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var tgl = selectedDate.getDate();
+      var bulan = daftarBulan[selectedDate.getMonth()];
+      var tahun = selectedDate.getFullYear();
+      $("#txTglDibuat").val(tgl + " " + bulan + " " + tahun);
     }
   });
   
-  $("#txTglModif").datepicker({
+  $("#btnTglModif_BukaKalender").datepicker({
     container: $("html"),
-    format: "dd/mm/yyyy",
+    format: "d mmm yyyy",
     i18n: {
-      cancel: "batalkan",
-      done: "cari berkas"
+      cancel: "tutup",
+      done: "OK"
     },
-    onClose: function() {
-      $("#btnTglModif").webuiPopover("hide");
+    onSelect: function(selectedDate) {
+      $("#txTglModif").select();
+      
+      var daftarBulan = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+                    "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var tgl = selectedDate.getDate();
+      var bulan = daftarBulan[selectedDate.getMonth()];
+      var tahun = selectedDate.getFullYear();
+      $("#txTglModif").val(tgl + " " + bulan + " " + tahun);
     }
   });
   
-  $("#txTglAkses").datepicker({
+  $("#btnTglAkses_BukaKalender").datepicker({
     container: $("html"),
-    format: "dd/mm/yyyy",
+    format: "d mmm yyyy",
     i18n: {
-      cancel: "batalkan",
-      done: "cari berkas"
+      cancel: "tutup",
+      done: "OK"
     },
-    onClose: function() {
-      $("#btnTglAkses").webuiPopover("hide");
+    onSelect: function(selectedDate) {
+      $("#txTglAkses").select();
+      
+      var daftarBulan = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+                    "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var tgl = selectedDate.getDate();
+      var bulan = daftarBulan[selectedDate.getMonth()];
+      var tahun = selectedDate.getFullYear();
+      $("#txTglAkses").val(tgl + " " + bulan + " " + tahun);
     }
+  });
+  
+  $("#btnTglDibuat_CariBerkas").click(function(e) {
+    sendNSCommand("cariBerkasBerdasarTglDibuat", $("#txTglDibuat").val());
+    $("#btnTglDibuat").webuiPopover("hide");
+  });
+  
+  $("#btnTglModif_CariBerkas").click(function(e) {
+    sendNSCommand("cariBerkasBerdasarTglModif", $("#txTglModif").val());
+    $("#btnTglModif").webuiPopover("hide");
+  });
+  
+  $("#btnTglAkses_CariBerkas").click(function(e) {
+    sendNSCommand("cariBerkasBerdasarTglAkses", $("#txTglAkses").val());
+    $("#btnTglAkses").webuiPopover("hide");
+  });
+  
+  $("#txTglDibuat").keypress(function(e) {
+    if(e.which === 13) {
+      $("#btnTglDibuat_CariBerkas").click();
+    }
+    
+    e.stopPropagation();
+  });
+  
+  $("#txTglModif").keypress(function(e) {
+    if(e.which === 13) {
+      $("#btnTglModif_CariBerkas").click();
+    }
+    
+    e.stopPropagation();
+  });
+  
+  $("#txTglAkses").keypress(function(e) {
+    if(e.which === 13) {
+      $("#btnTglAkses_CariBerkas").click();
+    }
+    
+    e.stopPropagation();
   });
   
   ////////////////////////////////////////////////////////////
@@ -571,6 +790,16 @@ $(document).ready(function() {
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }
 //  
+//  var berkas = new Berkas();
+//  berkas.setNama("File Thumbnail");
+//  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
+//  berkas.setJenis("file");
+//  berkas.setIcon("assets/Icons/64/053-document-7.png");
+//  berkas.setTersembunyi(false);
+//  berkas.setPakeThumbnail(true);
+//  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+//  berkas.pasangElemen($(".tempatBerkas"));
+//  
 //  var opSalin = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/i/a/a")
 //          .setPathTujuan("/a/w/d")
@@ -579,8 +808,14 @@ $(document).ready(function() {
 //  var opSalin2 = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/c/s/b")
 //          .setPathTujuan("/s/f/w")
-//          .pasangElemen($("#rowOperasiBerkas"));  
+//          .pasangElemen($("#rowOperasiBerkas"));
 });
+
+//var param = ["tesArray", "hello", "world", "!!!!"];
+//var fungsi = window["sendNSCommand"];
+//if(typeof fungsi === "function") {
+//  fungsi.apply(null, param);
+//}
 
 ////////////////////////////////////////////
 //

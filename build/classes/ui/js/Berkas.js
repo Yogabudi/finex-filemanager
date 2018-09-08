@@ -10,11 +10,20 @@ class Berkas {
     var jumlahBerkas = 0;
     var ukuranFile = 0;
     var tersembunyi = false;
+    var pakeThumbnail = false;
     var contextMenu = new ContextMenu();
     
     ////////////////////////////////////////////
     //
     // getter & setter
+    
+    this.apakahPakeThumbnail = function() {
+      return pakeThumbnail;
+    };
+    
+    this.setPakeThumbnail = function(pake) {
+      pakeThumbnail = pake;
+    };
     
     this.apakahTersembunyi = function() {
       return tersembunyi;
@@ -158,8 +167,8 @@ class Berkas {
       if(berkasTerpilih.getJenis() === "folder") {
         sendNSCommand("tampilkanListBerkas", pathAbsolut);
       }
-      else {
-        
+      else if(berkasTerpilih.getJenis() === "file") {
+        sendNSCommand("bukaFile", pathAbsolut);
       }
     };
     
@@ -183,6 +192,9 @@ class Berkas {
                    ? "assets/Icons/24/folder.png" : "assets/Icons/24/file.png";
       var labelInfo = (jenis === "folder")
                     ? (jumlahBerkas + " Berkas") : (ukuranFile + " KB");
+      var classImg = (pakeThumbnail)
+                    ? "gambar-thumbnail" : "card-image center-align icon-berkas";
+      icon = (pakeThumbnail) ? pathAbsolut : icon;
       
       var berkas = ""+
       "<div id-berkas='"+nama+"' "+
@@ -192,7 +204,7 @@ class Berkas {
             "tersembunyi='"+tersembunyi+"' "+
             "diklik-kanan='false'>"+
         "<div class='card-panel white berkas'>"+
-          "<div class='card-image center-align icon-berkas'>"+
+          "<div class='"+classImg+"'>"+
             "<img src='"+icon+"'/>"+
           "</div>"+
           "<div class='divider garis-card-berkas'></div>"+
@@ -258,18 +270,6 @@ class Berkas {
     $("#btnUbahNama").show();
     $("#btnDuplikat").show();
     $("#btnInfoBerkas").show();
-    
-    if(Berkas.dapatkanBerkasTerpilih().apakahTersembunyi()) {
-      $("#btnHideDanView")
-              .css("background-image", "url(assets/Icons/32/view.png)")
-              .attr("data-tooltip", "Tampilkan (Unhide)");
-    }
-    else {
-      $("#btnHideDanView")
-              .css("background-image", "url(assets/Icons/32/hide.png)")
-              .attr("data-tooltip", "Sembunyikan");
-    }
-    
   }
 
   static eventSaatTerpilihBanyak(elements) {
@@ -283,7 +283,7 @@ class Berkas {
   }
 
   static eventSaatTidakTerpilih() {
-    $("#ribbon").tabs("select", "berkas");
+    $("#ribbon").tabs("select", kontenTabTerpilih.substring(1));
     $("#ribbon").tabs("updateTabIndicator");
     $("#tabEdit").hide();
   }
@@ -346,6 +346,27 @@ class Berkas {
     berkas.setTersembunyi((tersembunyi === "true"));
     
     return berkas;
+  }
+  
+  static dapatkanBanyakBerkasTerpilih() {
+    var dataBerkas = [];
+    
+    for(var i = 0; i < $(".ds-selected").length; i++) {
+      var namaBerkas = $($(".ds-selected")[i]).parent().attr("id-berkas");
+      var iconBerkas = $($(".ds-selected .card-image img")[i]).attr("src");
+      var pathAbsolut = $($(".ds-selected")[i]).parent().attr("path-absolut");
+      var jenis = $($(".ds-selected")[i]).parent().attr("jenis");
+      var tersembunyi = $($(".ds-selected")[i]).parent().attr("tersembunyi");
+      
+      dataBerkas[i] = new Berkas();
+      dataBerkas[i].setNama(namaBerkas);
+      dataBerkas[i].setJenis(jenis);
+      dataBerkas[i].setPathAbsolut(pathAbsolut);
+      dataBerkas[i].setIcon(iconBerkas);
+      dataBerkas[i].setTersembunyi((tersembunyi === "true"));
+    }
+    
+    return dataBerkas;
   }
   
   static dapatkanBerkasBerdasarNama(nama) {    
@@ -442,5 +463,10 @@ class Berkas {
   
   static tampilkanBerkasTersembunyi() {
     $("div[tersembunyi='true']").show();
+  }
+  
+  static bukaFileGambar(pathAbsolut) {
+    $("#panelGambar .modal-content img").attr("src", pathAbsolut);
+    $("#panelGambar").modal("open");
   }
 };
