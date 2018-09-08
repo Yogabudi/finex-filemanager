@@ -2,16 +2,19 @@
 package filemanager;
 
 import filemanager.webviewui.WebViewUI;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,6 +43,7 @@ public class Berkas {
   public static final String BERDASAR_TGL_MODIFIKASI = "berdasarkantglmodif";
   public static final String BERDASAR_TGL_AKSES = "berdasarkantglakses";
   public static final String BERDASAR_NAMA = "berdasarkannama";
+  public static final String BERDASAR_EKSTENSI = "berdasarekstensi";
   
   public Berkas(WebViewUI ui, String pathname) {
     this.objekFile = new File(pathname);
@@ -157,6 +161,8 @@ public class Berkas {
     Berkas[] daftarBerkas = listBerkas();
 
     Berkas.hapusSemuaBerkasPadaJS(ui);
+    Berkas.sembunyikanTeksInfo(ui);
+    
     for(int i = 0; i < daftarBerkas.length; i++) {
       if(daftarBerkas[i].objekFile.isDirectory()) {
         daftarBerkas[i].buatBerkasPadaJS();
@@ -205,14 +211,53 @@ public class Berkas {
       String tgl = teks;
       
       for(int i = 0; i < dataBerkas.length; i++) {
-        BasicFileAttributes attr =
-                Files.readAttributes(dataBerkas[i].getObjekFile().toPath(),
-                        BasicFileAttributes.class);
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        String tglDibuat = df.format(attr.creationTime().toMillis());
+        LocalDate[] tglDibuat = dataBerkas[i].dapatkanInfoTgl("computer");
         
-        if(tglDibuat.contains(tgl)) {
-          dataHasil.add(dataBerkas[i]);
+        if(tglDibuat.length > 2) {
+          String strTglDibuat = tglDibuat[2].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+
+          if(strTglDibuat.contains(tgl)) {
+            dataHasil.add(dataBerkas[i]);
+          }
+        }
+        else {
+          System.out.println("Sedang berusaha mencari...");
+        }
+      }
+    }
+    else if(kriteria.equals(Berkas.BERDASAR_TGL_MODIFIKASI)) {
+      String tgl = teks;
+      
+      for(int i = 0; i < dataBerkas.length; i++) {
+        LocalDate[] tglModif = dataBerkas[i].dapatkanInfoTgl("computer");
+        
+        if(tglModif.length > 2) {
+          String strTglModif = tglModif[1].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+
+          if(strTglModif.contains(tgl)) {
+            dataHasil.add(dataBerkas[i]);
+          }
+        }
+        else {
+          System.out.println("Sedang berusaha mencari...");
+        }
+      }
+    }
+    else if(kriteria.equals(Berkas.BERDASAR_TGL_AKSES)) {
+      String tgl = teks;
+      
+      for(int i = 0; i < dataBerkas.length; i++) {
+        LocalDate[] tglAkses = dataBerkas[i].dapatkanInfoTgl("computer");
+        
+        if(tglAkses.length > 2) {
+          String strTglAkses = tglAkses[0].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+
+          if(strTglAkses.contains(tgl)) {
+            dataHasil.add(dataBerkas[i]);
+          }
+        }
+        else {
+          System.out.println("Sedang berusaha mencari...");
         }
       }
     }
@@ -220,18 +265,58 @@ public class Berkas {
     return dataHasil;
   }
   
-  public void tampilkanInfoBerkas() throws IOException {
-    BasicFileAttributes atribut =
-            Files.readAttributes(objekFile.toPath(), BasicFileAttributes.class);
-    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+  public Berkas[] urutkan(String berdasar, String ekstensi) throws IOException {
+    ArrayList<Berkas> dataBerkas = new ArrayList<>();
     
+    if(berdasar.equals(Berkas.BERDASAR_TGL_AKSES)) {
+      if(objekFile.isDirectory()) {
+        String program = "src/filemanager/programsh/sort_atime_berkas.sh";
+        String pathBerkas = objekFile.getAbsolutePath();
+
+        ProcessBuilder pb = new ProcessBuilder(program, pathBerkas);
+        pb.redirectErrorStream(true);
+
+        Process proc = pb.start();
+
+        BufferedReader buffer = new BufferedReader(
+                new InputStreamReader(proc.getInputStream()));
+        String baris;
+
+        for(int i = 0; (baris = buffer.readLine()) != null; i++) {
+          if(i > 0) {
+            dataBerkas.add(new Berkas(ui, pathBerkas + "/" + baris));
+          }
+        }
+
+        buffer.close();
+      }
+    }
+    else if(berdasar.equals(Berkas.BERDASAR_EKSTENSI)) {
+      if(objekFile.isDirectory()) {
+        File[] daftarFile = objekFile.listFiles();
+        
+        for(int i = 0; i < daftarFile.length; i++) {
+          if(daftarFile[i].getName().endsWith(ekstensi)) {
+            dataBerkas.add(new Berkas(ui, daftarFile[i].getAbsolutePath()));
+          }
+        }
+      }
+    }
+    
+    return dataBerkas.toArray(new Berkas[0]);
+  }
+  
+  public void tampilkanInfoBerkas() throws IOException {
     String namaBerkas = objekFile.getName();
     String jenisBerkas = (objekFile.isDirectory()) ? "Direktori" : "File";
     long ukuranBerkas = ukuranFile;
     int jmlKonten = (objekFile.isDirectory()) ? objekFile.listFiles().length : 0;
-    String tglDibuat = df.format(atribut.creationTime().toMillis());
-    String tglModif = df.format(atribut.lastModifiedTime().toMillis());
-    String tglAkses = df.format(atribut.lastAccessTime().toMillis());
+    
+    LocalDate[] infoTgl = dapatkanInfoTgl("computer");
+    
+    String tglDibuat = infoTgl[2].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+    String tglModif = infoTgl[1].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+    String tglAkses = infoTgl[0].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
     
     String js = ""+
     "$('#txNamaBerkas').val('"+namaBerkas+"');"+
@@ -243,6 +328,77 @@ public class Berkas {
     "$('#tglAkses').text('"+tglAkses+"');";
     
     ui.eksekusiJavascript(js);
+  }
+  
+  public LocalDate[] dapatkanInfoTgl(String password) throws IOException {
+    // index :
+    // [0] = tgl akses
+    // [1] = tgl modif
+    // [2] = tgl dibuat
+    
+    ArrayList<LocalDate> tglLengkap = new ArrayList<>();
+    
+    String program = "src/filemanager/programsh/crtime_berkas.sh";
+    String pathBerkas = objekFile.getAbsolutePath();
+
+    ProcessBuilder pb = new ProcessBuilder(program, password, pathBerkas);
+    pb.redirectErrorStream(true);
+
+    Process proc = pb.start();
+
+    BufferedReader buffer = new BufferedReader(
+            new InputStreamReader(proc.getInputStream()));
+    String baris;
+
+    int iBaris = 0;
+    while((baris = buffer.readLine()) != null) {
+      if(iBaris == 10) {
+        String outputTgl = baris.split(" -- ")[1].replaceAll("  ", " ");
+        String tgl = outputTgl.split(" ")[2];
+        String bln = outputTgl.split(" ")[1];
+        String thn = outputTgl.split(" ")[4];
+
+        LocalDate date = LocalDate.parse(tgl + " " + bln + " " + thn,
+                DateTimeFormatter.ofPattern("d MMM yyyy"));
+        tglLengkap.add(date);
+      }
+      else if(iBaris == 9) {
+        String outputTgl = baris.split(" -- ")[1].replaceAll("  ", " ");
+        String tgl = outputTgl.split(" ")[2];
+        String bln = outputTgl.split(" ")[1];
+        String thn = outputTgl.split(" ")[4];
+
+        LocalDate date = LocalDate.parse(tgl + " " + bln + " " + thn,
+                DateTimeFormatter.ofPattern("d MMM yyyy"));
+        tglLengkap.add(date);
+      }
+      else if(iBaris == 8) {
+        String outputTgl = baris.split(" -- ")[1].replaceAll("  ", " ");
+        String tgl = outputTgl.split(" ")[2];
+        String bln = outputTgl.split(" ")[1];
+        String thn = outputTgl.split(" ")[4];
+
+        LocalDate date = LocalDate.parse(tgl + " " + bln + " " + thn,
+                DateTimeFormatter.ofPattern("d MMM yyyy"));
+        tglLengkap.add(date);
+      }
+      
+      iBaris++;
+    }
+    
+    // jika terjadi keanehan yaitu tgl modifikasi terjadi sebelum tgl dibuat
+    // maka tukar tgl tersebut
+    if(!tglLengkap.isEmpty()) {
+      if(tglLengkap.get(1).isBefore(tglLengkap.get(2))) {
+        LocalDate tglDibuat = tglLengkap.get(2);
+        tglLengkap.set(2, tglLengkap.get(1));
+        tglLengkap.set(1, tglDibuat);
+      }
+    }
+
+    buffer.close();
+    
+    return tglLengkap.toArray(new LocalDate[0]);
   }
   
   public void hapusKeTrash() throws IOException {
@@ -488,6 +644,20 @@ public class Berkas {
     ui.eksekusiJavascript(js);
   }
   
+  public static void tampilkanTeksInfo(WebViewUI ui) {
+    String js = ""+
+    "$('#teksInfo').show();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void sembunyikanTeksInfo(WebViewUI ui) {
+    String js = ""+
+    "$('#teksInfo').hide();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
   public static void tandaiBerkasPadaJS(String namaBerkas, WebViewUI ui) {
     String js = "" +
     "Berkas.hilangkanSemuaTanda();"+
@@ -508,5 +678,14 @@ public class Berkas {
     "$('#konten').animate({ scrollTop: $(document).height() }, 500);";
     
     ui.eksekusiJavascript(js);
+  }
+  
+  public void bukaFile(boolean fileGambar) {
+    if(fileGambar) {
+      String js = ""+
+      "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
+      
+      ui.eksekusiJavascript(js);
+    }
   }
 }
