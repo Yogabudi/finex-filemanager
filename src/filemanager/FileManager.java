@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import filemanager.webviewui.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
@@ -16,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -25,7 +25,8 @@ import javax.swing.SwingUtilities;
  *
  * @author Yoga Budi Yulianto
  */
-public class FileManager extends JFrame implements PendengarWebBrowser {
+public class FileManager extends JFrame
+        implements PendengarWebBrowser, WindowFocusListener {
 
   public WebViewUI ui;
   public NavMajuMundur nav;
@@ -42,7 +43,8 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
     this.setName("UI Utama");
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.ketengahkan();
-//    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.addWindowFocusListener(this);
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
@@ -619,10 +621,11 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
     }
     else if(perintah.equals("cariBerkasBerdasarTglDibuat")) {
       String tgl = (String)param[0];
-      String lokasiSekarang =
-              nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
       Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
       
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.sembunyikanTeksInfo(ui);
       Berkas.hapusSemuaBerkasPadaJS(ui);
       
       ExecutorService execService = Executors.newFixedThreadPool(1);
@@ -636,6 +639,15 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
             for(int i = 0; i < dataCari.size(); i++) {
               dataCari.get(i).buatBerkasPadaJS();
             }
+            
+            if(dataCari.isEmpty()) {
+              Berkas.tampilkanTeksInfo(ui);
+            }
+            else {
+              Berkas.sembunyikanTeksInfo(ui);
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
           }
           catch (IOException ex){
             ex.printStackTrace();
@@ -644,6 +656,153 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
       });
 
       execService.shutdown();
+    }
+    else if(perintah.equals("cariBerkasBerdasarTglModif")) {
+      String tgl = (String)param[0];
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.sembunyikanTeksInfo(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            ArrayList<Berkas> dataCari =
+                  Berkas.cariBerkas(Berkas.BERDASAR_TGL_MODIFIKASI, tgl, berkasTempat);
+            
+            for(int i = 0; i < dataCari.size(); i++) {
+              dataCari.get(i).buatBerkasPadaJS();
+            }
+            
+            if(dataCari.isEmpty()) {
+              Berkas.tampilkanTeksInfo(ui);
+            }
+            else {
+              Berkas.sembunyikanTeksInfo(ui);
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
+          }
+          catch (IOException ex){
+            ex.printStackTrace();
+          }
+        }
+      });
+
+      execService.shutdown();
+    }
+    else if(perintah.equals("cariBerkasBerdasarTglAkses")) {
+      String tgl = (String)param[0];
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.sembunyikanTeksInfo(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            ArrayList<Berkas> dataCari =
+                  Berkas.cariBerkas(Berkas.BERDASAR_TGL_AKSES, tgl, berkasTempat);
+            
+            for(int i = 0; i < dataCari.size(); i++) {
+              dataCari.get(i).buatBerkasPadaJS();
+            }
+            
+            if(dataCari.isEmpty()) {
+              Berkas.tampilkanTeksInfo(ui);
+            }
+            else {
+              Berkas.sembunyikanTeksInfo(ui);
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
+          }
+          catch (IOException ex){
+            ex.printStackTrace();
+          }
+        }
+      });
+
+      execService.shutdown();
+    }
+    else if(perintah.equals("urutkanBerdasarATime")) {
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            Berkas[] dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_AKSES, "");
+            
+            for(int i = 0; i < dataBerkas.length; i++) {
+              dataBerkas[i].buatBerkasPadaJS();
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
+            
+          } catch (IOException ex) {
+            ex.printStackTrace();
+          }
+        }
+      });
+      
+      execService.shutdown();
+    }
+    else if(perintah.equals("filterEkstensi")) {
+      String ekstensi = (String)param[0];
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            Berkas[] dataBerkas =
+                    berkasTempat.urutkan(Berkas.BERDASAR_EKSTENSI,
+                            ekstensi.toLowerCase());
+            
+            for(int i = 0; i < dataBerkas.length; i++) {
+              dataBerkas[i].buatBerkasPadaJS();
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
+            
+          } catch (IOException ex) {
+            ex.printStackTrace();
+          }
+        }
+      });
+      
+      execService.shutdown();
+    }
+    else if(perintah.equals("bukaFile")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      if(berkas.getObjekFile().getName().endsWith(".png") ||
+         berkas.getObjekFile().getName().endsWith(".jpg") ||
+         berkas.getObjekFile().getName().endsWith(".jpeg")) {
+        
+        berkas.bukaFile(true);
+      }
     }
   }
 
@@ -659,6 +818,16 @@ public class FileManager extends JFrame implements PendengarWebBrowser {
     "PARENT : " + berkasTerpilih.getObjekFile().getParent();
 
     JOptionPane.showMessageDialog(this, info);
+  }
+
+  @Override
+  public void windowGainedFocus(WindowEvent e) {
+    
+  }
+
+  @Override
+  public void windowLostFocus(WindowEvent e) {
+    
   }
   
 }
