@@ -3,6 +3,7 @@ package filemanager;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import filemanager.database.DataTabelWajah;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -11,22 +12,26 @@ import javax.swing.WindowConstants;
 import filemanager.webviewui.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author Yoga Budi Yulianto
  */
 public class FileManager extends JFrame
-        implements PendengarWebBrowser, WindowFocusListener {
+        implements PendengarWebBrowser, WindowFocusListener, WindowListener {
 
   public WebViewUI ui;
   public NavMajuMundur nav;
@@ -34,6 +39,11 @@ public class FileManager extends JFrame
   
   public List<Berkas> jejakNav = new ArrayList<>();
   public ArrayList<Berkas> holderBerkas = new ArrayList<>();
+  
+  public Berkas gambarSebelumnya;
+  public ArrayList<Berkas> folderTempatWajah = new ArrayList<>();
+  
+  public ExecutorService servDeteksi;
   
   public FileManager() {
     super();
@@ -43,8 +53,9 @@ public class FileManager extends JFrame
     this.setName("UI Utama");
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.ketengahkan();
-    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    //this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.addWindowFocusListener(this);
+    this.addWindowListener(this);
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
@@ -52,6 +63,26 @@ public class FileManager extends JFrame
     this.getContentPane().add(ui);
     
     nav = new NavMajuMundur(ui);
+    
+    servDeteksi = Executors.newFixedThreadPool(1);
+    
+    try {
+      DataTabelWajah dat = new DataTabelWajah("Wajah 1", "/home/ini_laptop");
+      dat.buatTabelJikaTidakAda();
+      dat.masukkanData();
+      
+      DataTabelWajah[] semuaData = dat.dapatkanSemuaData();
+      
+      for(int i = 0; i < semuaData.length; i++) {
+        System.out.println("nama wajah : " + semuaData[i].getNamaWajah());
+        System.out.println("path foto : " + semuaData[i].getPathFoto());
+      }
+      
+      dat.tutupKoneksi();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
   public void ketengahkan() {
@@ -462,7 +493,7 @@ public class FileManager extends JFrame
     else if(perintah.equals("bukaTerminal")) {
       String lokasiSekarang =
               nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
-      String fileSh = "src/filemanager/programsh/bukaterminal.sh";
+      String fileSh = "src/filemanager/tools/bukaterminal.sh";
       
       try {
         ProcessBuilder pb = new ProcessBuilder(fileSh, lokasiSekarang);
@@ -748,6 +779,15 @@ public class FileManager extends JFrame
             Berkas[] dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_AKSES, "");
             
             for(int i = 0; i < dataBerkas.length; i++) {
+              if(dataBerkas[i].getObjekFile().getName().endsWith(".jpg") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".JPG") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".png") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".PNG") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".jpeg")) {
+
+                  dataBerkas[i].setPakeThumbnail(true);
+              }
+              
               dataBerkas[i].buatBerkasPadaJS();
             }
             
@@ -798,11 +838,77 @@ public class FileManager extends JFrame
       Berkas berkas = new Berkas(ui, pathAbsolut);
       
       if(berkas.getObjekFile().getName().endsWith(".png") ||
+         berkas.getObjekFile().getName().endsWith(".PNG") ||
          berkas.getObjekFile().getName().endsWith(".jpg") ||
+         berkas.getObjekFile().getName().endsWith(".JPG") ||
          berkas.getObjekFile().getName().endsWith(".jpeg")) {
         
-        berkas.bukaFile(true);
+        berkas.bukaFileGambar();
+        
+        WajahTerdeteksi.tampilkanCirclePadaJS(ui);
+        WajahTerdeteksi.tampilkanInfoWTPadaJS(ui);
+        WajahTerdeteksi.ubahTeksWTPadaJS(ui, "Mencari wajah...");
+        WajahTerdeteksi.hapusSemuaPadaJS(ui);
+        
+        Berkas.bukaPanelGambarPadaJS(ui);
+        
+        servDeteksi.execute(new Runnable() {
+          @Override
+          public void run() {
+            try {
+              if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
+                gambarSebelumnya.getObjekFile().delete();
+              }
+              
+              int[][] dataWajah = FaceDetector.deteksiWajah(berkas);
+              Berkas hasil = FaceDetector.prosesGambar(ui, berkas, dataWajah);
+              gambarSebelumnya = hasil;
+
+              Berkas.bukaFileGambar(ui, hasil);
+              
+              String pathFolderWajah = berkas.getObjekFile().getParent() +
+                        "/.wajah_" + berkas.getObjekFile().getName();
+              Berkas folderWajah = new Berkas(ui, pathFolderWajah);
+              
+              if(folderWajah.getObjekFile().exists()) {
+                Berkas[] fotoWajah = folderWajah.listBerkas();
+
+                for(int i = 0; i < fotoWajah.length; i++) {
+                  String namaFileWajah = fotoWajah[i].getObjekFile().getName();
+                  String namaWajah = namaFileWajah.substring(0, namaFileWajah.length() - 4);
+                  
+                  WajahTerdeteksi wajah = new WajahTerdeteksi(ui, namaWajah);
+                  wajah.setFotoWajah(fotoWajah[i]);
+                  wajah.buatWajahTerdeteksiPadaJS();
+                }
+                
+                WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
+                WajahTerdeteksi.sembunyikanInfoWTPadaJS(ui);
+                
+                folderTempatWajah.add(folderWajah);
+              }
+              else {
+                WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
+                WajahTerdeteksi.ubahTeksWTPadaJS(ui, "Tidak ada wajah terdeteksi");
+              }
+              
+              System.out.println("Proses Deteksi Selesai!");
+            }
+            catch(IOException | InterruptedException ex) {
+              ex.printStackTrace();
+            }
+          }
+        });
+
       }
+    }
+    else if(perintah.equals("hapusGambarBertanda")) {
+      if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
+        gambarSebelumnya.getObjekFile().delete();
+      }
+      
+      servDeteksi.shutdownNow();
+      servDeteksi = Executors.newFixedThreadPool(1);
     }
   }
 
@@ -828,6 +934,51 @@ public class FileManager extends JFrame
   @Override
   public void windowLostFocus(WindowEvent e) {
     
+  }
+
+  @Override
+  public void windowOpened(WindowEvent e) {
+  }
+
+  @Override
+  public void windowClosing(WindowEvent e) {
+    servDeteksi.shutdownNow();
+    
+    if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
+      gambarSebelumnya.getObjekFile().delete();
+    }
+    
+    for(int i = 0; i < folderTempatWajah.size(); i++) {
+      if(folderTempatWajah.get(i).getObjekFile().exists()) {
+        try {
+          FileUtils.deleteDirectory(folderTempatWajah.get(i).getObjekFile());
+
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    
+  }
+
+  @Override
+  public void windowClosed(WindowEvent e) {
+  }
+
+  @Override
+  public void windowIconified(WindowEvent e) {
+  }
+
+  @Override
+  public void windowDeiconified(WindowEvent e) {
+  }
+
+  @Override
+  public void windowActivated(WindowEvent e) {
+  }
+
+  @Override
+  public void windowDeactivated(WindowEvent e) {
   }
   
 }
