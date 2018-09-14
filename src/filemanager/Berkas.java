@@ -11,8 +11,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -144,7 +142,9 @@ public class Berkas {
         berkas.setIcon("assets/Icons/64/053-document-7.png");
         
         if(berkas.getObjekFile().getName().endsWith(".jpg") ||
+           berkas.getObjekFile().getName().endsWith(".JPG") ||
            berkas.getObjekFile().getName().endsWith(".png") ||
+           berkas.getObjekFile().getName().endsWith(".PNG") ||
            berkas.getObjekFile().getName().endsWith(".jpeg")) {
           
           berkas.setPakeThumbnail(true);
@@ -270,7 +270,7 @@ public class Berkas {
     
     if(berdasar.equals(Berkas.BERDASAR_TGL_AKSES)) {
       if(objekFile.isDirectory()) {
-        String program = "src/filemanager/programsh/sort_atime_berkas.sh";
+        String program = "src/filemanager/tools/sort_atime_berkas.sh";
         String pathBerkas = objekFile.getAbsolutePath();
 
         ProcessBuilder pb = new ProcessBuilder(program, pathBerkas);
@@ -338,7 +338,7 @@ public class Berkas {
     
     ArrayList<LocalDate> tglLengkap = new ArrayList<>();
     
-    String program = "src/filemanager/programsh/crtime_berkas.sh";
+    String program = "src/filemanager/tools/crtime_berkas.sh";
     String pathBerkas = objekFile.getAbsolutePath();
 
     ProcessBuilder pb = new ProcessBuilder(program, password, pathBerkas);
@@ -680,12 +680,21 @@ public class Berkas {
     ui.eksekusiJavascript(js);
   }
   
-  public void bukaFile(boolean fileGambar) {
-    if(fileGambar) {
-      String js = ""+
-      "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
-      
-      ui.eksekusiJavascript(js);
-    }
+  public static void bukaFileGambar(WebViewUI ui, Berkas fileGambar) {
+    String js = ""+
+    "Berkas.bukaFileGambar('"+fileGambar.getObjekFile().getAbsolutePath()+"');";
+
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void bukaPanelGambarPadaJS(WebViewUI ui) {
+    ui.eksekusiJavascript("Berkas.bukaPanelGambar();");
+  }
+  
+  public void bukaFileGambar() {
+    String js = ""+
+    "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
+
+    ui.eksekusiJavascript(js);
   }
 }
