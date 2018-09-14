@@ -145,7 +145,14 @@ $(document).ready(function() {
     }
   });
   
-//  $("#panelGambar").modal("open");
+  $("#panelGambar").modal({
+    onCloseEnd: function() {
+      sendNSCommand("hapusGambarBertanda");
+    }
+  });
+  
+  $("#lcWajahTerdeteksi").hide();
+  $("#teksInfoWT").hide();
   
   /////////////////////////////////////////////////////
   //
@@ -816,6 +823,20 @@ $(document).ready(function() {
 //if(typeof fungsi === "function") {
 //  fungsi.apply(null, param);
 //}
+
+///////////////////////////////////////////
+//
+// atur wajah terdeteksi
+
+var wajah1 = new WajahTerdeteksi();
+wajah1.setNama("Adept");
+wajah1.setFoto("/home/ini_laptop/Pictures/adept.jpg");
+wajah1.pasangElemen($("#tempatWajahTerdeteksi"));
+
+var wajah2 = new WajahTerdeteksi();
+wajah2.setNama("Punk");
+wajah2.setFoto("/home/ini_laptop/Pictures/punk.jpg");
+wajah2.pasangElemen($("#tempatWajahTerdeteksi"));
 
 ////////////////////////////////////////////
 //
