@@ -27,11 +27,11 @@ class KotakWajah {
     
     this.getEventKlikUbahNama = function() {
       return eventKlikUbahNama;
-    }
+    };
     
     this.getEventKlikHapus = function() {
       return eventKlikHapus;
-    }
+    };
     
     this.getNama = function() {
       return nama;
@@ -47,7 +47,7 @@ class KotakWajah {
       var param = nama + "," + foto;
       
       return param;
-    }
+    };
     
     this.pasangElemen = function(elemenTempat) {
       var id = nama.split(" ").join("");
