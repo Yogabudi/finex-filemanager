@@ -466,7 +466,10 @@ class Berkas {
   }
   
   static bukaFileGambar(pathAbsolut) {
-    $("#panelGambar .modal-content img").attr("src", pathAbsolut);
+    $("#imgPanelGambar").attr("src", pathAbsolut);
+  }
+  
+  static bukaPanelGambar() {
     $("#panelGambar").modal("open");
   }
 };

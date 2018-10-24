@@ -21,6 +21,14 @@ body {
     overflow-y: scroll;
 }
 
+.tombol-wajah-terdeteksi {
+    max-height: 100% !important;
+    max-width: 100% !important;
+    height: 200px;
+    width: 200px;
+    text-transform: none;
+}
+
 .tombolIconDanTeks {
     background-repeat: no-repeat;
     background-position: 7px 10px;
@@ -199,6 +207,16 @@ body {
     top: 0px !important;
 }
 
+#panelGambar {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 80% !important;
+    height: 100% !important;
+    overflow-y: hidden;
+    position: fixed !important;
+    top: 0px !important;
+}
+
 #listApp {
     height: 250px;
     overflow-y: scroll;
@@ -337,10 +355,15 @@ body {
 
 #panelWajah {
     max-width: 100% !important;
-    width: 50% !important;
+    width: 70% !important;
 }
 
 #loadingCircle, #teksInfo {
     position: relative;
     top: 250px;
+}
+
+#lcWajahTerdeteksi, #teksInfoWT {
+    position: relative;
+    top: 100px;
 }

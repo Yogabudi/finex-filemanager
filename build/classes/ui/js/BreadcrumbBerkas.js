@@ -16,7 +16,7 @@ class BreadcrumbBerkas extends Berkas {
     
     this.hilangkanTanda = function() {
       $(".yby-breadcrumb-aktif").addClass("grey");
-      $(".yby-breadcrumb-aktif").addClass("lighten-2")
+      $(".yby-breadcrumb-aktif").addClass("lighten-2");
       $("div[id-bc='"+this.getNama()+"'] .yby-breadcrumb")
               .removeClass("yby-breadcrumb-aktif");
     };

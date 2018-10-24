@@ -145,14 +145,35 @@ $(document).ready(function() {
     }
   });
   
-//  $("#panelGambar").modal("open");
+  $("#panelGambar").modal({
+    onCloseEnd: function() {
+      sendNSCommand("hapusGambarBertanda");
+    }
+  }).modal("close");
+  
+  $("#lcWajahTerdeteksi").hide();
+  $("#teksInfoWT").hide();
   
   /////////////////////////////////////////////////////
   //
   // atur ribbon 
   
-  $("#btnUrutkanAtime").click(function(e) {
-    sendNSCommand("urutkanBerdasarATime");
+  $("#btnAddtoFGL").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "masukkanKeFGL";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#txCariBerkas").keypress(function(e) {
@@ -163,9 +184,9 @@ $(document).ready(function() {
     }
   });
   
-  $("#txCariBerkas").on("input", function(e) {
-    sendNSCommand("cariBerkas", this.value);
-  });
+//  $("#txCariBerkas").on("input", function(e) {
+//    sendNSCommand("cariBerkas", this.value);
+//  });
   
   $(".tooltipped").click(function() {
     $(".tooltipped").tooltip("destroy").tooltip();
@@ -336,13 +357,40 @@ $(document).ready(function() {
   //
   // atur popover
   
+  $("#btnUrutkanCtime").webuiPopover({
+    title: "Urutkan berdasarkan tanggal dibuat",
+    width: 300,
+    animation: "pop",
+    url: "#popUrutkanCtime",
+    closeable: true,
+    placement: "bottom-right"
+  });
+  
+  $("#btnUrutkanAtime").webuiPopover({
+    title: "Urutkan berdasarkan tanggal akses",
+    width: 300,
+    animation: "pop",
+    url: "#popUrutkanAtime",
+    closeable: true,
+    placement: "bottom-right"
+  });
+  
+  $("#btnUrutkanMtime").webuiPopover({
+    title: "Urutkan berdasarkan tanggal dibuat",
+    width: 300,
+    animation: "pop",
+    url: "#popUrutkanMtime",
+    closeable: true,
+    placement: "bottom-right"
+  });
+  
   $("#btnFilterEkstensi").webuiPopover({
     title: "Filter Berdasarkan Ekstensi",
     width: 400,
     animation: "pop",
     url: "#popUrutkanEks",
     closeable: true,
-    placement: "bottom-right",
+    placement: "bottom-right"
   });
   
   $("#btnTglDibuat").webuiPopover({
@@ -622,6 +670,9 @@ $(document).ready(function() {
       var bulan = daftarBulan[selectedDate.getMonth()];
       var tahun = selectedDate.getFullYear();
       $("#txTglDibuat").val(tgl + " " + bulan + " " + tahun);
+      
+      sendNSCommand("cariBerkasBerdasarTglDibuat", $("#txTglDibuat").val());
+      $("#btnTglDibuat").webuiPopover("hide");
     }
   });
   
@@ -641,6 +692,9 @@ $(document).ready(function() {
       var bulan = daftarBulan[selectedDate.getMonth()];
       var tahun = selectedDate.getFullYear();
       $("#txTglModif").val(tgl + " " + bulan + " " + tahun);
+      
+      sendNSCommand("cariBerkasBerdasarTglModif", $("#txTglModif").val());
+      $("#btnTglModif").webuiPopover("hide");
     }
   });
   
@@ -660,6 +714,9 @@ $(document).ready(function() {
       var bulan = daftarBulan[selectedDate.getMonth()];
       var tahun = selectedDate.getFullYear();
       $("#txTglAkses").val(tgl + " " + bulan + " " + tahun);
+      
+      sendNSCommand("cariBerkasBerdasarTglAkses", $("#txTglAkses").val());
+      $("#btnTglAkses").webuiPopover("hide");
     }
   });
   
@@ -700,6 +757,30 @@ $(document).ready(function() {
     }
     
     e.stopPropagation();
+  });
+  
+  $("#btnUrutkanPastCtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarCTime", "past_to_present");
+  });
+  
+  $("#btnUrutkanPresentCtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarCTime", "present_to_past");
+  });
+  
+  $("#btnUrutkanPastAtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarATime", "past_to_present");
+  });
+  
+  $("#btnUrutkanPresentAtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarATime", "present_to_past");
+  });
+  
+  $("#btnUrutkanPastMtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarMTime", "past_to_present");
+  });
+  
+  $("#btnUrutkanPresentMtime").click(function(e) {
+    sendNSCommand("urutkanBerdasarMTime", "present_to_past");
   });
   
   ////////////////////////////////////////////////////////////
@@ -816,6 +897,22 @@ $(document).ready(function() {
 //if(typeof fungsi === "function") {
 //  fungsi.apply(null, param);
 //}
+
+///////////////////////////////////////////
+//
+// atur wajah terdeteksi
+
+var wajah1 = new WajahTerdeteksi();
+wajah1.setNama("Wajah1");
+wajah1.setFoto("/home/ini_laptop/Pictures/adept.jpg");
+wajah1.setFotoSumber("/home/ini_laptop/Pictures/adept.jpg");
+wajah1.pasangElemen($("#tempatWajahTerdeteksi"));
+
+var wajah2 = new WajahTerdeteksi();
+wajah2.setNama("Wajah 2");
+wajah2.setFoto("/home/ini_laptop/Pictures/punk.jpg");
+wajah2.setFotoSumber("/home/ini_laptop/Pictures/adept.jpg");
+wajah2.pasangElemen($("#tempatWajahTerdeteksi"));
 
 ////////////////////////////////////////////
 //

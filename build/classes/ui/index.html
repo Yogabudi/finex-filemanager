@@ -62,19 +62,27 @@
                  style="background-image: url(assets/Icons/32/110-research.png)">
                 Cari Berdasarkan...
               </button>-->
-              <button id="btnFilterEkstensi" class="waves-effect waves-light btn-large
-                                                btn-flat
-                                                tombolRibbon tooltipped"
-                 data-position="top"
-                 data-tooltip="Filter berdasarkan ekstensi"
-                 style="background-image: url(assets/Icons/32/098-test.png)">
-              </button>
+
               <button id="btnUrutkanAtime" class="waves-effect waves-light btn-large
                                                 btn-flat
                                                 tombolRibbon tooltipped"
                  data-position="top"
-                 data-tooltip="Urutkan berdasarkan waktu akses"
-                 style="background-image: url(assets/Icons/32/funnel.png)">
+                 data-tooltip="Urutkan berdasarkan tanggal akses"
+                 style="background-image: url(assets/Icons/32/calendar_access.png)">
+              </button>
+              <button id="btnUrutkanMtime" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Urutkan berdasarkan tanggal modifikasi"
+                 style="background-image: url(assets/Icons/32/calendar_modif.png)">
+              </button>
+              <button id="btnUrutkanCtime" class="waves-effect waves-light btn-large
+                                                btn-flat
+                                                tombolRibbon tooltipped"
+                 data-position="top"
+                 data-tooltip="Urutkan berdasarkan tanggal dibuat"
+                 style="background-image: url(assets/Icons/32/calendar_created.png)">
               </button>
             </li>
             <li id="kotakPencarian">
@@ -186,6 +194,18 @@
                  class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
                  data-position="top" data-tooltip="Salin"
                  style="background-image: url(assets/Icons/32/003-papers.png)">
+
+              </button>
+              <button id="btnAddtoFGL"
+                 class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+                 data-position="top" data-tooltip="Masukkan ke folder gambar lain"
+                 style="background-image: url(assets/Icons/32/folder.png)">
+
+              </button>
+              <button id="btnAddtoBookmark"
+                 class="waves-effect waves-light btn-large btn-flat tombolRibbon tooltipped"
+                 data-position="top" data-tooltip="Masukkan ke bookmark"
+                 style="background-image: url(assets/Icons/32/bookmark.png)">
 
               </button>
               <button id="btnHideBerkas"
@@ -485,7 +505,35 @@
     <!-- panel gambar -->
     <div id="panelGambar" class="modal modal-fixed-footer">
       <div class="modal-content center-align">
-        <img class="responsive-img materialboxed" src="" />
+        <div class="row">
+          <div class="col s9">
+            <img id="imgPanelGambar" src="" class="responsive-img materialboxed" />
+          </div>
+          <div id="tempatWajahTerdeteksi" class="col s3">
+            <div id="lcWajahTerdeteksi">
+              <div class="center-align">
+                <div class="preloader-wrapper big active">
+                  <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div><div class="gap-patch">
+                      <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="teksInfoWT">
+              <h5 class="center-align blue-grey-text lighten-4">
+                Mengambil wajah...
+              </h5>
+            </div>
+            
+            <!-- TEMPAT WAJAH TERDETEKSI -->
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class=" btn modal-close waves-effect waves-light">
@@ -688,6 +736,46 @@
       </div>
     </div>
     
+    <!-- pop urutkan -->
+    <div id="popUrutkanCtime" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12">
+          <button id="btnUrutkanPastCtime" class="btn waves-effect waves-light tombol-fluid">
+            past to present
+          </button><br><br>
+          <button id="btnUrutkanPresentCtime" class="btn waves-effect waves-light tombol-fluid">
+            present to past
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="popUrutkanAtime" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12">
+          <button id="btnUrutkanPastAtime" class="btn waves-effect waves-light tombol-fluid">
+            past to present
+          </button><br><br>
+          <button id="btnUrutkanPresentAtime" class="btn waves-effect waves-light tombol-fluid">
+            present to past
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="popUrutkanMtime" class="webui-popover-content">
+      <div class="row">
+        <div class="col s12">
+          <button id="btnUrutkanPastMtime" class="btn waves-effect waves-light tombol-fluid">
+            past to present
+          </button><br><br>
+          <button id="btnUrutkanPresentMtime" class="btn waves-effect waves-light tombol-fluid">
+            present to past
+          </button>
+        </div>
+      </div>
+    </div>
+    
     <!-- pop path -->
     <div id="popPath" class="webui-popover-content">
       <div class="row">
@@ -783,48 +871,7 @@
       <div class="row">
         <div class="col s12">
           <ul id="accordFolderGambarLain" class="collapsible popout">
-            <li>
-              <div class="collapsible-header">
-                <img src="assets/Icons/32/106-folder-3.png"
-                     class="icon-accord-kecil" />
-                Folder 1
-              </div>
-              <div class="collapsible-body">
-                <span>/home/Folder 1</span>
-                <button class="btn waves-effect waves-light tombol-fluid"
-                  style="margin-top: 15px;">
-                  Hilangkan
-                </button>
-              </div>
-            </li>
-            <li>
-              <div class="collapsible-header">
-                <img src="assets/Icons/32/106-folder-3.png"
-                     class="icon-accord-kecil" />
-                Pictures World
-              </div>
-              <div class="collapsible-body">
-                <span>/home/Pictures World</span>
-                <button class="btn waves-effect waves-light tombol-fluid"
-                  style="margin-top: 15px;">
-                  Hilangkan
-                </button>
-              </div>
-            </li>
-            <li>
-              <div class="collapsible-header">
-                <img src="assets/Icons/32/106-folder-3.png"
-                     class="icon-accord-kecil" />
-                Third
-              </div>
-              <div class="collapsible-body">
-                <span>/home/Third</span>
-                <button class="btn waves-effect waves-light tombol-fluid"
-                  style="margin-top: 15px;">
-                  Hilangkan
-                </button>
-              </div>
-            </li>
+            <!-- tempat accord -->
           </ul>
           
           <div id="pesanTidakAdaFolderLain" class="container">
@@ -1082,6 +1129,8 @@
     <script src="js/BreadcrumbBerkas.js"></script>
     <script src="js/PanelOperasiBerkas.js"></script>
     <script src="js/KotakWajah.js"></script>
+    <script src="js/WajahTerdeteksi.js"></script>
+    <script src="js/AccordFGL.js"></script>
     
     <script src="js/fungsi_pembantu.js"></script>
     <script src="js/pengendali_ui.js"></script>
