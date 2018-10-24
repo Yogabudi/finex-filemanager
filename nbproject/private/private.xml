@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="3"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/index.html</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/WajahTerdeteksi.js</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/pengendali_ui.js</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/database/DataTabelWajah.java</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/FaceComparator.java</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/KotakWajah.js</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/VisitorFaceRecog.java</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/Berkas.java</file>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/FileManager.java</file>
         </group>
     </open-files>

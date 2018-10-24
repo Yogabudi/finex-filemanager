@@ -3,6 +3,7 @@ package filemanager;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import filemanager.database.DataTabelFGL;
 import filemanager.database.DataTabelWajah;
 
 import java.awt.Dimension;
@@ -16,15 +17,16 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -44,6 +46,11 @@ public class FileManager extends JFrame
   public ArrayList<Berkas> folderTempatWajah = new ArrayList<>();
   
   public ExecutorService servDeteksi;
+  public ExecutorService servCariTglDibuat;
+  
+  final String FOLDER_WAJAH_TERSIMPAN = ".wajah_tersimpan";
+  
+  public static boolean berhentiMencariWajah = true;
   
   public FileManager() {
     super();
@@ -60,6 +67,8 @@ public class FileManager extends JFrame
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
     ui.setURL(getClass().getResource("/ui/index.html").toExternalForm());
+//    ui.setURL(WebServer.getDefaultWebServer().getClassPathResourceURL(
+//                  FileManager.class.getName(), "/ui/index.html"));
     this.getContentPane().add(ui);
     
     nav = new NavMajuMundur(ui);
@@ -67,9 +76,8 @@ public class FileManager extends JFrame
     servDeteksi = Executors.newFixedThreadPool(1);
     
     try {
-      DataTabelWajah dat = new DataTabelWajah("Wajah 1", "/home/ini_laptop");
+      DataTabelWajah dat = new DataTabelWajah();
       dat.buatTabelJikaTidakAda();
-      dat.masukkanData();
       
       DataTabelWajah[] semuaData = dat.dapatkanSemuaData();
       
@@ -77,7 +85,7 @@ public class FileManager extends JFrame
         System.out.println("nama wajah : " + semuaData[i].getNamaWajah());
         System.out.println("path foto : " + semuaData[i].getPathFoto());
       }
-      
+
       dat.tutupKoneksi();
     }
     catch (Exception ex) {
@@ -116,6 +124,23 @@ public class FileManager extends JFrame
     
     Berkas.setTextPathPadaJS(ui, berkas.getObjekFile().getAbsolutePath());
     System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+    
+    try {
+      // load data wajah
+      DataTabelWajah dat = new DataTabelWajah();
+      dat.buatTabelJikaTidakAda();
+      tampilkanSemuaWajah(dat);
+      dat.tutupKoneksi();
+      
+      // load data FGL
+      DataTabelFGL datFgl = new DataTabelFGL();
+      datFgl.buatTabelJikaTidakAda();
+      tampilkanSemuaFGL(datFgl);
+      datFgl.tutupKoneksi();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
   @Override
@@ -169,6 +194,8 @@ public class FileManager extends JFrame
     else if(perintah.equals("tampilkanListBerkasDariBreadcrumb")) {
       String pathAbsolut = (String)param[0];
       String labelBc = (String)param[1];
+      
+      berhentiMencariWajah = true;
       
       Berkas berkasTerpilih = new Berkas(ui, pathAbsolut);
       
@@ -630,17 +657,22 @@ public class FileManager extends JFrame
       
       Berkas.hapusSemuaBerkasPadaJS(ui);
       
-      ExecutorService execService = Executors.newFixedThreadPool(1);
+      ExecutorService execService = Executors.newCachedThreadPool();
       execService.execute(new Runnable() {
         @Override
         public void run() {
           try {
             ArrayList<Berkas> dataCari =
-                    Berkas.cariBerkas(Berkas.BERDASAR_NAMA, teks, berkasTempat);
+               Berkas.cariBerkas(ui, Berkas.BERDASAR_NAMA, teks, berkasTempat);
             
-            for(int i = 0; i < dataCari.size(); i++) {
-              dataCari.get(i).buatBerkasPadaJS();
-            }
+//            for(int i = 0; i < dataCari.size(); i++) {
+//              if(i < 100) {
+//                dataCari.get(i).buatBerkasPadaJS();
+//              }
+//              else {
+//                break;
+//              }
+//            }
           }
           catch (IOException ex){
             ex.printStackTrace();
@@ -659,34 +691,38 @@ public class FileManager extends JFrame
       Berkas.sembunyikanTeksInfo(ui);
       Berkas.hapusSemuaBerkasPadaJS(ui);
       
-      ExecutorService execService = Executors.newFixedThreadPool(1);
-      execService.execute(new Runnable() {
+      if(servCariTglDibuat != null) {
+        servCariTglDibuat.shutdownNow();
+      }
+      
+      servCariTglDibuat = Executors.newFixedThreadPool(1);
+      servCariTglDibuat.execute(new Runnable() {
         @Override
         public void run() {
           try {
             ArrayList<Berkas> dataCari =
-                  Berkas.cariBerkas(Berkas.BERDASAR_TGL_DIBUAT, tgl, berkasTempat);
+                  Berkas.cariBerkas(ui, Berkas.BERDASAR_TGL_DIBUAT_PAST_TO_PRESENT,
+                          tgl, berkasTempat);
             
-            for(int i = 0; i < dataCari.size(); i++) {
-              dataCari.get(i).buatBerkasPadaJS();
-            }
-            
-            if(dataCari.isEmpty()) {
-              Berkas.tampilkanTeksInfo(ui);
-            }
-            else {
-              Berkas.sembunyikanTeksInfo(ui);
-            }
-            
-            Berkas.sembunyikanCirclePadaJS(ui);
+//            for(int i = 0; i < dataCari.size(); i++) {
+//              dataCari.get(i).buatBerkasPadaJS();
+//            }
+//            
+//            if(dataCari.isEmpty()) {
+//              Berkas.tampilkanTeksInfo(ui);
+//            }
+//            else {
+//              Berkas.sembunyikanTeksInfo(ui);
+//            }
+//            
+//            Berkas.sembunyikanCirclePadaJS(ui);
           }
           catch (IOException ex){
             ex.printStackTrace();
           }
         }
       });
-
-      execService.shutdown();
+      
     }
     else if(perintah.equals("cariBerkasBerdasarTglModif")) {
       String tgl = (String)param[0];
@@ -703,20 +739,21 @@ public class FileManager extends JFrame
         public void run() {
           try {
             ArrayList<Berkas> dataCari =
-                  Berkas.cariBerkas(Berkas.BERDASAR_TGL_MODIFIKASI, tgl, berkasTempat);
+                  Berkas.cariBerkas(ui, Berkas.BERDASAR_TGL_MODIFIKASI_PAST_TO_PRESENT,
+                          tgl, berkasTempat);
             
-            for(int i = 0; i < dataCari.size(); i++) {
-              dataCari.get(i).buatBerkasPadaJS();
-            }
-            
-            if(dataCari.isEmpty()) {
-              Berkas.tampilkanTeksInfo(ui);
-            }
-            else {
-              Berkas.sembunyikanTeksInfo(ui);
-            }
-            
-            Berkas.sembunyikanCirclePadaJS(ui);
+//            for(int i = 0; i < dataCari.size(); i++) {
+//              dataCari.get(i).buatBerkasPadaJS();
+//            }
+//            
+//            if(dataCari.isEmpty()) {
+//              Berkas.tampilkanTeksInfo(ui);
+//            }
+//            else {
+//              Berkas.sembunyikanTeksInfo(ui);
+//            }
+//            
+//            Berkas.sembunyikanCirclePadaJS(ui);
           }
           catch (IOException ex){
             ex.printStackTrace();
@@ -741,20 +778,21 @@ public class FileManager extends JFrame
         public void run() {
           try {
             ArrayList<Berkas> dataCari =
-                  Berkas.cariBerkas(Berkas.BERDASAR_TGL_AKSES, tgl, berkasTempat);
+                  Berkas.cariBerkas(ui, Berkas.BERDASAR_TGL_AKSES_PAST_TO_PRESENT,
+                          tgl, berkasTempat);
             
-            for(int i = 0; i < dataCari.size(); i++) {
-              dataCari.get(i).buatBerkasPadaJS();
-            }
-            
-            if(dataCari.isEmpty()) {
-              Berkas.tampilkanTeksInfo(ui);
-            }
-            else {
-              Berkas.sembunyikanTeksInfo(ui);
-            }
-            
-            Berkas.sembunyikanCirclePadaJS(ui);
+//            for(int i = 0; i < dataCari.size(); i++) {
+//              dataCari.get(i).buatBerkasPadaJS();
+//            }
+//            
+//            if(dataCari.isEmpty()) {
+//              Berkas.tampilkanTeksInfo(ui);
+//            }
+//            else {
+//              Berkas.sembunyikanTeksInfo(ui);
+//            }
+//            
+//            Berkas.sembunyikanCirclePadaJS(ui);
           }
           catch (IOException ex){
             ex.printStackTrace();
@@ -765,6 +803,7 @@ public class FileManager extends JFrame
       execService.shutdown();
     }
     else if(perintah.equals("urutkanBerdasarATime")) {
+      String mode = (String)param[0];
       String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
       Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
       
@@ -776,7 +815,14 @@ public class FileManager extends JFrame
         @Override
         public void run() {
           try {
-            Berkas[] dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_AKSES, "");
+            Berkas[] dataBerkas = null;
+            
+            if(mode.equals("past_to_present")) {
+              dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_AKSES_PAST_TO_PRESENT, "");
+            }
+            else if(mode.equals("present_to_past")) {
+              dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_AKSES_PRESENT_TO_PAST, "");
+            }
             
             for(int i = 0; i < dataBerkas.length; i++) {
               if(dataBerkas[i].getObjekFile().getName().endsWith(".jpg") ||
@@ -794,6 +840,83 @@ public class FileManager extends JFrame
             Berkas.sembunyikanCirclePadaJS(ui);
             
           } catch (IOException ex) {
+            ex.printStackTrace();
+          }
+        }
+      });
+      
+      execService.shutdown();
+    }
+    else if(perintah.equals("urutkanBerdasarMTime")) {
+      String mode = (String)param[0];
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            Berkas[] dataBerkas = null;
+            
+            if(mode.equals("past_to_present")) {
+              dataBerkas =
+              berkasTempat.urutkan(Berkas.BERDASAR_TGL_MODIFIKASI_PAST_TO_PRESENT, "");
+            }
+            else if(mode.equals("present_to_past")) {
+              dataBerkas =
+              berkasTempat.urutkan(Berkas.BERDASAR_TGL_MODIFIKASI_PRESENT_TO_PAST, "");
+            }
+            
+            for(int i = 0; i < dataBerkas.length; i++) {
+              if(dataBerkas[i].getObjekFile().getName().endsWith(".jpg") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".JPG") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".png") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".PNG") ||
+                  dataBerkas[i].getObjekFile().getName().endsWith(".jpeg")) {
+
+                  dataBerkas[i].setPakeThumbnail(true);
+              }
+              
+              dataBerkas[i].buatBerkasPadaJS();
+            }
+            
+            Berkas.sembunyikanCirclePadaJS(ui);
+            
+          } catch (IOException ex) {
+            ex.printStackTrace();
+          }
+        }
+      });
+      
+      execService.shutdown();
+    }
+    else if(perintah.equals("urutkanBerdasarCTime")) {
+      String mode = (String)param[0];
+      String lokasiSekarang = nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+      Berkas berkasTempat = new Berkas(ui, lokasiSekarang);
+      
+      Berkas.tampilkanCirclePadaJS(ui);
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      
+      ExecutorService execService = Executors.newFixedThreadPool(1);
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            urutkanBerdasarCTime(mode, berkasTempat);
+          }
+          catch (Exception ex) {
+            try {
+              urutkanBerdasarCTime(mode, berkasTempat);
+            }
+            catch(Exception ex2) {
+              ex2.printStackTrace();
+            }
+            
             ex.printStackTrace();
           }
         }
@@ -860,37 +983,40 @@ public class FileManager extends JFrame
                 gambarSebelumnya.getObjekFile().delete();
               }
               
-              int[][] dataWajah = FaceDetector.deteksiWajah(berkas);
-              Berkas hasil = FaceDetector.prosesGambar(ui, berkas, dataWajah);
-              gambarSebelumnya = hasil;
-
-              Berkas.bukaFileGambar(ui, hasil);
+              Berkas folderWajah = new Berkas(ui,
+                        berkas.getObjekFile().getParent() + "/.wajah_" +
+                                berkas.getObjekFile().getName());
               
-              String pathFolderWajah = berkas.getObjekFile().getParent() +
-                        "/.wajah_" + berkas.getObjekFile().getName();
-              Berkas folderWajah = new Berkas(ui, pathFolderWajah);
-              
-              if(folderWajah.getObjekFile().exists()) {
-                Berkas[] fotoWajah = folderWajah.listBerkas();
-
-                for(int i = 0; i < fotoWajah.length; i++) {
-                  String namaFileWajah = fotoWajah[i].getObjekFile().getName();
-                  String namaWajah = namaFileWajah.substring(0, namaFileWajah.length() - 4);
-                  
-                  WajahTerdeteksi wajah = new WajahTerdeteksi(ui, namaWajah);
-                  wajah.setFotoWajah(fotoWajah[i]);
-                  wajah.buatWajahTerdeteksiPadaJS();
+              if(!folderWajah.getObjekFile().exists()) {
+                int[][] dataWajah = FaceDetector.deteksiWajah(berkas);
+                Berkas hasil = FaceDetector.prosesGambar(ui, berkas, dataWajah);
+                
+                gambarSebelumnya = hasil;
+                
+                Berkas.bukaFileGambar(ui, hasil);
+                
+                if(dataWajah.length == 0) {
+                  WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
+                  WajahTerdeteksi.ubahTeksWTPadaJS(ui, "Tidak ada wajah terdeteksi");
                 }
-                
-                WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
-                WajahTerdeteksi.sembunyikanInfoWTPadaJS(ui);
-                
-                folderTempatWajah.add(folderWajah);
               }
-              else {
-                WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
-                WajahTerdeteksi.ubahTeksWTPadaJS(ui, "Tidak ada wajah terdeteksi");
+              
+              Berkas[] fotoWajah = folderWajah.listBerkas();
+
+              for(int i = 0; i < fotoWajah.length; i++) {
+                String namaFileWajah = fotoWajah[i].getObjekFile().getName();
+                String namaWajah = namaFileWajah.substring(0, namaFileWajah.length() - 4);
+
+                WajahTerdeteksi wajah = new WajahTerdeteksi(ui, namaWajah);
+                wajah.setFotoWajah(fotoWajah[i]);
+                wajah.setFotoAsal(berkas);
+                wajah.buatWajahTerdeteksiPadaJS();
               }
+
+              WajahTerdeteksi.sembunyikanCirclePadaJS(ui);
+              WajahTerdeteksi.sembunyikanInfoWTPadaJS(ui);
+
+              folderTempatWajah.add(folderWajah);
               
               System.out.println("Proses Deteksi Selesai!");
             }
@@ -910,6 +1036,204 @@ public class FileManager extends JFrame
       servDeteksi.shutdownNow();
       servDeteksi = Executors.newFixedThreadPool(1);
     }
+    else if(perintah.equals("simpanWajahTerdeteksi")) {
+      String namaWajah = (String)param[0];
+      String namaWajahSebelumnya = (String)param[1];
+      String pathFotoSumber = (String)param[2];
+      
+      Berkas berkasFotoSumber = new Berkas(ui, pathFotoSumber);
+      
+      try {
+        DataTabelWajah data = new DataTabelWajah(namaWajah, pathFotoSumber);
+        data.buatTabelJikaTidakAda();
+        data.masukkanData();
+        System.out.println("Wajah berhasil masuk ke tabel wajah");
+        
+        if(!Files.exists(Paths.get(FOLDER_WAJAH_TERSIMPAN),
+                LinkOption.NOFOLLOW_LINKS)) {
+          Files.createDirectory(Paths.get(FOLDER_WAJAH_TERSIMPAN));
+        }
+        
+        String pathFolderWajah = berkasFotoSumber.getObjekFile().getParent() +
+                "/.wajah_" + berkasFotoSumber.getObjekFile().getName();
+
+        Berkas berkasWajah = new Berkas(ui, pathFolderWajah + "/" +
+                namaWajahSebelumnya + ".png");
+        Berkas berkasWajahRename = new Berkas(ui,
+                berkasWajah.getObjekFile().getParent() + "/" + namaWajah + ".png");
+        Berkas berkasWajahTujuan = new Berkas(ui,
+                FOLDER_WAJAH_TERSIMPAN + "/" + namaWajah + ".png");
+        
+        // rename berkas
+        Files.move(Paths.get(berkasWajah.getObjekFile().getPath()),
+                   Paths.get(berkasWajahRename.getObjekFile().getPath()),
+                   StandardCopyOption.REPLACE_EXISTING);
+        
+        Files.copy(Paths.get(berkasWajahRename.getObjekFile().getPath()),
+                    Paths.get(berkasWajahTujuan.getObjekFile().getPath()),
+                    StandardCopyOption.REPLACE_EXISTING);
+        
+        ui.eksekusiJavascript("WajahTerdeteksi"+
+                ".dapatkanWajahTerpilih().ubahNama(\""+namaWajah+"\");");
+        ui.eksekusiJavascript("WajahTerdeteksi.sembunyikanPopover();");
+        
+        tampilkanSemuaWajah(data);
+      }
+      catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("ubahNamaWajah")) {
+      String namaLama = (String)param[0];
+      String namaBaru = (String)param[1];
+      
+      Berkas berkasWajah = new Berkas(ui,
+              FOLDER_WAJAH_TERSIMPAN + "/" + namaLama + ".png");
+      Berkas berkasBaru = new Berkas(ui,
+              FOLDER_WAJAH_TERSIMPAN + "/" + namaBaru + ".png");
+      
+      try {
+        DataTabelWajah data = new DataTabelWajah();
+        data.buatTabelJikaTidakAda();
+        data.setNamaWajah(namaBaru);
+        data.setPathFoto(data.dapatkanData(namaLama).getPathFoto());
+        data.updateData(namaLama);
+        
+        DataTabelWajah[] semuaData = data.dapatkanSemuaData();
+        for(int i = 0; i < semuaData.length; i++) {
+          System.out.println("nama wajah : " + semuaData[i].getNamaWajah());
+          System.out.println("path foto : " + semuaData[i].getPathFoto());
+        }
+        
+        Files.move(Paths.get(berkasWajah.getObjekFile().getPath()),
+                  Paths.get(berkasBaru.getObjekFile().getPath()),
+                  StandardCopyOption.REPLACE_EXISTING);
+      }
+      catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("hapusWajah")) {
+      String namaWajah = (String)param[0];
+      
+      try {
+        Berkas wajah = new Berkas(ui,
+              FOLDER_WAJAH_TERSIMPAN + "/" + namaWajah + ".png");
+        Files.delete(wajah.getObjekFile().toPath());
+        
+        DataTabelWajah data = new DataTabelWajah();
+        data.buatTabelJikaTidakAda();
+        data.hapusData(namaWajah);
+        
+        DataTabelWajah[] semuaData = data.dapatkanSemuaData();
+        for(int i = 0; i < semuaData.length; i++) {
+          System.out.println("nama wajah : " + semuaData[i].getNamaWajah());
+          System.out.println("path foto : " + semuaData[i].getPathFoto());
+        }
+      }
+      catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("masukkanKeFGL")) {
+      for(int i = 0; i < param.length; i++) {
+        String pathAbsolut = (String)param[i];
+        
+        Berkas berkas = new Berkas(ui, pathAbsolut);
+        
+        try {
+          DataTabelFGL data = new DataTabelFGL(
+                  berkas.getObjekFile().getName(),
+                  berkas.getObjekFile().getAbsolutePath());
+          data.buatTabelJikaTidakAda();
+          data.masukkanData();
+          
+          new AccordFGL(ui, berkas).buatElemenPadaJS();
+          
+          data.tutupKoneksi();
+        }
+        catch(Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    else if(perintah.equals("hapusFGL")) {
+      String pathAbsolut = (String)param[0];
+        
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+
+      try {
+        DataTabelFGL data = new DataTabelFGL(
+                berkas.getObjekFile().getName(),
+                berkas.getObjekFile().getAbsolutePath());
+        data.buatTabelJikaTidakAda();
+        data.hapusData(berkas.getObjekFile().getName());
+
+        AccordFGL.hapusPadaJS(ui, berkas.getObjekFile().getName());
+
+        data.tutupKoneksi();
+      }
+      catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("cariFotoBerdasarWajah")) {
+      String nama = (String)param[0];
+      String pathWajah = (String)param[1];
+      Berkas berkasWajah = new Berkas(ui, pathWajah);
+      
+      Berkas.hapusSemuaBerkasPadaJS(ui);
+      Berkas.tampilkanFloatingCirclePadaJS(ui);
+      Berkas.ubahTeksCircle(ui, "Mencari " + nama + "...");
+      Berkas.tampilkanTeksInfo(ui);
+      
+      berhentiMencariWajah = false;
+      
+      ExecutorService execService = Executors.newCachedThreadPool();
+      execService.execute(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            DataTabelFGL data = new DataTabelFGL();
+            data.buatTabelJikaTidakAda();
+
+            DataTabelFGL[] semuaData = data.dapatkanSemuaData();
+
+            // cari di daftar folder gambar lain
+            for(int i = 0; i < semuaData.length; i++) {
+              Berkas tempatCari = new Berkas(ui, semuaData[i].getPath());
+
+              VisitorFaceRecog visitor = new VisitorFaceRecog(ui, berkasWajah);
+              Files.walkFileTree(tempatCari.getObjekFile().toPath(), visitor);
+            }
+            
+            data.tutupKoneksi();
+            
+//            // cari di folder Pictures
+//            String folderPict = System.getProperty("user.home") + "/Pictures";
+//            Berkas tempatCari = new Berkas(ui, folderPict);
+//            VisitorFaceRecog visitor = new VisitorFaceRecog(ui, berkasWajah);
+//            Files.walkFileTree(tempatCari.getObjekFile().toPath(), visitor);
+//            
+//            // terakhir, cari dari root
+//            Berkas root = new Berkas(ui, "/");
+//            visitor = new VisitorFaceRecog(ui, berkasWajah);
+//            Files.walkFileTree(root.getObjekFile().toPath(), visitor);
+            
+            Berkas.resetTeksCircle(ui);
+            Berkas.sembunyikanTeksInfo(ui);
+            Berkas.sembunyikanFloatingCirclePadaJS(ui);
+            
+            berhentiMencariWajah = true;
+          }
+          catch (Exception ex){
+            ex.printStackTrace();
+          }
+        }
+      });
+
+      execService.shutdown();
+    }
   }
 
   public void tampilkanInfoBerkas(Berkas berkasTerpilih) {
@@ -925,10 +1249,58 @@ public class FileManager extends JFrame
 
     JOptionPane.showMessageDialog(this, info);
   }
+  
+  public void tampilkanSemuaWajah(DataTabelWajah data) throws Exception {
+    KotakWajah.hapusSemuaPadaJS(ui);
+      
+    DataTabelWajah[] semuaData = data.dapatkanSemuaData();
+    for(int i = 0; i < semuaData.length; i++) {
+      KotakWajah wajah = new KotakWajah(ui, semuaData[i].getNamaWajah());
+      wajah.setFotoWajah(new Berkas(ui,
+              FOLDER_WAJAH_TERSIMPAN + "/" + semuaData[i].getNamaWajah() + ".png"));
+      wajah.setFotoAsal(new Berkas(ui, semuaData[i].getPathFoto()));
+      wajah.buatKotakWajahPadaJS();
+    }
+  }
+  
+  public void tampilkanSemuaFGL(DataTabelFGL data) throws Exception {
+    AccordFGL.hapusSemuaPadaJS(ui);
+    
+    DataTabelFGL[] semuaData = data.dapatkanSemuaData();
+    for(int i = 0; i < semuaData.length; i++) {
+      new AccordFGL(ui, new Berkas(ui, semuaData[i].getPath()))
+              .buatElemenPadaJS();
+    }
+  }
+  
+  public void urutkanBerdasarCTime(String mode, Berkas berkasTempat) throws Exception {
+    Berkas[] dataBerkas = null;
+            
+    if(mode.equals("past_to_present")) {
+      dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_DIBUAT_PAST_TO_PRESENT, "");
+    }
+    else if(mode.equals("present_to_past")) {
+      dataBerkas = berkasTempat.urutkan(Berkas.BERDASAR_TGL_DIBUAT_PRESENT_TO_PAST, "");
+    }
+
+    for(int i = 0; i < dataBerkas.length; i++) {
+      if(dataBerkas[i].getObjekFile().getName().endsWith(".jpg") ||
+          dataBerkas[i].getObjekFile().getName().endsWith(".JPG") ||
+          dataBerkas[i].getObjekFile().getName().endsWith(".png") ||
+          dataBerkas[i].getObjekFile().getName().endsWith(".PNG") ||
+          dataBerkas[i].getObjekFile().getName().endsWith(".jpeg")) {
+
+          dataBerkas[i].setPakeThumbnail(true);
+      }
+
+      dataBerkas[i].buatBerkasPadaJS();
+    }
+
+    Berkas.sembunyikanCirclePadaJS(ui);
+  }
 
   @Override
   public void windowGainedFocus(WindowEvent e) {
-    
   }
 
   @Override
@@ -942,23 +1314,17 @@ public class FileManager extends JFrame
 
   @Override
   public void windowClosing(WindowEvent e) {
-    servDeteksi.shutdownNow();
+    if(servDeteksi != null) {
+      servDeteksi.shutdownNow();
+    }
+    
+    if(servCariTglDibuat != null) {
+      servCariTglDibuat.shutdownNow();
+    }
     
     if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
       gambarSebelumnya.getObjekFile().delete();
     }
-    
-    for(int i = 0; i < folderTempatWajah.size(); i++) {
-      if(folderTempatWajah.get(i).getObjekFile().exists()) {
-        try {
-          FileUtils.deleteDirectory(folderTempatWajah.get(i).getObjekFile());
-
-        } catch (IOException ex) {
-          ex.printStackTrace();
-        }
-      }
-    }
-    
   }
 
   @Override

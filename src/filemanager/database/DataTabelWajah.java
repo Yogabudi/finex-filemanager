@@ -83,7 +83,7 @@ public class DataTabelWajah {
     }
   }
   
-  public void buatTabelJikaTidakAda() throws Exception{
+  public void buatTabelJikaTidakAda() throws Exception {
     this.sqlBuatTabel = "create table if not exists "+namaTabel+
                         "(id integer primary key autoincrement,"+
                         "nama_wajah varchar(10),"+
@@ -183,5 +183,23 @@ public class DataTabelWajah {
     stm.executeUpdate(sql);
     
     stm.close();
+  }
+  
+  public int getJumlahData() throws Exception {
+    int jumlah = 0;
+    Connection koneksi = getKoneksi();
+    String sql = "select count(*) from "+namaTabel;
+    
+    Statement stm = koneksi.createStatement();
+    ResultSet rs = stm.executeQuery(sql);
+    
+    while(rs.next()) {
+      jumlah = rs.getInt(1);
+    }
+    
+    rs.close();
+    stm.close();
+    
+    return jumlah;
   }
 }

@@ -18,7 +18,8 @@ public class WajahTerdeteksi {
   public WajahTerdeteksi(WebViewUI ui, String namaWajah) {
     this.namaWajah = namaWajah;
     this.ui = ui;
-    this.fotoWajah = this.fotoAsal = null;
+    this.fotoWajah = null;
+    this.fotoAsal = null;
   }
 
   public String getNamaWajah() {
@@ -71,10 +72,11 @@ public class WajahTerdeteksi {
   
   public void buatWajahTerdeteksiPadaJS() {
     String js = ""+
-    "var wajahTerdeteksi = new WajahTerdeteksi();"+
-    "wajahTerdeteksi.setNama(\""+namaWajah+"\");"+
-    "wajahTerdeteksi.setFoto(\""+fotoWajah.getObjekFile().getAbsolutePath()+"\");"+
-    "wajahTerdeteksi.pasangElemen($('#tempatWajahTerdeteksi'));";
+    "new WajahTerdeteksi()"+
+    ".setNama(\""+namaWajah+"\")"+
+    ".setFoto(\""+fotoWajah.getObjekFile().getAbsolutePath()+"\")"+
+    ".setFotoSumber(\""+fotoAsal.getObjekFile().getAbsolutePath()+"\")"+
+    ".pasangElemen($('#tempatWajahTerdeteksi'));";
     
     ui.eksekusiJavascript(js);
   }
