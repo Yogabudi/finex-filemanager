@@ -7,11 +7,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -750,35 +752,58 @@ public class Berkas {
     return berkas;
   }
   
-  public static boolean pindahkanFile(WebViewUI ui, Berkas berkas, Berkas tujuan)
+  public static Berkas pindahkanBerkas(WebViewUI ui, Berkas berkas, Berkas tujuan)
           throws IOException {
     
-    boolean sukses = false;
-    
-    if(berkas.getObjekFile().isFile()) {
-      buatPanelOpPadaJS(ui, "", "pemindahan",
-              berkas.getObjekFile().getAbsolutePath(),
-              tujuan.getObjekFile().getAbsolutePath());
-      
-      Path op = Files.move(berkas.getObjekFile().toPath(),
-              berkas.getObjekFile().toPath());
+    Berkas hasil = null;
 
-      if(op != null) {
-        sukses = true;
-      }
+    if(berkas.getObjekFile().isFile()) {
+      Path pathHasil = Files.move(berkas.getObjekFile().toPath(),
+              tujuan.getObjekFile().toPath());
+      hasil = new Berkas(ui, pathHasil.toString());
+    }
+    else {
+      FileUtils.copyDirectory(berkas.getObjekFile(), tujuan.getObjekFile());
+      FileUtils.deleteDirectory(berkas.getObjekFile());
+      hasil = new Berkas(ui, tujuan.getObjekFile().getAbsolutePath());
     }
     
-    return sukses;
+    return hasil;
   }
   
-  public static void buatPanelOpPadaJS(WebViewUI ui,
-          String var, String op, String pathBerkas, String pathTujuan) {
+  public static Berkas salinBerkas(WebViewUI ui, Berkas berkas, Berkas tujuan)
+          throws IOException {
+    
+    Berkas hasil = null;
+
+    if(berkas.getObjekFile().isFile()) {
+      Path pathHasil = Files.copy(berkas.getObjekFile().toPath(),
+              tujuan.getObjekFile().toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+      hasil = new Berkas(ui, pathHasil.toString());
+    }
+    else {
+      FileUtils.copyDirectory(berkas.getObjekFile(), tujuan.getObjekFile());
+      hasil = new Berkas(ui, tujuan.getObjekFile().getAbsolutePath());
+    }
+    
+    return hasil;
+  }
+  
+  public static void buatPanelOpPadaJS(WebViewUI ui, String idPanel,
+          String op, Berkas berkasOrig, Berkas berkasTujuan) {
     
     String js = ""+
-    "var "+var+" = new PanelOperasiBerkas('"+op+"')"+
-    ".setPathAktif('"+pathBerkas+"')"+
-    ".setPathTujuan('"+pathTujuan+"');"+
+    "new PanelOperasiBerkas('"+idPanel+"','"+op+"')"+
+    ".setPathAktif('"+berkasOrig.getObjekFile().getAbsolutePath()+"')"+
+    ".setPathTujuan('"+berkasTujuan.getObjekFile().getAbsolutePath()+"')"+
     ".pasangElemen($('#rowOperasiBerkas'));";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void hapusPanelOpPadaJS(WebViewUI ui, String idPanel) {
+    String js = ""+
+    "PanelOperasiBerkas.hapusPanel('"+idPanel+"');";
     
     ui.eksekusiJavascript(js);
   }
@@ -917,16 +942,16 @@ public class Berkas {
     ui.eksekusiJavascript(js);
   }
   
-  public static void scrollKeBawahPadaJS(WebViewUI ui) {
-    String js = ""+
-    "$('#konten').animate({ scrollTop: $(document).height() }, 500);";
-    
-    ui.eksekusiJavascript(js);
-  }
-  
   public static void bukaFileGambar(WebViewUI ui, Berkas fileGambar) {
     String js = ""+
     "Berkas.bukaFileGambar('"+fileGambar.getObjekFile().getAbsolutePath()+"');";
+
+    ui.eksekusiJavascript(js);
+  }
+  
+  public void bukaFileGambar() {
+    String js = ""+
+    "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
 
     ui.eksekusiJavascript(js);
   }
@@ -935,10 +960,31 @@ public class Berkas {
     ui.eksekusiJavascript("Berkas.bukaPanelGambar();");
   }
   
-  public void bukaFileGambar() {
+  public static void scrollKeBawahPadaJS(WebViewUI ui) {
     String js = ""+
-    "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
-
+    "$('#konten').animate({ scrollTop: $(document).height() }, 500);";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void hilangkanEfekPulse(WebViewUI ui) {
+    String js = ""+
+    "$(\"#btnOperasiBerkas\").removeClass(\"pulse\");";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void sembunyikanTeksNoOp(WebViewUI ui) {
+    String js = ""+
+    "$(\"#pesanTidakAdaOp\").hide();";
+    
+    ui.eksekusiJavascript(js);
+  }
+  
+  public static void tampilkanTeksNoOp(WebViewUI ui) {
+    String js = ""+
+    "$(\"#pesanTidakAdaOp\").show();";
+    
     ui.eksekusiJavascript(js);
   }
 }

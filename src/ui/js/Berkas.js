@@ -127,10 +127,9 @@ class Berkas {
     };
         
     this.dataContextMenuBerkas = [
-      new ObjekMenu("Cut", "assets/Icons/24/scissors.png", "").buatMenu(),
-      new ObjekMenu("Salin", "assets/Icons/24/papers.png", "").buatMenu(),
-      new ObjekMenu("Paste kedalam folder", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
-      new ObjekMenu("Paste disini", "assets/Icons/24/clipboard-paste-button.png", "").buatMenu(),
+      new ObjekMenu("Cut", "assets/Icons/24/scissors.png", "menu_cut()").buatMenu(),
+      new ObjekMenu("Salin", "assets/Icons/24/papers.png", "menu_salin()").buatMenu(),
+      new ObjekMenu("Paste disini", "assets/Icons/24/clipboard-paste-button.png", "menu_paste()").buatMenu(),
       new ObjekMenu("Info berkas", "assets/Icons/24/info.png", "menu_infoBerkas()").buatMenu(),
       new ObjekMenu("Duplikat", "assets/Icons/24/duplicate-file.png", "menu_duplikat()").buatMenu(),
       new ObjekMenu("Hapus ke trash", "assets/Icons/24/garbage.png", "menu_hapusKeTrash()").buatMenu(),

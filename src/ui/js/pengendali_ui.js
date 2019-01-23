@@ -194,11 +194,42 @@ $(document).ready(function() {
 
   $("#btnSalin").click(function () {
     M.toast({ html: "Berkas Tersalin!" });
+    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "salinBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnCut").click(function () {
     M.toast({ html: "Cut!" });
-    sendNSCommand("cutBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "cutBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnTempel").click(function() {
@@ -797,7 +828,6 @@ $(document).ready(function() {
     new ObjekMenu("Paste", "assets/Icons/24/clipboard-paste-button.png", "menu_paste()").buatMenu(),
     new ObjekMenu("Buka Terminal Disini", "assets/Icons/24/icon.png", "menu_bukaTerminal()").buatMenu(),
     new ObjekMenu("Kosongkan Trash", "assets/Icons/24/garbage.png", "menu_kosongkanTrash()").buatMenu(),
-    new ObjekMenu("Cari Berkas", "assets/Icons/24/loupe.png", "menu_cariBerkas()").buatMenu(),
     new ObjekMenu("Koleksi Wajah", "assets/Icons/24/smile.png", "menu_koleksiWajah()").buatMenu(),
     new ObjekMenu("Lihat Operasi Berkas", "assets/Icons/24/operation.png", "menu_lihatOpBerkas()").buatMenu()
   ];
@@ -871,22 +901,22 @@ $(document).ready(function() {
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }
 //  
-//  var berkas = new Berkas();
-//  berkas.setNama("File Thumbnail");
-//  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
-//  berkas.setJenis("file");
-//  berkas.setIcon("assets/Icons/64/053-document-7.png");
-//  berkas.setTersembunyi(false);
-//  berkas.setPakeThumbnail(true);
-//  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-//  berkas.pasangElemen($(".tempatBerkas"));
+  var berkas = new Berkas();
+  berkas.setNama("File Thumbnail");
+  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
+  berkas.setJenis("file");
+  berkas.setIcon("assets/Icons/64/053-document-7.png");
+  berkas.setTersembunyi(false);
+  berkas.setPakeThumbnail(true);
+  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+  berkas.pasangElemen($(".tempatBerkas"));
 //  
 //  var opSalin = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/i/a/a")
 //          .setPathTujuan("/a/w/d")
 //          .pasangElemen($("#rowOperasiBerkas"));
 //  
-//  var opSalin2 = new PanelOperasiBerkas("penyalinan")
+//  new PanelOperasiBerkas("pemindahan")
 //          .setPathAktif("/c/s/b")
 //          .setPathTujuan("/s/f/w")
 //          .pasangElemen($("#rowOperasiBerkas"));
@@ -931,8 +961,25 @@ function menu_buatFileBaru() {
   }, 150);
 }
 
+function menu_cut() {
+  setTimeout(function() {
+    $("#btnCut").click();
+    
+  }, 150);
+}
+
+function menu_salin() {
+  setTimeout(function() {
+    $("#btnSalin").click();
+    
+  }, 150);
+}
+
 function menu_paste() {
-  
+  setTimeout(function() {
+    $("#btnTempel").click();
+    
+  }, 150);
 }
 
 function menu_bukaTerminal() {

@@ -51,6 +51,7 @@ public class FileManager extends JFrame
   final String FOLDER_WAJAH_TERSIMPAN = ".wajah_tersimpan";
   
   public static boolean berhentiMencariWajah = true;
+  public String operasiBerkasDiinginkan = "SALIN";
   
   public FileManager() {
     super();
@@ -140,7 +141,7 @@ public class FileManager extends JFrame
     }
     catch (Exception ex) {
       ex.printStackTrace();
-    }
+    }    
   }
 
   @Override
@@ -550,14 +551,104 @@ public class FileManager extends JFrame
       
     }
     else if(perintah.equals("cutBerkas")) {
-      String namaBerkas = (String)param[0];
-      Berkas berkas = new Berkas(ui, namaBerkas);
-      
       holderBerkas.clear();
-      holderBerkas.add(berkas);
+      operasiBerkasDiinginkan = "CUT";
+      
+      for(int i = 0; i < param.length; i++) {
+        String namaBerkas = (String)param[i];
+        Berkas berkas = new Berkas(ui, namaBerkas);
+
+        holderBerkas.add(berkas);
+      }
+    }
+    else if(perintah.equals("salinBerkas")) {
+      holderBerkas.clear();
+      operasiBerkasDiinginkan = "SALIN";
+      
+      for(int i = 0; i < param.length; i++) {
+        String namaBerkas = (String)param[i];
+        Berkas berkas = new Berkas(ui, namaBerkas);
+
+        holderBerkas.add(berkas);
+      }
     }
     else if(perintah.equals("tempelBerkas")) {
+      String lokasiSekarang =
+          nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+
+      ExecutorService proses = Executors.newCachedThreadPool();
       
+      for(int i = 0; i < holderBerkas.size(); i++) {
+        final Berkas berkas = holderBerkas.get(i);
+        
+        proses.execute(new Runnable() {
+          @Override
+          public void run() {
+            if(operasiBerkasDiinginkan.equals("CUT")) {
+              try {
+                Berkas berkasTujuan = new Berkas(ui,
+                      lokasiSekarang + "/" + berkas.getObjekFile().getName());
+
+                Berkas.buatPanelOpPadaJS(ui,
+                        "cut_" + berkas.getObjekFile().getName(),
+                        "pemindahan", berkas, berkasTujuan);
+
+                Berkas berkasHasil =
+                        Berkas.pindahkanBerkas(ui, berkas, berkasTujuan);
+
+                Berkas.hapusPanelOpPadaJS(ui,
+                        "cut_" + berkas.getObjekFile().getName());
+                Berkas.sembunyikanTeksNoOp(ui);
+
+                berkasHasil.buatBerkasPadaJS();
+                Berkas.scrollKeBawahPadaJS(ui);
+                Berkas.tandaiBerkasPadaJS(berkasHasil.getObjekFile().getName(), ui);
+                Berkas.hilangkanEfekPulse(ui);
+              }
+              catch(IOException ex) {
+                JOptionPane.showMessageDialog(FileManager.this,
+                    "Terjadi Kesalahan saat memindahkan berkas " +
+                    berkas.getObjekFile().getName() + "\n",
+                    "Terjadi Kesalahan!",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+              }
+            }
+            else if(operasiBerkasDiinginkan.equals("SALIN")) {
+              try {
+                Berkas berkasTujuan = new Berkas(ui,
+                      lokasiSekarang + "/" + berkas.getObjekFile().getName());
+
+                Berkas.buatPanelOpPadaJS(ui,
+                        "salin_" + berkas.getObjekFile().getName(),
+                        "penyalinan", berkas, berkasTujuan);
+
+                Berkas berkasHasil = Berkas.salinBerkas(ui, berkas, berkasTujuan);
+
+                Berkas.hapusPanelOpPadaJS(ui,
+                        "salin_" + berkas.getObjekFile().getName());
+                Berkas.sembunyikanTeksNoOp(ui);
+
+                berkasHasil.buatBerkasPadaJS();
+                Berkas.scrollKeBawahPadaJS(ui);
+                Berkas.tandaiBerkasPadaJS(berkasHasil.getObjekFile().getName(), ui);
+                Berkas.hilangkanEfekPulse(ui);
+              }
+              catch(IOException ex) {
+                JOptionPane.showMessageDialog(FileManager.this,
+                    "Terjadi Kesalahan saat menyalin berkas " +
+                    berkas.getObjekFile().getName() + "\n",
+                    "Terjadi Kesalahan!",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+              }
+            }
+          }
+        });
+        
+      }
+      
+      proses.shutdown();
     }
     else if(perintah.equals("hideBerkas")) {
       for(int i = 0; i < param.length; i++) {

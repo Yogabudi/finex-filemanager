@@ -1,19 +1,12 @@
 
 class PanelOperasiBerkas {
   
-  constructor(jenisOp) {
+  constructor(idPanel, jenisOp) {
     var jenisOperasi = jenisOp;
     var pathAktif = "";
     var pathTujuan = "";
     
-    // inisialisasi variabel statik
-    if(typeof PanelOperasiBerkas.constructor.indexId === "undefined") {
-      PanelOperasiBerkas.constructor.indexId = -1;
-    }
-    
-    PanelOperasiBerkas.constructor.indexId++;
-    
-    var id = "op_" + PanelOperasiBerkas.constructor.indexId;
+    var id = "op_" + idPanel;
     
     /////////////////////////////////////////////
     //
@@ -73,6 +66,8 @@ class PanelOperasiBerkas {
     };
     
     this.pasangElemen = function(elemenTempat) {
+      $("#pesanTidakAdaOp").hide();
+      
       if(jenisOperasi === "penyalinan") {
         var elemen = ""+
         "<div id-operasi='"+id+"' jenis-op='penyalinan' class='col s12 panel-op'>"+
@@ -97,11 +92,6 @@ class PanelOperasiBerkas {
                 "<span class='berkas-terpilih'>"+
                 pathAktif+
                 "</span>"+
-              "<button class='btn-floating halfway-fab waves-effect waves-light red "+
-                              "tombol-halfway btn-large' "+
-                      "style='background-image: url(assets/Icons/48/batalkan.png);"+
-                              "background-size: 25px;'>"+
-              "</button>"+
             "</div>"+
             "<div class='card-action'>"+
               "<b>Lokasi Tujuan : </b>"+
@@ -134,11 +124,6 @@ class PanelOperasiBerkas {
               "<span class='berkas-terpilih'>"+
               pathAktif+
               "</span>"+
-              "<button class='btn-floating halfway-fab waves-effect waves-light red "+
-                              "tombol-halfway btn-large' "+
-                      "style='background-image: url(assets/Icons/48/batalkan.png);"+
-                              "background-size: 25px;'>"+
-              "</button>"+
             "</div>"+
             "<div class='card-action'>"+
               "<b>Lokasi Tujuan : </b>"+
@@ -174,5 +159,7 @@ class PanelOperasiBerkas {
     if($("div[id-operasi='op_"+indexId+"']").length) {
       $("div[id-operasi='op_"+indexId+"']").remove();
     }
+    
+    $("#pesanTidakAdaOp").show();
   }
 }
