@@ -115,13 +115,13 @@ $(document).ready(function() {
       }
   });
   
-  $("input[name='swGunakanApp']").prop("checked", false);
-  
-  $("input[name='swGunakanApp']").click(function() {
-    $("input[name='swGunakanApp']").prop("checked", false);
-    
-    $(this).prop("checked", true);
-  });
+//  $("input[name='swGunakanApp']").prop("checked", false);
+//  
+//  $("input[name='swGunakanApp']").click(function() {
+//    $("input[name='swGunakanApp']").prop("checked", false);
+//    
+//    $(this).prop("checked", true);
+//  });
   
   $("#btnOkEmptyTrash").click(function(e) {
     sendNSCommand("kosongkanTrash");
@@ -176,6 +176,24 @@ $(document).ready(function() {
     }
   });
   
+  $("#btnAddtoBookmark").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "masukkanKePintasan";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
+  });
+  
   $("#txCariBerkas").keypress(function(e) {
     if(e.which === 13) {
       e.preventDefault();
@@ -194,11 +212,42 @@ $(document).ready(function() {
 
   $("#btnSalin").click(function () {
     M.toast({ html: "Berkas Tersalin!" });
+    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "salinBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnCut").click(function () {
     M.toast({ html: "Cut!" });
-    sendNSCommand("cutBerkas", Berkas.dapatkanBerkasTerpilih().getPathAbsolut());
+    
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "cutBerkas";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
   });
   
   $("#btnTempel").click(function() {
@@ -520,6 +569,42 @@ $(document).ready(function() {
     }
   });
   
+  $("#btnKomponenPendukung").webuiPopover({
+    title: "Komponen Pendukung Aplikasi",
+    animation: "pop",
+    url: "#popKomponenPendukung",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right",
+    onHide: function(element) {
+      tutupAccordion("#accordKompPendukung");
+    }
+  });
+  
+  $("#btnTentang").webuiPopover({
+    title: "Tentang Aplikasi",
+    animation: "pop",
+    url: "#popTentang",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right"
+  });
+  
+  $("#btnLisensi").webuiPopover({
+    title: "Aplikasi ini Open Source dengan lisensi GPL v3.0",
+    animation: "pop",
+    url: "#popLisensi",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right",
+    onHide: function(element) {
+      tutupAccordion("#accordLisensi");
+    }
+  });
+  
   $("#btnTXT").click(function(e) {
     sendNSCommand("filterEkstensi", "TXT");
   });
@@ -797,7 +882,6 @@ $(document).ready(function() {
     new ObjekMenu("Paste", "assets/Icons/24/clipboard-paste-button.png", "menu_paste()").buatMenu(),
     new ObjekMenu("Buka Terminal Disini", "assets/Icons/24/icon.png", "menu_bukaTerminal()").buatMenu(),
     new ObjekMenu("Kosongkan Trash", "assets/Icons/24/garbage.png", "menu_kosongkanTrash()").buatMenu(),
-    new ObjekMenu("Cari Berkas", "assets/Icons/24/loupe.png", "menu_cariBerkas()").buatMenu(),
     new ObjekMenu("Koleksi Wajah", "assets/Icons/24/smile.png", "menu_koleksiWajah()").buatMenu(),
     new ObjekMenu("Lihat Operasi Berkas", "assets/Icons/24/operation.png", "menu_lihatOpBerkas()").buatMenu()
   ];
@@ -871,22 +955,22 @@ $(document).ready(function() {
 //    berkas.pasangElemen($(".tempatBerkas"));
 //  }
 //  
-//  var berkas = new Berkas();
-//  berkas.setNama("File Thumbnail");
-//  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
-//  berkas.setJenis("file");
-//  berkas.setIcon("assets/Icons/64/053-document-7.png");
-//  berkas.setTersembunyi(false);
-//  berkas.setPakeThumbnail(true);
-//  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
-//  berkas.pasangElemen($(".tempatBerkas"));
+  var berkas = new Berkas();
+  berkas.setNama("File Thumbnail");
+  berkas.setPathAbsolut("/home/ini_laptop/Pictures/batu.jpg");
+  berkas.setJenis("file");
+  berkas.setIcon("assets/Icons/64/053-document-7.png");
+  berkas.setTersembunyi(false);
+  berkas.setPakeThumbnail(true);
+  berkas.getContextMenu().tambahkanSemuaMenu(berkas.dataContextMenuBerkas);
+  berkas.pasangElemen($(".tempatBerkas"));
 //  
 //  var opSalin = new PanelOperasiBerkas("penyalinan")
 //          .setPathAktif("/i/a/a")
 //          .setPathTujuan("/a/w/d")
 //          .pasangElemen($("#rowOperasiBerkas"));
 //  
-//  var opSalin2 = new PanelOperasiBerkas("penyalinan")
+//  new PanelOperasiBerkas("pemindahan")
 //          .setPathAktif("/c/s/b")
 //          .setPathTujuan("/s/f/w")
 //          .pasangElemen($("#rowOperasiBerkas"));
@@ -931,8 +1015,25 @@ function menu_buatFileBaru() {
   }, 150);
 }
 
+function menu_cut() {
+  setTimeout(function() {
+    $("#btnCut").click();
+    
+  }, 150);
+}
+
+function menu_salin() {
+  setTimeout(function() {
+    $("#btnSalin").click();
+    
+  }, 150);
+}
+
 function menu_paste() {
-  
+  setTimeout(function() {
+    $("#btnTempel").click();
+    
+  }, 150);
 }
 
 function menu_bukaTerminal() {

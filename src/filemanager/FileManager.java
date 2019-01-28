@@ -3,7 +3,9 @@ package filemanager;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import chrriis.dj.nativeswing.swtimpl.utilities.FileTypeLauncher;
 import filemanager.database.DataTabelFGL;
+import filemanager.database.DataTabelPintasan;
 import filemanager.database.DataTabelWajah;
 
 import java.awt.Dimension;
@@ -51,6 +53,7 @@ public class FileManager extends JFrame
   final String FOLDER_WAJAH_TERSIMPAN = ".wajah_tersimpan";
   
   public static boolean berhentiMencariWajah = true;
+  public String operasiBerkasDiinginkan = "SALIN";
   
   public FileManager() {
     super();
@@ -75,6 +78,7 @@ public class FileManager extends JFrame
     
     servDeteksi = Executors.newFixedThreadPool(1);
     
+    // log data wajah
     try {
       DataTabelWajah dat = new DataTabelWajah();
       dat.buatTabelJikaTidakAda();
@@ -137,10 +141,16 @@ public class FileManager extends JFrame
       datFgl.buatTabelJikaTidakAda();
       tampilkanSemuaFGL(datFgl);
       datFgl.tutupKoneksi();
+      
+      // load data pintasan
+      DataTabelPintasan datPint = new DataTabelPintasan();
+      datPint.buatTabelJikaTidakAda();
+      tampilkanSemuaPintasan(datPint);
+      datPint.tutupKoneksi();
     }
     catch (Exception ex) {
       ex.printStackTrace();
-    }
+    }    
   }
 
   @Override
@@ -550,14 +560,104 @@ public class FileManager extends JFrame
       
     }
     else if(perintah.equals("cutBerkas")) {
-      String namaBerkas = (String)param[0];
-      Berkas berkas = new Berkas(ui, namaBerkas);
-      
       holderBerkas.clear();
-      holderBerkas.add(berkas);
+      operasiBerkasDiinginkan = "CUT";
+      
+      for(int i = 0; i < param.length; i++) {
+        String namaBerkas = (String)param[i];
+        Berkas berkas = new Berkas(ui, namaBerkas);
+
+        holderBerkas.add(berkas);
+      }
+    }
+    else if(perintah.equals("salinBerkas")) {
+      holderBerkas.clear();
+      operasiBerkasDiinginkan = "SALIN";
+      
+      for(int i = 0; i < param.length; i++) {
+        String namaBerkas = (String)param[i];
+        Berkas berkas = new Berkas(ui, namaBerkas);
+
+        holderBerkas.add(berkas);
+      }
     }
     else if(perintah.equals("tempelBerkas")) {
+      String lokasiSekarang =
+          nav.getBerkasTerpilih().getObjekFile().getAbsolutePath();
+
+      ExecutorService proses = Executors.newCachedThreadPool();
       
+      for(int i = 0; i < holderBerkas.size(); i++) {
+        final Berkas berkas = holderBerkas.get(i);
+        
+        proses.execute(new Runnable() {
+          @Override
+          public void run() {
+            if(operasiBerkasDiinginkan.equals("CUT")) {
+              try {
+                Berkas berkasTujuan = new Berkas(ui,
+                      lokasiSekarang + "/" + berkas.getObjekFile().getName());
+
+                Berkas.buatPanelOpPadaJS(ui,
+                        "cut_" + berkas.getObjekFile().getName(),
+                        "pemindahan", berkas, berkasTujuan);
+
+                Berkas berkasHasil =
+                        Berkas.pindahkanBerkas(ui, berkas, berkasTujuan);
+
+                Berkas.hapusPanelOpPadaJS(ui,
+                        "cut_" + berkas.getObjekFile().getName());
+                Berkas.sembunyikanTeksNoOp(ui);
+
+                berkasHasil.buatBerkasPadaJS();
+                Berkas.scrollKeBawahPadaJS(ui);
+                Berkas.tandaiBerkasPadaJS(berkasHasil.getObjekFile().getName(), ui);
+                Berkas.hilangkanEfekPulse(ui);
+              }
+              catch(IOException ex) {
+                JOptionPane.showMessageDialog(FileManager.this,
+                    "Terjadi Kesalahan saat memindahkan berkas " +
+                    berkas.getObjekFile().getName() + "\n",
+                    "Terjadi Kesalahan!",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+              }
+            }
+            else if(operasiBerkasDiinginkan.equals("SALIN")) {
+              try {
+                Berkas berkasTujuan = new Berkas(ui,
+                      lokasiSekarang + "/" + berkas.getObjekFile().getName());
+
+                Berkas.buatPanelOpPadaJS(ui,
+                        "salin_" + berkas.getObjekFile().getName(),
+                        "penyalinan", berkas, berkasTujuan);
+
+                Berkas berkasHasil = Berkas.salinBerkas(ui, berkas, berkasTujuan);
+
+                Berkas.hapusPanelOpPadaJS(ui,
+                        "salin_" + berkas.getObjekFile().getName());
+                Berkas.sembunyikanTeksNoOp(ui);
+
+                berkasHasil.buatBerkasPadaJS();
+                Berkas.scrollKeBawahPadaJS(ui);
+                Berkas.tandaiBerkasPadaJS(berkasHasil.getObjekFile().getName(), ui);
+                Berkas.hilangkanEfekPulse(ui);
+              }
+              catch(IOException ex) {
+                JOptionPane.showMessageDialog(FileManager.this,
+                    "Terjadi Kesalahan saat menyalin berkas " +
+                    berkas.getObjekFile().getName() + "\n",
+                    "Terjadi Kesalahan!",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+              }
+            }
+          }
+        });
+        
+      }
+      
+      proses.shutdown();
     }
     else if(perintah.equals("hideBerkas")) {
       for(int i = 0; i < param.length; i++) {
@@ -1027,6 +1127,34 @@ public class FileManager extends JFrame
         });
 
       }
+      else {
+        final String pathBerkas = berkas.getObjekFile().getAbsolutePath();
+        String namaBerkas = berkas.getObjekFile().getName();
+        
+        ui.eksekusiJavascript(
+                "M.toast({ html: \"Membuka berkas "+namaBerkas+"\" });");
+        
+        ExecutorService proses = Executors.newCachedThreadPool();
+        proses.execute(new Runnable() {
+          @Override
+          public void run() {
+            FileTypeLauncher.getLaunchers();
+            FileTypeLauncher launcher = FileTypeLauncher.getLauncher(pathBerkas);
+            
+            if(launcher != null) {
+              launcher.launch(pathBerkas);
+            }
+            else {
+              JOptionPane.showMessageDialog(FileManager.this,
+                "Maaf, Tidak ada aplikasi yang dapat membuka berkas ini!",
+                "Terjadi Kesalahan!",
+                JOptionPane.ERROR_MESSAGE);
+            }
+          }
+        });
+        
+        proses.shutdown();
+      }
     }
     else if(perintah.equals("hapusGambarBertanda")) {
       if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
@@ -1151,6 +1279,10 @@ public class FileManager extends JFrame
           new AccordFGL(ui, berkas).buatElemenPadaJS();
           
           data.tutupKoneksi();
+          
+          ui.eksekusiJavascript(
+                "M.toast({ html: \"Berkas "
+                +berkas.getObjekFile().getName()+" berhasil dimasukkan ke FGL\" });");
         }
         catch(Exception ex) {
           ex.printStackTrace();
@@ -1175,6 +1307,77 @@ public class FileManager extends JFrame
       }
       catch(Exception ex) {
         ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("masukkanKePintasan")) {
+      for(int i = 0; i < param.length; i++) {
+        String pathAbsolut = (String)param[i];
+        
+        Berkas berkas = new Berkas(ui, pathAbsolut);
+        
+        try {
+          DataTabelPintasan data = new DataTabelPintasan(
+                  berkas.getObjekFile().getName(),
+                  berkas.getObjekFile().getAbsolutePath());
+          data.buatTabelJikaTidakAda();
+          data.masukkanData();
+          
+          new AccordPintasan(ui, berkas).buatElemenPadaJS();
+          buatPintasan(berkas.getObjekFile().getName(),
+                  berkas.getObjekFile().getAbsolutePath());
+          
+          data.tutupKoneksi();
+          
+          ui.eksekusiJavascript(
+                "M.toast({ html: \"Berkas "
+                +berkas.getObjekFile().getName()+" berhasil dimasukkan ke Pintasan\" });");
+        }
+        catch(Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    else if(perintah.equals("hapusPintasan")) {
+      String pathAbsolut = (String)param[0];
+        
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+
+      try {
+        DataTabelPintasan data = new DataTabelPintasan(
+                berkas.getObjekFile().getName(),
+                berkas.getObjekFile().getAbsolutePath());
+        data.buatTabelJikaTidakAda();
+        data.hapusData(berkas.getObjekFile().getName());
+
+        AccordPintasan.hapusPadaJS(ui, berkas.getObjekFile().getName());
+        hapusPintasan(berkas.getObjekFile().getName());
+
+        data.tutupKoneksi();
+      }
+      catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    else if(perintah.equals("bukaMelaluiPintasan")) {
+      String pathAbsolut = (String)param[0];
+      
+      Berkas berkas = new Berkas(ui, pathAbsolut);
+      
+      if(berkas.berkasTersedia()) {
+        Berkas.tampilkanCirclePadaJS(ui);
+        nav.majuKe(berkas).tampilkanListBerkas();
+        bcBerkas.isiDariPath(nav.getBerkasTerpilih().pecahPathAbsolut(), ui);
+        Berkas.sembunyikanCirclePadaJS(ui);
+        
+        Berkas.setTextPathPadaJS(ui, nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+        System.out.println(nav.getBerkasTerpilih().getObjekFile().getAbsolutePath());
+      }
+      else {
+        JOptionPane.showMessageDialog(this,
+            "Pintasan tidak valid!\n" +
+            "Pastikan pintasan mengarah pada folder yang tersedia",
+            "Terjadi Kesalahan!",
+            JOptionPane.ERROR_MESSAGE);
       }
     }
     else if(perintah.equals("cariFotoBerdasarWajah")) {
@@ -1273,6 +1476,18 @@ public class FileManager extends JFrame
     }
   }
   
+  public void tampilkanSemuaPintasan(DataTabelPintasan data) throws Exception {
+    AccordPintasan.hapusSemuaPadaJS(ui);
+    hapusSemuaPintasan();
+    
+    DataTabelPintasan[] semuaData = data.dapatkanSemuaData();
+    for(int i = 0; i < semuaData.length; i++) {
+      new AccordPintasan(ui, new Berkas(ui, semuaData[i].getPath()))
+              .buatElemenPadaJS();
+      buatPintasan(semuaData[i].getNamaFolder(), semuaData[i].getPath());
+    }
+  }
+  
   public void urutkanBerdasarCTime(String mode, Berkas berkasTempat) throws Exception {
     Berkas[] dataBerkas = null;
             
@@ -1297,6 +1512,27 @@ public class FileManager extends JFrame
     }
 
     Berkas.sembunyikanCirclePadaJS(ui);
+  }
+  
+  public void buatPintasan(String namaFolder, String path) {
+    String pint =
+    "new NavPintasan()"
+            + ".setNamaFolder('"+namaFolder+"')"
+            + ".setPath('"+path+"')"
+            + ".pasangElemen($('#panelBookmark'));";
+    ui.eksekusiJavascript(pint);
+  }
+  
+  public void hapusPintasan(String namaFolder) {
+    String pint =
+    "NavPintasan.hapusPintasan('"+namaFolder+"');";
+    ui.eksekusiJavascript(pint);
+  }
+  
+  public void hapusSemuaPintasan() {
+    String pint =
+    "NavPintasan.hapusSemuaPintasan();";
+    ui.eksekusiJavascript(pint);
   }
 
   @Override
