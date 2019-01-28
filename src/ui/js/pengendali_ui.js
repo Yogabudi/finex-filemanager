@@ -176,6 +176,24 @@ $(document).ready(function() {
     }
   });
   
+  $("#btnAddtoBookmark").click(function(e) {
+    var berkasTerpilih = Berkas.dapatkanBanyakBerkasTerpilih();
+
+    // simpan parameter fungsi sendNSCommand() pada array
+    // index pertama adalah param pertama bernilai nama perintah
+    // masukkan path absolut ke dalam parameter fungsi
+    var paramFungsi = [];
+    paramFungsi[0] = "masukkanKePintasan";
+    for(var i = 0; i < berkasTerpilih.length; i++) {
+      paramFungsi[i + 1] = berkasTerpilih[i].getPathAbsolut();
+    }
+
+    var fungsiKirimPerintah = window["sendNSCommand"];
+    if(typeof fungsiKirimPerintah === "function") {
+      fungsiKirimPerintah.apply(null, paramFungsi);
+    }
+  });
+  
   $("#txCariBerkas").keypress(function(e) {
     if(e.which === 13) {
       e.preventDefault();
