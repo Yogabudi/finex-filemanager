@@ -269,6 +269,15 @@ class Berkas {
     $("#btnUbahNama").show();
     $("#btnDuplikat").show();
     $("#btnInfoBerkas").show();
+    
+    if(Berkas.dapatkanBerkasTerpilih().getJenis() === "file") {
+      $("#btnAddtoBookmark").hide();
+      $("#btnAddtoFGL").hide();
+    }
+    else if(Berkas.dapatkanBerkasTerpilih().getJenis() === "folder") {
+      $("#btnAddtoBookmark").show();
+      $("#btnAddtoFGL").show();
+    }
   }
 
   static eventSaatTerpilihBanyak(elements) {
@@ -279,6 +288,15 @@ class Berkas {
     $("#btnUbahNama").hide();
     $("#btnDuplikat").hide();
     $("#btnInfoBerkas").hide();
+    
+    if(Berkas.dapatkanBerkasTerpilih().getJenis() === "file") {
+      $("#btnAddtoBookmark").hide();
+      $("#btnAddtoFGL").hide();
+    }
+    else if(Berkas.dapatkanBerkasTerpilih().getJenis() === "folder") {
+      $("#btnAddtoBookmark").show();
+      $("#btnAddtoFGL").show();
+    }
   }
 
   static eventSaatTidakTerpilih() {

@@ -167,6 +167,57 @@ public class Berkas {
           
           berkas.setPakeThumbnail(true);
         }
+        else if(berkas.getObjekFile().getName().endsWith(".txt")) {
+          berkas.setIcon("assets/Icons/64/170-txt.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".db")) {
+          berkas.setIcon("assets/Icons/64/111-database-8.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".mp3")) {
+          berkas.setIcon("assets/Icons/64/164-mp3.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".mp4")) {
+          berkas.setIcon("assets/Icons/64/166-mp4.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".zip")) {
+          berkas.setIcon("assets/Icons/64/167-zip.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".tar.gz") ||
+                berkas.getObjekFile().getName().endsWith(".rar")) {
+          berkas.setIcon("assets/Icons/64/162-zip-1.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".ppt")) {
+          berkas.setIcon("assets/Icons/64/168-powerpoint.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".doc") ||
+                berkas.getObjekFile().getName().endsWith(".docx") ||
+                berkas.getObjekFile().getName().endsWith(".odt")) {
+          berkas.setIcon("assets/Icons/64/181-document-2.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".html")) {
+          berkas.setIcon("assets/Icons/64/175-html.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".css")) {
+          berkas.setIcon("assets/Icons/64/176-css.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".xml")) {
+          berkas.setIcon("assets/Icons/64/177-xml.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".csv")) {
+          berkas.setIcon("assets/Icons/64/173-csv.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".psd")) {
+          berkas.setIcon("assets/Icons/64/172-photoshop.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".pdf")) {
+          berkas.setIcon("assets/Icons/64/078-pdf.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".eps")) {
+          berkas.setIcon("assets/Icons/64/077-eps.png");
+        }
+        else if(berkas.getObjekFile().getName().endsWith(".exe")) {
+          berkas.setIcon("assets/Icons/64/021-champagne-1.png");
+        }
       }
       
       daftarBerkas.add(berkas);

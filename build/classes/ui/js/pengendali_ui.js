@@ -115,13 +115,13 @@ $(document).ready(function() {
       }
   });
   
-  $("input[name='swGunakanApp']").prop("checked", false);
-  
-  $("input[name='swGunakanApp']").click(function() {
-    $("input[name='swGunakanApp']").prop("checked", false);
-    
-    $(this).prop("checked", true);
-  });
+//  $("input[name='swGunakanApp']").prop("checked", false);
+//  
+//  $("input[name='swGunakanApp']").click(function() {
+//    $("input[name='swGunakanApp']").prop("checked", false);
+//    
+//    $(this).prop("checked", true);
+//  });
   
   $("#btnOkEmptyTrash").click(function(e) {
     sendNSCommand("kosongkanTrash");
@@ -566,6 +566,42 @@ $(document).ready(function() {
     placement: "bottom-right",
     onHide: function(element) {
       tutupAccordion("#accordPintasan");
+    }
+  });
+  
+  $("#btnKomponenPendukung").webuiPopover({
+    title: "Komponen Pendukung Aplikasi",
+    animation: "pop",
+    url: "#popKomponenPendukung",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right",
+    onHide: function(element) {
+      tutupAccordion("#accordKompPendukung");
+    }
+  });
+  
+  $("#btnTentang").webuiPopover({
+    title: "Tentang Aplikasi",
+    animation: "pop",
+    url: "#popTentang",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right"
+  });
+  
+  $("#btnLisensi").webuiPopover({
+    title: "Aplikasi ini Open Source dengan lisensi GPL v3.0",
+    animation: "pop",
+    url: "#popLisensi",
+    closeable: true,
+    width: "400",
+    height: "350",
+    placement: "bottom-right",
+    onHide: function(element) {
+      tutupAccordion("#accordLisensi");
     }
   });
   

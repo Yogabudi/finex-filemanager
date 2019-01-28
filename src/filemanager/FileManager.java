@@ -3,6 +3,7 @@ package filemanager;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import chrriis.dj.nativeswing.swtimpl.utilities.FileTypeLauncher;
 import filemanager.database.DataTabelFGL;
 import filemanager.database.DataTabelPintasan;
 import filemanager.database.DataTabelWajah;
@@ -1126,6 +1127,34 @@ public class FileManager extends JFrame
         });
 
       }
+      else {
+        final String pathBerkas = berkas.getObjekFile().getAbsolutePath();
+        String namaBerkas = berkas.getObjekFile().getName();
+        
+        ui.eksekusiJavascript(
+                "M.toast({ html: \"Membuka berkas "+namaBerkas+"\" });");
+        
+        ExecutorService proses = Executors.newCachedThreadPool();
+        proses.execute(new Runnable() {
+          @Override
+          public void run() {
+            FileTypeLauncher.getLaunchers();
+            FileTypeLauncher launcher = FileTypeLauncher.getLauncher(pathBerkas);
+            
+            if(launcher != null) {
+              launcher.launch(pathBerkas);
+            }
+            else {
+              JOptionPane.showMessageDialog(FileManager.this,
+                "Maaf, Tidak ada aplikasi yang dapat membuka berkas ini!",
+                "Terjadi Kesalahan!",
+                JOptionPane.ERROR_MESSAGE);
+            }
+          }
+        });
+        
+        proses.shutdown();
+      }
     }
     else if(perintah.equals("hapusGambarBertanda")) {
       if(gambarSebelumnya != null && gambarSebelumnya.getObjekFile().exists()) {
@@ -1250,6 +1279,10 @@ public class FileManager extends JFrame
           new AccordFGL(ui, berkas).buatElemenPadaJS();
           
           data.tutupKoneksi();
+          
+          ui.eksekusiJavascript(
+                "M.toast({ html: \"Berkas "
+                +berkas.getObjekFile().getName()+" berhasil dimasukkan ke FGL\" });");
         }
         catch(Exception ex) {
           ex.printStackTrace();
@@ -1294,6 +1327,10 @@ public class FileManager extends JFrame
                   berkas.getObjekFile().getAbsolutePath());
           
           data.tutupKoneksi();
+          
+          ui.eksekusiJavascript(
+                "M.toast({ html: \"Berkas "
+                +berkas.getObjekFile().getName()+" berhasil dimasukkan ke Pintasan\" });");
         }
         catch(Exception ex) {
           ex.printStackTrace();
