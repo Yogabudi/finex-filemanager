@@ -37,6 +37,8 @@ public class Berkas {
   private long ukuranFile = 0;
   private boolean tersembunyi = false;
   private boolean pakeThumbnail = false;
+  private final String password = "inil";
+  
   private ArrayList<Berkas> duplikatanBerkas = new ArrayList<>();
   
   private WebViewUI ui;
@@ -530,7 +532,7 @@ public class Berkas {
         LocalDate[] tglDibuatBerkas = new LocalDate[isiBerkas.length];
         
         for(int i = 0; i < tglDibuatBerkas.length; i++) {
-          tglDibuatBerkas[i] = isiBerkas[i].dapatkanInfoTgl("computer")[2];
+          tglDibuatBerkas[i] = isiBerkas[i].dapatkanInfoTgl(password)[2];
         }
         
         for(int i = 0 ; i < isiBerkas.length; i++) {
@@ -558,7 +560,7 @@ public class Berkas {
         LocalDate[] tglDibuatBerkas = new LocalDate[isiBerkas.length];
         
         for(int i = 0; i < tglDibuatBerkas.length; i++) {
-          tglDibuatBerkas[i] = isiBerkas[i].dapatkanInfoTgl("computer")[2];
+          tglDibuatBerkas[i] = isiBerkas[i].dapatkanInfoTgl(password)[2];
         }
         
         for(int i = 0 ; i < isiBerkas.length; i++) {
@@ -601,7 +603,7 @@ public class Berkas {
     long ukuranBerkas = ukuranFile;
     int jmlKonten = (objekFile.isDirectory()) ? objekFile.listFiles().length : 0;
     
-    LocalDate[] infoTgl = dapatkanInfoTgl("computer");
+    LocalDate[] infoTgl = dapatkanInfoTgl(password);
     
     String tglDibuat = infoTgl[2].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
     String tglModif = infoTgl[1].format(DateTimeFormatter.ofPattern("d MMM yyyy"));
