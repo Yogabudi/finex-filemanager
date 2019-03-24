@@ -37,7 +37,7 @@ public class FaceDetector {
             "python3",
             "src/filemanager/tools/face_detection_cli.py",
             "--cpus", "-1",
-            fileGambar.getObjekFile().getAbsolutePath());
+            fileGambar.getObjekFile().getPath());
     
     pb.redirectErrorStream(true);
     Process proc = pb.start();

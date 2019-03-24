@@ -484,6 +484,16 @@ class Berkas {
   
   static bukaFileGambar(pathAbsolut) {
     $("#imgPanelGambar").attr("src", pathAbsolut);
+    log("SRC", $("#imgPanelGambar"));
+//    if($("#imgPanelGambar").length) {
+//      $("#imgPanelGambar").remove();
+//    }
+//    
+//    var elemenGambar =
+//    "<img id=\"imgPanelGambar\" src=\""+pathAbsolut+"\" class=\"responsive-img materialboxed\" />";
+//    
+//    $("#tempatGambar").append(elemenGambar);
+//    log("src", $("#imgPanelGambar").attr("src"));
   }
   
   static bukaPanelGambar() {

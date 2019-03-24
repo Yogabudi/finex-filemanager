@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.AccessDeniedException;
-import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -870,13 +869,19 @@ public class Berkas {
   
   public void buatBerkasPadaJS() {
     String jenisBerkas = (objekFile.isDirectory()) ? "folder" : "file";
+    String urlBerkas = objekFile.getAbsolutePath();
+    
+//    if(pakeThumbnail) {
+//      urlBerkas = ui.getResourceURL(false,
+//              FileManager.class.getName(), objekFile.getAbsolutePath());
+//    }
     
     String js = ""+
       "var berkas = new Berkas();"+
       "berkas.setNama('"+objekFile.getName()+"');"+
       "berkas.setJenis('"+jenisBerkas+"');"+
       "berkas.setIcon('"+icon+"');"+
-      "berkas.setPathAbsolut('"+objekFile.getAbsolutePath()+"');"+
+      "berkas.setPathAbsolut('"+urlBerkas+"');"+
       "berkas.setJumlahBerkas("+jumlahBerkas+");"+
       "berkas.setUkuranFile("+ukuranFile+");"+
       "berkas.setTersembunyi("+tersembunyi+");"+
@@ -997,15 +1002,17 @@ public class Berkas {
   
   public static void bukaFileGambar(WebViewUI ui, Berkas fileGambar) {
     String js = ""+
-    "Berkas.bukaFileGambar('"+fileGambar.getObjekFile().getAbsolutePath()+"');";
+    "Berkas.bukaFileGambar('"+fileGambar.getObjekFile().getPath()+"');";
 
     ui.eksekusiJavascript(js);
   }
   
   public void bukaFileGambar() {
     String js = ""+
-    "Berkas.bukaFileGambar('"+objekFile.getAbsolutePath()+"');";
-
+    "Berkas.bukaFileGambar('"+objekFile.getPath()+"');";
+    
+    System.out.println("ABSOLUTE PATH : " + objekFile.getPath());
+    
     ui.eksekusiJavascript(js);
   }
   

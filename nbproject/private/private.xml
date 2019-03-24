@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="3"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/AccordFGL.js</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/Berkas.js</file>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/index.html</file>
-            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/ui/js/pengendali_ui.js</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/Berkas.java</file>
             <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/FileManager.java</file>
+            <file>file:/home/ini_laptop/NetBeansProjects/finex-filemanager/src/filemanager/webviewui/WebViewUI.java</file>
         </group>
     </open-files>
 </project-private>

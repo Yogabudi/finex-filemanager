@@ -35,7 +35,9 @@ import javax.swing.SwingUtilities;
  * @author Yoga Budi Yulianto
  */
 public class FileManager extends JFrame
-        implements PendengarWebBrowser, WindowFocusListener, WindowListener {
+        implements WebViewUI.PendengarWebBrowser,
+                    WindowFocusListener,
+                    WindowListener {
 
   public WebViewUI ui;
   public NavMajuMundur nav;
@@ -63,15 +65,19 @@ public class FileManager extends JFrame
     this.setName("UI Utama");
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.ketengahkan();
-    //this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.addWindowFocusListener(this);
     this.addWindowListener(this);
 
     ui = new WebViewUI(this);
     ui.setPendengarWebBrowser(this);
+    
     ui.setURL(getClass().getResource("/ui/index.html").toExternalForm());
 //    ui.setURL(WebServer.getDefaultWebServer().getClassPathResourceURL(
 //                  FileManager.class.getName(), "/ui/index.html"));
+
+//    ui.bukaHalamanDiClassPath(FileManager.class.getName(), "/ui/index.html");
+    
     this.getContentPane().add(ui);
     
     nav = new NavMajuMundur(ui);
